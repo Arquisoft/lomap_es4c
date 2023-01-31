@@ -2,6 +2,7 @@
 
 **Participantes:**
  - Pelayo del Campo González
+ - Raúl Álvarez Álvarez
 
 
 [![Actions Status](https://github.com/arquisoft/lomap_es4c/workflows/CI%20for%20LOMAP_ES4C/badge.svg)](https://github.com/arquisoft/lomap_es4c/actions)
