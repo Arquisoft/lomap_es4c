@@ -1,5 +1,9 @@
 # LoMap ES4C
 
+**Participantes:**
+ - Pelayo del Campo González
+
+
 [![Actions Status](https://github.com/arquisoft/lomap_es4c/workflows/CI%20for%20LOMAP_ES4C/badge.svg)](https://github.com/arquisoft/lomap_es4c/actions)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Arquisoft_lomap_es4c&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Arquisoft_lomap_es4c)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Arquisoft_lomap_es4c&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Arquisoft_lomap_es4c)
