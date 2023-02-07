@@ -5,6 +5,7 @@
  - Raúl Álvarez Álvarez
  - Iván Vega Prieto
  - Alba Guerrero García
+ - Mario García Prieto
 
 
 [![Actions Status](https://github.com/arquisoft/lomap_es4c/workflows/CI%20for%20LOMAP_ES4C/badge.svg)](https://github.com/arquisoft/lomap_es4c/actions)
