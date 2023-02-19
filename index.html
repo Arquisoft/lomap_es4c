@@ -449,7 +449,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_stakeholders">1.3. Stakeholders</a></li>
 </ul>
 </li>
-<li><a href="#section-architecture-constraints">2. Architecture Constraints</a></li>
+<li><a href="#section-architecture-constraints">2. Architecture Constraints</a>
+<ul class="sectlevel2">
+<li><a href="#_tabla_1_restricciones_técnicas">2.1. Tabla 1. Restricciones técnicas</a></li>
+<li><a href="#_tabla_2_restricciones_organizativas">2.2. Tabla 2. Restricciones organizativas</a></li>
+<li><a href="#_tabla_3_restricciones_de_convención">2.3. Tabla 3. Restricciones de convención</a></li>
+</ul>
+</li>
 <li><a href="#section-system-scope-and-context">3. System Scope and Context</a>
 <ul class="sectlevel2">
 <li><a href="#_business_context">3.1. Business Context</a></li>
@@ -749,6 +755,112 @@ These stakeholders determine the extent and the level of detail of your work and
 <div class="sect1">
 <h2 id="section-architecture-constraints">2. Architecture Constraints</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_tabla_1_restricciones_técnicas">2.1. Tabla 1. Restricciones técnicas</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Restricción</th>
+<th class="tableblock halign-left valign-top">Explicación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>React</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>El frontend de la aplicación será realizado con la librería React.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Typescript</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>El lenguaje de programación usado para realizar tanto el backend como el frontend de la aplicación.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>PODs de SOLID</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Se hará uso de la tecnología de PODs de SOLID para asegurar la privacidad de los datos de los usuarios que interactuen con la aplicación.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>GitHub</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>El proyecto estará en un repositorio de GitHub</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Docker</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Habrá un Dockerfile y un archivo docker-compose.yml en el proyecto</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_tabla_2_restricciones_organizativas">2.2. Tabla 2. Restricciones organizativas</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Restricción</th>
+<th class="tableblock halign-left valign-top">Explicación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Miembros del equipo</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Somos un equipo de 5 estudiantes, con horarios dispares, 3 de los integrantes trabajan a la vez que estudian y 1 está en evaluación diferenciada.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Tiempo</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>La aplicación debe de ser desarrollada dentro de los márgenes establecidos por los profesores, y las entregas han de estar realizadas en el tiempo establecido.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Coordinación</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Los integrantes debemos tener un cierto grado de coordinación para realizar todos una cantidad equitativa de trabajo y asegurar que pueda ser terminado a tiempo y sin comprometer lo que el resto realice.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Tetsing</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>La aplicación ha de ser testeada durante el desarrollo de la misma para asegurar su correcto funcionamiento yq ue se cumplan todos los rquisitos.</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_tabla_3_restricciones_de_convención">2.3. Tabla 3. Restricciones de convención</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Restricción</th>
+<th class="tableblock halign-left valign-top">Explicación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Control de versión</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Se ha de llevar un control de versiones del código de la aplicación.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Documentación</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Se seguirá la estructrura de Arc42 para realizar la documentación, con ayuda de Asciidoctor para desplegarla.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Idioma</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>La documentación de la aplicación será realizada en español.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>SOLID</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Se deben de seguir los principios SOLID en la realización de la aplicación.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Código limpio</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>El código creado ha de ser bien escrito, facil de leer y claro, además de poder ser mantenible y fácil de modificar.</em></p></td>
+</tr>
+</tbody>
+</table>
 <div class="sidebarblock arc42help">
 <div class="content">
 <div class="paragraph">
@@ -770,6 +882,7 @@ conventions (e.g. programming or versioning guidelines, documentation or naming 
 </div>
 </div>
 <div style="page-break-after: always;"></div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1818,7 +1931,7 @@ Created by Dr. Peter Hruschka &amp; Dr. Gernot Starke.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-02-13 21:11:21 +0100
+Last updated 2023-02-20 00:03:49 +0100
 </div>
 </div>
 </body>
