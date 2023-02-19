@@ -1,7 +1,53 @@
 [[section-architecture-constraints]]
 == Architecture Constraints
 
+=== Tabla 1. Restricciones técnicas
+[options="header",cols="1,2"]
+|===
+|Restricción|Explicación
 
+| *React* | _El frontend de la aplicación será realizado con la librería React._ 
+
+| *Typescript* | _El lenguaje de programación usado para realizar tanto el backend como el frontend de la aplicación._
+
+| *PODs de SOLID* | _Se hará uso de la tecnología de PODs de SOLID para asegurar la privacidad de los datos de los usuarios que interactuen con la aplicación._
+
+| *GitHub* | _El proyecto estará en un repositorio de GitHub_
+
+| *Docker* | _Habrá un Dockerfile y un archivo docker-compose.yml en el proyecto_ 
+|===
+
+=== Tabla 2. Restricciones organizativas
+[options="header",cols="1,2"]
+|===
+|Restricción|Explicación
+
+| *Miembros del equipo* | _Somos un equipo de 5 estudiantes, con horarios dispares, 3 de los integrantes trabajan a la vez que estudian y 1 está en evaluación diferenciada._ 
+
+| *Tiempo* | _La aplicación debe de ser desarrollada dentro de los márgenes establecidos por los profesores, y las entregas han de estar realizadas en el tiempo establecido._
+
+| *Coordinación* | _Los integrantes debemos tener un cierto grado de coordinación para realizar todos una cantidad equitativa de trabajo y asegurar que pueda ser terminado a tiempo y sin comprometer lo que el resto realice._
+
+| *Tetsing* | _La aplicación ha de ser testeada durante el desarrollo de la misma para asegurar su correcto funcionamiento yq ue se cumplan todos los rquisitos._
+
+|===
+
+=== Tabla 3. Restricciones de convención
+[options="header",cols="1,2"]
+|===
+|Restricción|Explicación
+
+| *Control de versión* | _Se ha de llevar un control de versiones del código de la aplicación._ 
+
+| *Documentación* | _Se seguirá la estructrura de Arc42 para realizar la documentación, con ayuda de Asciidoctor para desplegarla._
+
+| *Idioma* | _La documentación de la aplicación será realizada en español._
+
+| *SOLID* | _Se deben de seguir los principios SOLID en la realización de la aplicación._
+
+| *Código limpio* | _El código creado ha de ser bien escrito, facil de leer y claro, además de poder ser mantenible y fácil de modificar._
+
+|===
 [role="arc42help"]
 ****
 .Contents
