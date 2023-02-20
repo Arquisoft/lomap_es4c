@@ -1,17 +1,23 @@
 [[section-technical-risks]]
 == Risks and Technical Debts
+El principal problema al que nos enfrentamos es a un nuevo entorno de trabajo, el cual tiene una tecnología completamente nueva para la mayoría de integrantes del grupo lo que hace que sea complicado el inicio.
+Y también hay que tener en cuenta el tiempo que tenemos y el resto de asignaturas de la universidad. Aquí hay una tabla que refleja los principales problemas
+[options="header",cols="1,2,2"]
+|===
+|Riesgo|Problema|Solución
+
+| *Nueva tecnología* | _Dificultades a la hora de empezar el proyecto y de que las cosas funcionen._ | _Practicar y pedir ayuda a profesores o alumnos que cursaron la materia_
+
+| *Tiempo* | _El resto de asignaturas nos quita mucho tiempo lo cual puede hacer que lleguemos forzados a las entregas._ | _Mejorar nuestra organización_
+
+| *Problemas equipo* | _Trabajar en equipo siempre supone algún problema, aquí no va a ser una excepción._ | _Reuniones de equipo, organización y si hay algún problema contatar con el profesor_
+
+| *GitHub* | _Problemas con versiones de programas e incluso perdidas de archivos_ | _Tener muy claro lo que hace cada función de git, y si hay dudas hablar con profesores_
 
 
-[role="arc42help"]
-****
-.Contents
-A list of identified technical risks or technical debts, ordered by priority
+|===
 
-.Motivation
-“Risk management is project management for grown-ups” (Tim Lister, Atlantic Systems Guild.) 
 
-This should be your motto for systematic detection and evaluation of risks and technical debts in the architecture, which will be needed by management stakeholders (e.g. project managers, product owners) as part of the overall risk analysis and measurement planning.
+===Technical Debts
 
-.Form
-List of risks and/or technical debts, probably including suggested measures to minimize, mitigate or avoid risks or reduce technical debts.
-****
+
