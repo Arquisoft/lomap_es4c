@@ -1,6 +1,18 @@
 [[section-design-decisions]]
 == Design Decisions
+=== Decisiones generales
+* Utilizaremos SOLID, un proyecto de descentralización de datos
+* Utilizaremos react para la interfaz
+* Utilizaremos Typescript, un lenguaje muy silimar a javascript
+* Seguiremos el MVC(Modelo Vista Controlador) un patrón de arquitectura muy común
 
+=== Problemas
+* Necesitamos aprender a usar estas nuevas herramientas de trabajo
+
+=== Consecuencias
+
+
+=== Decisiones concretas
 
 [role="arc42help"]
 ****
