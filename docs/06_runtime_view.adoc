@@ -53,7 +53,7 @@ Alice <-- Bob: another authentication Response
 ----
 === Cargar mapa
 image:cargarMapa.png["Upload map"]
-*_El usuario iniciará sesión y automáticamente se cargará el mapa, para ello tiene que llamar a la clase principal y que esta escoja el mapa deseado
+*_El usuario iniciará sesión y automáticamente se cargará el mapa, para ello tiene que llamar a la clase principal y que esta escoja el mapa deseado_
 === ...
 
 === <Runtime Scenario n>
