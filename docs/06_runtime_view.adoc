@@ -51,6 +51,10 @@ Alice  --> Pod: Store route
 Alice -> Bob: Another authentication Request
 Alice <-- Bob: another authentication Response
 ----
+=== Cargar mapa
+image:cargarMapa.png["Upload map"]
+*_El usuario iniciará sesión y automáticamente se cargará el mapa, para ello tiene que llamar a la clase principal y que esta escoja el mapa deseado_
+
 === Añadir un amigo
 En este caso de uso podemos observar el flujo seguido para añadir a un amigo nuestro pod de SOLID
 [plantuml,Añadir amigo,png]
@@ -77,5 +81,6 @@ else amigo ya añadido
 end
 @enduml
 ----
+
 
 === <Runtime Scenario n>
