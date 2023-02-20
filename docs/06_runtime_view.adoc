@@ -30,7 +30,8 @@ There are many notations for describing scenarios, e.g.
 
 ****
 
-=== <Runtime Scenario 1>
+=== Añadir un puto al mapa
+image:añadirPunto.png["Add a Point"]
 
 
 * _<insert runtime diagram or textual description of the scenario>_
