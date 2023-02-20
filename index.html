@@ -474,7 +474,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_añadir_un_puto_al_mapa">6.1. Añadir un puto al mapa</a></li>
 <li><a href="#_cargar_mapa">6.2. Cargar mapa</a></li>
-<li><a href="#_inicio_de_sesión">6.3. Inicio de sesión</a></li>
+<li><a href="#_añadir_un_amigo">6.3. Añadir un amigo</a></li>
 <li><a href="#_runtime_scenario_n">6.4. &lt;Runtime Scenario n&gt;</a></li>
 </ul>
 </li>
@@ -1462,7 +1462,7 @@ building block instances depicted in this diagram.&gt;</em></p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="./images/Sequence%20diagram.png" alt="Sequence diagram" width="332" height="343">
+<img src="./images/Sequence%20diagram.png" alt="Sequence diagram" width="332" height="335">
 </div>
 </div>
 </div>
@@ -1474,10 +1474,14 @@ building block instances depicted in this diagram.&gt;</em></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_inicio_de_sesión">6.3. Inicio de sesión</h3>
+<h3 id="_añadir_un_amigo">6.3. Añadir un amigo</h3>
 <div class="paragraph">
-<p><span class="image"><img src="./images/06_estado_inicio_sesion.png" alt="Inicio de sesión"></span>
-=== &#8230;&#8203;</p>
+<p>En este caso de uso podemos observar el flujo seguido para añadir a un amigo nuestro pod de SOLID</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/Añadir%20amigo.png" alt="Añadir amigo" width="359" height="535">
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -1879,9 +1883,77 @@ concrete and measurable.</p>
 </div>
 </div>
 </div>
+<div class="paragraph">
+<p>En la siguiente imagen podemos observar los requisitos de calidad que tendra nuestra aplicación LoMap.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/quality.svg" alt="Árbol de requisitos de calidad">
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_quality_scenarios">10.2. Quality Scenarios</h3>
+<div class="paragraph">
+<p>En la siguiente tabla podemos ver la aplicabilidad de los requisitos de calidad previmaente definidos,estos han sido analizados minuciosamente para proporcionar calidad a nuestro desarollo</p>
+</div>
+<div class="paragraph">
+<p>Escenarios:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-middle">Requisito de calidad</th>
+<th class="tableblock halign-left valign-middle">Aplicabilidad</th>
+<th class="tableblock halign-left valign-middle">Necesidades tenidas en cuenta</th>
+<th class="tableblock halign-left valign-middle">Priorización</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Mantenibilidad</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Con el fin de desarollar una aplicación flexible a los cambios</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Añadir una nueva funcionalidad</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">3</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Usabilidad</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Creación de una aplicación inclusiva , haciendo su uso asequible a usuarios sin pericia informática o con cualquier tipo de discapacidad</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Cumplir unos mínimos requisitos para facilitar el uso de cualquier usario</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">5</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Interoperabilidad</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Creación de un modelo de datos común para toda las asignatura, por lo que la aplicación tendra la posibilidad de comunicarse entre diferentes sistemas</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Abierta a futuros desarollos</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">4</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Privacidad</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Garantizar la privacidad de nuestros usuarios, para ello usaremos el pod de SOLID</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">No almacenaremos datos de terceros, y en el caso de ser indispinsable se  notificará al usuario y se guardará solamente la información imprescindible</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">5</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Descentralización</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Estrachamente ligado con la privacidad, el suaurio decidirá que infomración compartira</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Proporcionar al usuario la capacidad de decidir sobre sus datos en todo momento</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">5</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Diseño limpio</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Ligado con la mantenibilidad, un código limpio nos proporciona flexibilidad, reutilización de código</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Código abierto al cambio</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">4</p></td>
+</tr>
+</tbody>
+</table>
 <div class="sidebarblock arc42help">
 <div class="content">
 <div class="paragraph">
@@ -2055,7 +2127,7 @@ Created by Dr. Peter Hruschka &amp; Dr. Gernot Starke.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-02-20 00:03:49 +0100
+Last updated 2023-02-02 22:20:57 +0100
 </div>
 </div>
 </body>
