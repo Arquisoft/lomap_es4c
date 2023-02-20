@@ -51,8 +51,9 @@ Alice  --> Pod: Store route
 Alice -> Bob: Another authentication Request
 Alice <-- Bob: another authentication Response
 ----
-=== <Runtime Scenario 2>
-
+=== Cargar mapa
+image:cargarMapa.png["Upload map"]
+*_El usuario iniciará sesión y automáticamente se cargará el mapa, para ello tiene que llamar a la clase principal y que esta escoja el mapa deseado
 === ...
 
 === <Runtime Scenario n>
