@@ -51,8 +51,31 @@ Alice  --> Pod: Store route
 Alice -> Bob: Another authentication Request
 Alice <-- Bob: another authentication Response
 ----
-=== <Runtime Scenario 2>
+=== Añadir un amigo
+En este caso de uso podemos observar el flujo seguido para añadir a un amigo nuestro pod de SOLID
+[plantuml,Añadir amigo,png]
+----
+@startuml
+autonumber
 
-=== ...
+actor User as user
+participant "loMap" as loMap
+database "Solid POD" as pod
+
+user -> loMap : AñadirAmigo()
+user <- loMap: listaAmigos()
+user -> loMap : IntroducePodId()
+loMap -> pod: buscaPodId()
+loMap <- pod: AñadeAmigoId()
+user <- loMap : listaAmigos()
+alt Id de amigo no encontrado
+    loMap <- pod: noExisteId()
+    user <- loMap : listaAmigos()
+else amigo ya añadido
+     loMap <- pod: amigoYaAñadido()
+    user <- loMap : listaAmigos()
+end
+@enduml
+----
 
 === <Runtime Scenario n>
