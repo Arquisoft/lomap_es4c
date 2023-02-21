@@ -476,8 +476,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_iniciar_sesión">6.2. Iniciar sesión</a></li>
 <li><a href="#_cargar_mapa">6.3. Cargar mapa</a></li>
 <li><a href="#_añadir_un_amigo">6.4. Añadir un amigo</a></li>
-<li><a href="#_eliminar_un_amigo">Eliminar un amigo</a></li>
-<li><a href="#_runtime_scenario_n">6.5. &lt;Runtime Scenario n&gt;</a></li>
+<li><a href="#_eliminar_un_amigo">6.5. Eliminar un amigo</a></li>
+<li><a href="#_runtime_scenario_n">6.6. &lt;Runtime Scenario n&gt;</a></li>
 </ul>
 </li>
 <li><a href="#section-deployment-view">7. Deployment View</a>
@@ -1508,40 +1508,20 @@ building block instances depicted in this diagram.&gt;</em></p>
 <div class="paragraph">
 <p>En este caso de uso podemos observar el flujo seguido para añadir a un amigo nuestro pod de SOLID</p>
 </div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/Añadir%20amigo.png" alt="Añadir amigo" width="359" height="535">
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_eliminar_un_amigo">Eliminar un amigo</h3>
+<h3 id="_eliminar_un_amigo">6.5. Eliminar un amigo</h3>
 <div class="paragraph">
 <p><span class="image"><img src="./images/DiagramaEA_06.png" alt="Eliminar amigo"></span></p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre>@startuml
-autonumber
-
-actor User as user
-participant "loMap" as loMap
-database "Solid POD" as pod
-
-user -&gt; loMap : AñadirAmigo()
-user &lt;- loMap: listaAmigos()
-user -&gt; loMap : IntroducePodId()
-loMap -&gt; pod: buscaPodId()
-loMap &lt;- pod: AñadeAmigoId()
-user &lt;- loMap : listaAmigos()
-alt Id de amigo no encontrado
-    loMap &lt;- pod: noExisteId()
-    user &lt;- loMap : listaAmigos()
-else amigo ya añadido
-     loMap &lt;- pod: amigoYaAñadido()
-    user &lt;- loMap : listaAmigos()
-end
-@enduml</pre>
-</div>
-</div>
 </div>
 <div class="sect2">
-<h3 id="_runtime_scenario_n">6.5. &lt;Runtime Scenario n&gt;</h3>
+<h3 id="_runtime_scenario_n">6.6. &lt;Runtime Scenario n&gt;</h3>
 <div style="page-break-after: always;"></div>
 </div>
 </div>
