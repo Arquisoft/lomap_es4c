@@ -51,6 +51,10 @@ Alice  --> Pod: Store route
 Alice -> Bob: Another authentication Request
 Alice <-- Bob: another authentication Response
 ----
+
+=== Iniciar sesión
+image:06_estado_inicio_sesion.png["Inicio de sesion"]
+
 === Cargar mapa
 image:cargarMapa.png["Upload map"]
 *_El usuario iniciará sesión y automáticamente se cargará el mapa, para ello tiene que llamar a la clase principal y que esta escoja el mapa deseado_
