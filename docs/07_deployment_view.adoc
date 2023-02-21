@@ -3,6 +3,8 @@
 
 == Deployment View
 
+La estructura del proyecto se basa en varias estructuras que operan y se comunican entre si para funcionar correctamente.
+
 [role="arc42help"]
 ****
 .Content
@@ -36,6 +38,10 @@ when your infrastructure is more complex.
 
 === Infrastructure Level 1
 
+La infraestructura de nivel 1 está compuesta de tres partes. La parte de la aplicación web desde el cual el usuario opera, y que se comunica con las otras partes. La base de datos donde se almacena información de la aplicación. El servidor de pods, donde el usuario tiene guardada su información y al cual se llama para pedir datos y guardar datos privados del usuario.
+
+image:infraestructura1.png["infraestructura 1"]
+
 [role="arc42help"]
 ****
 Describe (usually in a combination of diagrams, tables, and text):
@@ -63,6 +69,10 @@ _<description of the mapping>_
 
 
 === Infrastructure Level 2
+
+Dentro de la infraestructura de nivel 2 podemos entrar en la composición del servidor de pods, el cual está compuesto de muchos pods, uno para cada usuario que tenga información almacenada en ese lugar.
+
+image:infraestructura2.png["infraestructura 2"]
 
 [role="arc42help"]
 ****
