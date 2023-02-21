@@ -58,6 +58,9 @@ image:cargarMapa.png["Upload map"]
 === Añadir un amigo
 En este caso de uso podemos observar el flujo seguido para añadir a un amigo nuestro pod de SOLID
 [plantuml,Añadir amigo,png]
+
+=== Eliminar un amigo
+image:DiagramaEA_06.png["Eliminar amigo"]
 ----
 @startuml
 autonumber
