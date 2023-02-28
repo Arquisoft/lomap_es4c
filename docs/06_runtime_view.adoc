@@ -54,7 +54,24 @@ Alice <-- Bob: another authentication Response
 === Cargar mapa
 image:cargarMapa.png["Upload map"]
 *_El usuario iniciará sesión y automáticamente se cargará el mapa, para ello tiene que llamar a la clase principal y que esta escoja el mapa deseado_
+----
+@startuml
+autonumber
 
+actor User as user
+participant "loMap" as loMap
+database "Solid POD" as pod
+database "Database" as data
+
+user -> loMap :Login()
+loMap -> data: compruebaDatos()
+lomap <- data: confirmaDatos()
+user -> loMap : eligeMapa()
+loMap -> pod: llamaAMapa()
+lomap <- pod : CargaMapa()
+end
+@enduml
+----
 === Añadir un amigo
 En este caso de uso podemos observar el flujo seguido para añadir a un amigo nuestro pod de SOLID
 [plantuml,Añadir amigo,png]
