@@ -42,6 +42,8 @@ La infraestructura de nivel 1 está compuesta de tres partes. La parte de la apl
 
 image:Infraestructura1.png["infraestructura 1"]
 
+*_Los cuadrados representan un conjunto de bases de datos, el círculo representa una base de datos y el cuadrado redondeado representa la ejecución de la aplicación_
+
 [role="arc42help"]
 ****
 Describe (usually in a combination of diagrams, tables, and text):
@@ -73,6 +75,8 @@ _<description of the mapping>_
 Dentro de la infraestructura de nivel 2 podemos entrar en la composición del servidor de pods, el cual está compuesto de muchos pods, uno para cada usuario que tenga información almacenada en ese lugar.
 
 image:Infraestructura2.png["infraestructura 2"]
+
+*_Los cuadrados representan un conjunto de bases de datos y el círculo representa una base de datos_
 
 [role="arc42help"]
 ****

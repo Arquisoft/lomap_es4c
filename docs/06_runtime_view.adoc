@@ -1,6 +1,7 @@
 [[section-runtime-view]]
 == Runtime View
 
+Estos son algunos casos de uso que se producen dentro de la aplicación y de como se desarrollan dentro de la aplicación.
 
 [role="arc42help"]
 ****
@@ -30,38 +31,18 @@ There are many notations for describing scenarios, e.g.
 
 ****
 
-=== Añadir un puto al mapa
+=== Casos de uso Nivel 1
+
+==== Añadir un punto al mapa
 image:añadirPunto.png["Add a Point"]
 
-
-* _<insert runtime diagram or textual description of the scenario>_
-* _<insert description of the notable aspects of the interactions between the
-building block instances depicted in this diagram.>_
-
-It is possible to use a sequence diagram:
-
-[plantuml,"Sequence diagram",png]
-----
-actor Alice
-actor Bob
-database Pod as "Bob's Pod"
-Alice -> Bob: Authentication Request
-Bob --> Alice: Authentication Response
-Alice  --> Pod: Store route
-Alice -> Bob: Another authentication Request
-Alice <-- Bob: another authentication Response
-----
-
-=== Iniciar sesión
+==== Iniciar sesión
 image:06_estado_inicio_sesion.png["Inicio de sesion"]
 
-=== Cargar mapa
-image:cargarMapa.png["Upload map"]
+==== Cargar mapa
 *_El usuario iniciará sesión y automáticamente se cargará el mapa, para ello tiene que llamar a la clase principal y que esta escoja el mapa deseado_
+[plantuml,"Cargar mapa",png]
 ----
-@startuml
-autonumber
-
 actor User as user
 participant "loMap" as loMap
 database "Solid POD" as pod
@@ -73,10 +54,9 @@ lomap <- data: confirmaDatos()
 user -> loMap : eligeMapa()
 loMap -> pod: llamaAMapa()
 lomap <- pod : CargaMapa()
-end
-@enduml
 ----
-=== Añadir un amigo
+
+==== Añadir un amigo
 En este caso de uso podemos observar el flujo seguido para añadir a un amigo nuestro pod de SOLID
 [plantuml,Añadir amigo,png]
 ----
@@ -103,7 +83,40 @@ end
 @enduml
 ----
 
-=== Eliminar un amigo
-image:DiagramaEA_06.png["Eliminar amigo"]
+==== Eliminar un amigo
+En este caso de uso observamos como eliminar un amigo de nuestro pod
+[plantuml,"Eliminar amigo",png]
+----
+actor User as user
+participant "loMap" as loMap
+database "Solid POD" as pod
 
-=== <Runtime Scenario n>
+user -> loMap : EliminarAmigo()
+loMap -> pod: listaAmigos()
+loMap -> pod : EliminarAmigo()
+user -> loMap : IntroducePodId()
+loMap -> pod: buscaPodId()
+loMap -> pod: EliminaAmigoId()
+----
+
+=== Casos de uso Nivel 2
+
+==== Eliminar un amigo
+En este caso de uso observamos como eliminar un amigo de nuestro pod y como se actualiza la información en ambos pods
+[plantuml,"Eliminar amigo lvl2",png]
+----
+actor User as user
+participant "loMap" as loMap
+participant "POD Server" as server
+database "User POD" as userp
+database "Friend POD" as friendp
+
+user -> loMap : EliminarAmigo()
+loMap -> server: listaAmigos()
+server -> userp: listaAmigos()
+loMap -> server: buscaPodId()
+server -> userp: buscaPodId()
+loMap -> server : EliminarAmigo(idUser, idAmigo)
+server -> userp : EliminarAmigo(idAmigo)
+server -> friendp : EliminarAmigo(idUser)
+----

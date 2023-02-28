@@ -28,7 +28,7 @@
 
 | *Coordinación* | _Los integrantes debemos tener un cierto grado de coordinación para realizar todos una cantidad equitativa de trabajo y asegurar que pueda ser terminado a tiempo y sin comprometer lo que el resto realice._
 
-| *Tetsing* | _La aplicación ha de ser testeada durante el desarrollo de la misma para asegurar su correcto funcionamiento yq ue se cumplan todos los rquisitos._
+| *Testing* | _La aplicación ha de ser testeada durante el desarrollo de la misma para asegurar su correcto funcionamiento yq ue se cumplan todos los rquisitos._
 
 |===
 
