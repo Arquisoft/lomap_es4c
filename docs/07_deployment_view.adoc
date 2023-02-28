@@ -40,7 +40,9 @@ when your infrastructure is more complex.
 
 La infraestructura de nivel 1 está compuesta de tres partes. La parte de la aplicación web desde el cual el usuario opera, y que se comunica con las otras partes. La base de datos donde se almacena información de la aplicación. El servidor de pods, donde el usuario tiene guardada su información y al cual se llama para pedir datos y guardar datos privados del usuario.
 
-image:infraestructura1.png["infraestructura 1"]
+image:Infraestructura1.png["infraestructura 1"]
+
+*_Los cuadrados representan un conjunto de bases de datos, el círculo representa una base de datos y el cuadrado redondeado representa la ejecución de la aplicación_
 
 [role="arc42help"]
 ****
@@ -72,7 +74,9 @@ _<description of the mapping>_
 
 Dentro de la infraestructura de nivel 2 podemos entrar en la composición del servidor de pods, el cual está compuesto de muchos pods, uno para cada usuario que tenga información almacenada en ese lugar.
 
-image:infraestructura2.png["infraestructura 2"]
+image:Infraestructura2.png["infraestructura 2"]
+
+*_Los cuadrados representan un conjunto de bases de datos y el círculo representa una base de datos_
 
 [role="arc42help"]
 ****
