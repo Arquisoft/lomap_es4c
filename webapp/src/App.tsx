@@ -1,35 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
-import Container from '@mui/material/Container';
-import EmailForm from './components/EmailForm';
-import Welcome from './components/Welcome';
-import UserList from './components/UserList';
-import  {getUsers} from './api/api';
-import {User} from './shared/shareddtypes';
-import './App.css';
+import React from "react";
+
+import "./index.css";
 
 function App(): JSX.Element {
-
-  const [users,setUsers] = useState<User[]>([]);
-
-  const refreshUserList = async () => {
-    setUsers(await getUsers());
-  }
-
-  useEffect(()=>{
-    refreshUserList();
-  },[]);
-
   return (
     <>
-      <Container maxWidth="sm">
-        <Welcome message="ASW students"/>
-        <Box component="div" sx={{ py: 2}}>This is a basic example of a React application using Typescript. You can add your email to the list filling the form below.</Box>
-        <EmailForm OnUserListChange={refreshUserList}/>        
-        <UserList users={users}/>
-        <Link href="https://github.com/arquisoft/lomap_0">Source code</Link>
-      </Container>
+      <div className="App">
+        <header>
+          <p>LoMap</p>
+          <nav>
+            <button className="separador">log in</button>
+            <button>sign up</button>
+          </nav>
+        </header>
+        <div className="portada">
+          <img src="./images/portada.png" alt="portada" />
+          <h1>LoMap</h1>
+        </div>
+      </div>
+      <div className="description">
+        <h2> Red social de mapas</h2>
+        <p>
+          {" "}
+          seleccione el mapa que desee abrir y realice lo que usted quiera!
+          desde añadir puntos de interés como restaurantes hasta crear su propia
+          ruta y compartirla con sus amigos
+        </p>
+      </div>
+      <footer>
+        <p>Escuela Ingeniería informática 2022-2023/ASW grupo lomap_es4c</p>
+        <img src="./images/uniovi.png" alt="portada" />
+      </footer>
     </>
   );
 }
