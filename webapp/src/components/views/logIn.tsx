@@ -1,9 +1,18 @@
-import React from "react";
+import { useState, useEffect } from "react";
+import { LoginButton } from "@inrupt/solid-ui-react";
+import { Button, TextField, FormGroup, Container } from "@material-ui/core";
 
-import "./index.css";
-import "./images/portada.png";
-import "./images/uniovi.png";
+
+import React from "react";
 function LogIn(): JSX.Element {
+
+  const [idp, setIdp] = useState("https://inrupt.net");
+  const [currentUrl, setCurrentUrl] = useState("https://localhost:3000");
+
+  useEffect(() => {
+    setCurrentUrl(window.location.href);
+  }, [setCurrentUrl]);
+
   return (
     <>
       <div className="App">
@@ -24,9 +33,28 @@ function LogIn(): JSX.Element {
           </label>
           <label id="password">
             Contraseña:
-            <input type="text" name="name" />
+            <input type="password" name="name" />
           </label>
-          <input type="submit" value="Entrar" />
+          <Container fixed>
+          <FormGroup>
+            <TextField
+              label="Identity Provider"
+              placeholder="Identity Provider"
+              type="url"
+              value={idp}
+              onChange={(e) => setIdp(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <LoginButton oidcIssuer={idp} redirectUrl={currentUrl}>
+                    <Button variant="contained" color="primary">
+                      Login
+                      </Button>
+                  </LoginButton>
+                ),
+              }}
+            />
+          </FormGroup>
+        </Container>
         </form>
       </div>
       <footer>
