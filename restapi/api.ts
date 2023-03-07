@@ -1,6 +1,8 @@
 import express, { Request, Response, Router } from 'express';
 import {check} from 'express-validator';
 
+import {addUser, loginUser} from './src/controllers/UserController'
+
 const api:Router = express.Router()
 
 interface User {
@@ -19,18 +21,8 @@ api.get(
     }
 );
 
-api.post(
-  "/users/add",[
-    check('name').isLength({ min: 1 }).trim().escape(),
-    check('email').isEmail().normalizeEmail(),
-  ],
-  async (req: Request, res: Response): Promise<Response> => {
-    let name = req.body.name;
-    let email = req.body.email;
-    let user: User = {name:name,email:email}
-    users.push(user);
-    return res.sendStatus(200);
-  }
-);
+api.post("/users/add",addUser);
+
+api.post("/users/login", loginUser);
 
 export default api;
