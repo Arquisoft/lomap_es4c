@@ -13,10 +13,12 @@ function MapPage(): JSX.Element {
         </nav>
       </header>
       <h1> Mapa </h1>
-      <div className="Mapa">
-       
-      </div>
-      
+      <div id="app"></div>
+      <a href="#" class="btn-flotante" id="edit">
+        <img src="/src/pencil.png" id="pencil" />
+      </a>
+      <script src="src/components/index.ts"></script>
+
       <footer>
         <p>Escuela Ingeniería informática 2022-2023/ASW grupo lomap_es4c</p>
         <img src="./images/uniovi.png" alt="uniovi" />
