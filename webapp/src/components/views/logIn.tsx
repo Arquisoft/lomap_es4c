@@ -7,7 +7,7 @@ import React from "react";
 function LogIn(): JSX.Element {
 
   const [idp, setIdp] = useState("https://inrupt.net");
-  const [currentUrl, setCurrentUrl] = useState("https://localhost:3000");
+  const [currentUrl, setCurrentUrl] = useState("https://localhost:3000/map");
 
   useEffect(() => {
     setCurrentUrl(window.location.href);

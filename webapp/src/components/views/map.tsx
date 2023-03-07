@@ -1,8 +1,7 @@
 import React from "react";
 
-import "./index.css";
-import "./images/portada.png";
-import "./images/uniovi.png";
+import "../../index.css";
+
 function MapPage(): JSX.Element {
   return (
     <>
