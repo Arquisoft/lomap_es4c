@@ -37,7 +37,27 @@ There are many notations for describing scenarios, e.g.
 image:añadirPunto.png["Add a Point"]
 
 ==== Iniciar sesión
-image:06_estado_inicio_sesion.png["Inicio de sesion"]
+*_Se solicitará al usuario introducir su perfil y su contraseña para entrar en la aplicación._*
+[plantuml, "Iniciar sesón", png]
+----
+actor "User" as user
+participant "LoMap" as LoMap
+database "Database" as database
+database "Solid Pod" as pod
+
+user->LoMap: Entra en la pagina y escoge "Log in"
+LoMap->user: Muestra la pantalla de inicio de sesion
+user->LoMap: Introduce datos y slecciona iniciar sesión
+LoMap->database: Se envian los datos a la base de datos
+database-->LoMap:Se verifican los datos
+alt Credenciales válidas
+    LoMap->pod: Solicita datos del POD en Inrupt
+    pod-->LoMap:Devuelve datos del usuario
+    LoMap->user: Muestra el mapa
+else Credenciales invalidas
+    LoMap->user: No permite inicio
+end
+----
 
 ==== Cargar mapa
 *_El usuario iniciará sesión y automáticamente se cargará el mapa, para ello tiene que llamar a la clase principal y que esta escoja el mapa deseado_
