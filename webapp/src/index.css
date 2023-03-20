@@ -82,3 +82,11 @@ input[type="submit"]:hover {
 img{
   width: 9em;
 }
+
+.map-container {
+  height: 600px;
+  }
+
+.app {
+  height: 650px;
+}
