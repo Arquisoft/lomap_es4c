@@ -37,12 +37,12 @@ useEffect(() => {
 */
 
 function App(): JSX.Element {
- /* const [isLoggedIn, setIsLoggedIn] = useState(false);
+ const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   //With this we can control the login status for solid
   const { session } = useSession();
 
-  //We have logged in
+ // We have logged in
   session.onLogin(()=>{
     setIsLoggedIn(true)
   })
@@ -51,7 +51,7 @@ function App(): JSX.Element {
   session.onLogout(()=>{
     setIsLoggedIn(false)
   })
-*/const [webId, setwebId] = useState("");
+const [webId, setwebId] = useState("");
 
   
   return (
@@ -66,7 +66,9 @@ function App(): JSX.Element {
           <Router>
           <Routes>
             <Route path="/login" element={<LoginForm />}/>
-            <Route path="/profile" element={<ProfileViewer/>}/>
+            <Route path="/profile" element={ <SessionProvider sessionId="login">
+                {(!isLoggedIn) ? <LoginForm /> : <ProfileViewer/>}
+            </SessionProvider>}/>
             <Route path="/map" element={<MapViewer/>}/>
             <Route path="/" element={<Main />}/>
           </Routes>
