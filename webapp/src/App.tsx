@@ -5,6 +5,7 @@ import LoginForm from "./components/views/logIn"
 import Main from "./components/views/main"
 import ProfileViewer from "./components/views/profile"
 import MapViewer from "./components/views/map"
+import MapDiv from "./components/views/mapa"
 import { BrowserRouter as Router, Routes, Route }
     from "react-router-dom";
 
