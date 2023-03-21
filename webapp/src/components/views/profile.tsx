@@ -6,6 +6,7 @@ import { FOAF, VCARD } from "@inrupt/lit-generated-vocab-common";
 
 function Profile(): JSX.Element {
   const { session } = useSession();
+  console.log(session.info.webId);
   return (
     /*
     <>
