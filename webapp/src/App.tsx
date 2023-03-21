@@ -70,7 +70,9 @@ const [webId, setwebId] = useState("");
             <Route path="/profile" element={ <SessionProvider sessionId="login">
                 {(!isLoggedIn) ? <LoginForm /> : <ProfileViewer/>}
             </SessionProvider>}/>
-            <Route path="/map" element={<MapViewer/>}/>
+            <Route path="/map" element={<SessionProvider sessionId="login">
+                {(!isLoggedIn) ? <LoginForm /> : <MapViewer/>}
+            </SessionProvider>}/>
             <Route path="/" element={<Main />}/>
           </Routes>
         </Router>

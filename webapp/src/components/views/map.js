@@ -5,8 +5,6 @@ import "./style.css";
 import { center, zoom } from "./data";
 import mapboxgl, { Map } from "mapbox-gl";
 import { mapAccessToken, mapStyleId } from "./data";
-import { makeMap } from "./mapa";
-import { Container } from "@material-ui/core";
 
 function MapPage() {
 
@@ -15,10 +13,6 @@ function MapPage() {
     const mapContainer = useRef(null);
     const map = useRef(null);
     const edit = useRef(null);
-    const guardar = useRef(null);
-    const [lng, setLng] = useState(-70.9);
-    const [lat, setLat] = useState(42.35);
-    const [zoom, setZoom] = useState(9);
      
     var editing = false;
 
@@ -27,7 +21,7 @@ function MapPage() {
     map.current = new mapboxgl.Map({
     container: mapContainer.current,
     style: 'mapbox://styles/mapbox/streets-v12',
-    center: [lng, lat],
+    center: center,
     zoom: zoom
     });
 
@@ -38,9 +32,14 @@ function MapPage() {
         let y = Number.parseFloat(z[1].replace('"lat":', "").replace("}", ""));
   
         let popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
-          '<p id="nombre">Nuevo punto</p><a href="#" class="del">Eliminar</a> <a href="#" class="ed">Editar</a>'
-        );
+          '<label for="desc">Descripción:</label><input type="text" id="desc" class="desc" value="Nuevo Punto"/><label for="desc">Tipo:</label><select id="tipo"><option value="playa">Playa</option><option value="monumento">Monumento</option><option value="restaurante">Restaurante</option><option value="otro">Otro</option></select><button href="#" class="guar">Guardar</button>'
+          );
   
+        let guardado = false
+        let deleted = false
+        let nombre = 'Nuevo Punto'
+        let tipo = 'Playa'
+
         let marker = new mapboxgl.Marker()
           .setLngLat([x, y])
           .setPopup(popup)
@@ -49,45 +48,117 @@ function MapPage() {
   
         //saveSolidDatasetInContainer("inrut.net/pelayodc", {Readonly<Record<String>>"Nuevo punto"});
   
+        popup.on('close', () => {
+          if (!guardado && !deleted) {
+            deleted = true
+            marker.remove()
+          }
+        })
+
         popup.on("open", () => {
-          if(popup
-            .getElement()
-            .getElementsByClassName("del").length==0){
-              return;
-            }
-          
-          popup
-            .getElement()
-            .getElementsByClassName("del")[0]
-            .addEventListener("click", () => {
-              marker.remove();
-            });
+          if (!guardado) {
+            popup
+              .getElement()
+              .getElementsByClassName('guar')[0]
+              .addEventListener('click', () => {
+                guardado = true
+                nombre = popup.getElement().getElementsByClassName('desc')[0].value
+                let e = document.getElementById('tipo');
+                tipo = e.options[e.selectedIndex].text
   
-          popup
-            .getElement()
-            .getElementsByClassName("ed")[0]
-            .addEventListener("click", () => {
-              popup.setHTML(
-                '<label for="desc">Descripción:</label><input type="text" id="desc" ref={guardar} class="desc"><a href="#" class="aced">Guardar</a>'
-              );
+                popup.setHTML(
+                  '<p id="nombre">Nombre: ' +
+                    nombre +
+                    '</p><p id="tipo">Tipo: ' +
+                    tipo +
+                    '</p><a href="#" class="del"><img src="./images/bin.png" id="pencilpp" /></a> <a href="#" class="ed"><img src="./images/pencil.png" id="pencilpp" /></a>'
+                )
+  
+                popup
+                  .getElement()
+                  .getElementsByClassName('del')[0]
+                  .addEventListener('click', () => {
+                    marker.remove()
+                  })
+  
+                popup
+                  .getElement()
+                  .getElementsByClassName('ed')[0]
+                  .addEventListener('click', () => {
+                    popup.setHTML(
+                      '<label for="desc">Descripción:</label><input type="text" id="desc" class="desc" value="' +
+                        nombre +
+                        '"/><label for="desc">Tipo:</label><select id="tipo"><option value="playa">Playa</option><option value="monumento">Monumento</option><option value="restaurante">Restaurante</option><option value="otro">Otro</option></select><button href="#" class="guar">Guardar</button>'
+                    )
+                    popup
+                      .getElement()
+                      .getElementsByClassName('guar')[0]
+                      .addEventListener('click', () => {
+                        nombre = popup.getElement().getElementsByClassName('desc')[0].value
+                        let e = document.getElementById('tipo')
+                        tipo = e.options[e.selectedIndex].text
+  
+                        //Guardar los nuevos datos en el pod
+                        popup.setHTML(
+                          '<p id="nombre">Nombre: ' +
+                            nombre +
+                            '</p><p id="tipo">Tipo: ' +
+                            tipo +
+                            '</p><a href="#" class="del"><img src="./images/bin.png" id="pencilpp" /></a> <a href="#" class="ed"><img src="./images/pencil.png" id="pencilpp" /></a>'
+                        )
+  
+                        marker.togglePopup()
+                      })
+                  })
+              })
+          } else {
+            popup.on('open', () => {
+              if (popup.getElement().getElementsByClassName('del').length === 0) {
+                return
+              }
+  
               popup
                 .getElement()
-                .getElementsByClassName("aced")[0]
-                .addEventListener("click", () => {
-                  console.log("asd");
-                  //Guardar los nuevos datos en el pod
+                .getElementsByClassName('del')[0]
+                .addEventListener('click', () => {
+                  marker.remove()
+                })
+  
+              popup
+                .getElement()
+                .getElementsByClassName('ed')[0]
+                .addEventListener('click', () => {
                   popup.setHTML(
-                    "<p>" +
-                      guardar.current instanceof HTMLInputElement
-                       +
-                      '</p><a href="#" class="del">Eliminar</a> <a href="#" class="ed">Editar</a>'
-                  );
+                    '<label for="desc">Descripción:</label><input type="text" id="desc" class="desc" value="' +
+                      nombre +
+                      '"/><label for="desc">Tipo:</label><select id="tipo"><option value="playa">Playa</option><option value="monumento">Monumento</option><option value="restaurante">Restaurante</option><option value="otro">Otro</option></select><button href="#" class="guar">Guardar</button>'
+                  )
+                  popup
+                    .getElement()
+                    .getElementsByClassName('guar')[0]
+                    .addEventListener('click', () => {
+                      nombre = popup.getElement().getElementsByClassName('desc')[0].value
+                      let e = document.getElementById('tipo')
+                      tipo = e.options[e.selectedIndex].text
   
-                  marker.togglePopup();
-                });
-            });
+                      //Guardar los nuevos datos en el pod
+                      popup.setHTML(
+                        '<p id="nombre">Nombre: ' +
+                          nombre +
+                          '</p><p id="tipo">Tipo: ' +
+                          tipo +
+                          '</p><a href="#" class="del"><img src="./images/bin.png" id="pencilpp" /></a> <a href="#" class="ed"><img src="./images/pencil.png" id="pencilpp" /></a>'
+                      )
+  
+                      marker.togglePopup()
+                    })
+                })
+            })
+          }
         });
-  
+        marker.togglePopup()
+        editing = false
+        
         markerDiv.addEventListener("click", () => {
           if (!editing) {
             //marker.remove()
@@ -106,15 +177,6 @@ function MapPage() {
     });
    });  
 
-    useEffect(() => {
-    if (!map.current) return; // wait for map to initialize
-    map.current.on('move', () => {
-    setLng(map.current.getCenter().lng.toFixed(4));
-    setLat(map.current.getCenter().lat.toFixed(4));
-    setZoom(map.current.getZoom().toFixed(2));
-    });
-    });
-
   return (
     <>
       <header>
@@ -124,21 +186,12 @@ function MapPage() {
           <button>cerrar sesión</button>
         </nav>
       </header>
-      <h1> Mapa </h1>
       <div id="app">
-      <div className="sidebar">
-        Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
-      </div>
       <div ref={mapContainer} className="map-container" />
       </div>
       <a href="#" className="btn-flotante" id="edit" ref={edit}>
-        <img src="./pencil.png" id="pencil" />
+        <img src="./images/add.png" id="pencil" />
       </a>
-
-      <footer>
-        <p>Escuela Ingeniería informática 2022-2023/ASW grupo lomap_es4c</p>
-        <img src="./images/uniovi.png" alt="uniovi" />
-      </footer>
     </>
   );
 }
