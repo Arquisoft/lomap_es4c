@@ -33,8 +33,8 @@ export async function getMarkerController(req: Request, res: Response) {
 
 export async function createMarkerController(req: Request, res: Response) {
     try {
-      const { id, latitud, longitud, titulo} = req.body;
-      const newMarker: IMarker = new Marker({ id, latitud, longitud, titulo});
+      const { id, titulo, descripcion, latitud, longitud, categoria, comentario, puntuacion, imagen} = req.body;
+      const newMarker: IMarker = new Marker({ id, titulo, descripcion, latitud, longitud, categoria, comentario, puntuacion, imagen});
       await createMarkerServices(newMarker);
       res.json(newMarker);
     } catch (error) {
