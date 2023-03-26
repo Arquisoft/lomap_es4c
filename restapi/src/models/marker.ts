@@ -10,6 +10,7 @@ export enum CATEGORIES {
 }
 
 export interface IMarker extends Document {
+  webId:String;
   id: String;
   titulo: String;
   descripcion: String;
@@ -22,8 +23,12 @@ export interface IMarker extends Document {
 }
 
 const MarkerSchema = new Schema({
+  webId: {
+    type: String,
+  },
   id: {
     type: Schema.Types.ObjectId,
+    unique:true
   },
   titulo: {
     type: String,

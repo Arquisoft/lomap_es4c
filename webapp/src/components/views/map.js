@@ -8,8 +8,17 @@ import { mapAccessToken, mapStyleId } from "./data";
 import { makeMap } from "./mapa";
 import { Container } from "@material-ui/core";
 
-function MapPage() {
+import { useNavigate } from 'react-router-dom';
 
+function MapPage() {
+  
+  const navigate = useNavigate();
+  const callPerfil = () => {
+  
+    // This will navigate to first component
+    navigate('/profile'); 
+  };
+  
   mapboxgl.accessToken = mapAccessToken;
   
     const mapContainer = useRef(null);
@@ -120,7 +129,7 @@ function MapPage() {
       <header>
         <p>LoMap</p>
         <nav>
-          <button className="separador">ver perfil</button>
+        <button className="separador" onClick={callPerfil}>Ver perfil</button>
           <button>cerrar sesión</button>
         </nav>
       </header>

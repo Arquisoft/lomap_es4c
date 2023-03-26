@@ -12,7 +12,8 @@ import { ObjectId } from "mongodb";
 
 export async function getMarkersController(req: Request, res: Response) {
   try {
-    const marker = await getMarkersServices();
+    const { webId } = req.params;
+    const marker = await getMarkersServices(webId);
     console.log(marker);
     res.json(marker);
   } catch (error) {

@@ -2,7 +2,7 @@ import Marker, { IMarker } from "../models/marker";
 import { ObjectId } from "mongodb";
 import user from "../models/user";
 
-export async function getMarkersServices() {
+export async function getMarkersServices(webId:String) {
   try {
     return await Marker.find();
   } catch (error) {
