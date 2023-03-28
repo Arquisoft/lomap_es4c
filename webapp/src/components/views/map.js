@@ -34,7 +34,7 @@ function MapPage() {
     if (map.current) return; // initialize map only once
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: mapStyleId,
+      style: `mapbox://styles/${mapStyleId}`,
       center: center,
       zoom: zoom,
     });
@@ -82,6 +82,21 @@ function MapPage() {
                 let e = document.getElementById("tipo");
                 tipo = e.options[e.selectedIndex].text;
 
+                switch (tipo) {
+                  case "Playa":
+                    playasMarks.push(marker);
+                    break;
+                  case "Restaurante":
+                    restaurantesMarks.push(marker);
+                    break;
+                  case "Monumento":
+                    monumentosMarks.push(marker);
+                    break;
+                  default:
+                    otrosMarks.push(marker);
+                    break;
+                }
+
                 popup.setHTML(
                   '<p id="nombre">Nombre: ' +
                     nombre +
@@ -115,21 +130,6 @@ function MapPage() {
                           .getElementsByClassName("desc")[0].value;
                         let e = document.getElementById("tipo");
                         tipo = e.options[e.selectedIndex].text;
-
-                        switch (tipo) {
-                          case "Playa":
-                            playasMarks.push(marker);
-                            break;
-                          case "Restaurante":
-                            restaurantesMarks.push(marker);
-                            break;
-                          case "Monumento":
-                            monumentosMarks.push(marker);
-                            break;
-                          default:
-                            otrosMarks.push(marker);
-                            break;
-                        }
 
                         //Guardar los nuevos datos en el pod
                         popup.setHTML(
@@ -214,7 +214,7 @@ function MapPage() {
     });
 
     close.current.addEventListener('click', () => {
-      document.getElementById('window-notice')!.style.visibility='hidden';
+      winpopup.current.style.visibility='hidden';
     });
 
     winpopup.current.addEventListener('click', () => {
@@ -320,11 +320,11 @@ function MapPage() {
       <a href="#" className="btn-flotante" id="edit" ref={edit}>
         <img src="./images/add.png" id="pencil" />
       </a>
-      <div class="window-notice" id="window-notice" ref={winpopup}>
-        <div class="content">
+      <div className="window-notice" id="window-notice" ref={winpopup}>
+        <div className="content">
           <h2>Valoraciones</h2>    
-          <div class="content-text">Aquí estarán la lista de valoraciones</div>
-          <div class="content-buttons"><a href="#" ref={close} id="close-button">Aceptar</a></div>
+          <div className="content-text">Aquí estarán la lista de valoraciones</div>
+          <div className="content-buttons"><a href="#" ref={close} id="close-button">Aceptar</a></div>
         </div>
       </div>
     </>
