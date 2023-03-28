@@ -8,16 +8,23 @@ import { mapAccessToken, mapStyleId } from "./data";
 import { makeMap } from "./mapa";
 import { Container } from "@material-ui/core";
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
+
+import { useSession } from "@inrupt/solid-ui-react";
 
 function MapPage() {
   
   const navigate = useNavigate();
+  const { session } = useSession();
+  //console.log(session.info.webId);
   const callPerfil = () => {
   
     // This will navigate to first component
     navigate('/profile'); 
+    //<Navigate to="/profile" replace={true}/>
   };
+
+  
   
   mapboxgl.accessToken = mapAccessToken;
   
