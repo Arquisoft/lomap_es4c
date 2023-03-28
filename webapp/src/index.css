@@ -84,9 +84,6 @@ img{
 }
 
 .map-container {
-  height: 600px;
-  }
-
-.app {
-  height: 650px;
+  height: 100%;
+  width: auto;
 }
