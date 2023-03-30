@@ -3,7 +3,7 @@ export type User = {
   email: string;
 }
 
-export type Marker = {
+export type MapMarker = {
   webId: string;
   id: string;
   titulo: string;
@@ -15,3 +15,5 @@ export type Marker = {
   puntuacion: Number;
   imagen: string;
 }
+
+

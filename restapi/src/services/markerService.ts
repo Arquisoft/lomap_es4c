@@ -1,10 +1,10 @@
-import Marker, { IMarker } from "../models/marker";
+import MapMarker, { IMarker } from "../models/marker";
 import { ObjectId } from "mongodb";
 import user from "../models/user";
 
 export async function getMarkersServices(webId:String) {
   try {
-    return await Marker.find();
+    return await MapMarker.find();
   } catch (error) {
     // Log Errors
     throw Error(error);
@@ -13,7 +13,7 @@ export async function getMarkersServices(webId:String) {
 
 export async function getMarkerServices(id: ObjectId) {
   try {
-    return await Marker.find({ _id: id });
+    return await MapMarker.find({ _id: id });
   } catch (error) {
     // Log Errors
     throw Error(error);
@@ -32,7 +32,7 @@ export async function createMarkerServices(marker: IMarker) {
 
 export async function updateMarkerServices(id: ObjectId, marker: IMarker) {
   try {
-    await Marker.findOneAndUpdate({ _id: id }, marker);
+    await MapMarker.findOneAndUpdate({ _id: id }, marker);
     return marker;
   } catch (error) {
     // Log Errors
@@ -42,7 +42,7 @@ export async function updateMarkerServices(id: ObjectId, marker: IMarker) {
 
 export async function deleteMarkerServices(id: ObjectId) {
   try {
-    return await Marker.findOneAndDelete({ _id: id });
+    return await MapMarker.findOneAndDelete({ _id: id });
   } catch (error) {
     // Log Errors
     throw Error(error);

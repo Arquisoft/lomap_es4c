@@ -1,9 +1,9 @@
 
-import { Marker } from '../shared/shareddtypes';
+import { MapMarker } from '../shared/shareddtypes';
 import {  createThing, setThing, addUrl,addStringNoLocale,getSolidDatasetWithAcl,saveSolidDatasetAt} from '@inrupt/solid-client';
 
 class markerFunctionality {
-	async addMarker(marker: Marker,idp:String) {
+	async addMarker(marker: MapMarker,idp:String) {
 		const apiEndPoint = process.env.REACT_APP_API_URI || 'http://localhost:5000/api'
 
 
@@ -23,7 +23,7 @@ class markerFunctionality {
 
 
 	}
-	async addSolidMarker(idp:String,marker: Marker) {
+	async addSolidMarker(idp:String,marker: MapMarker) {
 
 		const pointName = marker.titulo;
 		const latitude = marker.latitud;
@@ -81,3 +81,5 @@ class markerFunctionality {
 }
 }
 export default markerFunctionality;
+
+

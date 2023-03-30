@@ -7,7 +7,7 @@ import {
   deleteMarkerController
 } from "../controller/markerController";
 
-class Marker {
+class MapMarker {
   public router: Router;
   constructor() {
     this.router = Router();
@@ -23,5 +23,5 @@ class Marker {
   }
 }
 
-const marker = new Marker();
+const marker = new MapMarker();
 export default marker.router;

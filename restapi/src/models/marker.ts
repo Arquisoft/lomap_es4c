@@ -56,4 +56,4 @@ const MarkerSchema = new Schema({
   },
 });
 
-export default model<IMarker>("Marker", MarkerSchema);
+export default model<IMarker>("MapMarker", MarkerSchema);

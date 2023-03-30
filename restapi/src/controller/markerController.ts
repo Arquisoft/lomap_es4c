@@ -7,7 +7,7 @@ import {
 } from "../services/markerService";
 
 import { Request, Response } from "express";
-import Marker, { IMarker } from "../models/marker";
+import MapMarker, { IMarker } from "../models/marker";
 import { ObjectId } from "mongodb";
 
 export async function getMarkersController(req: Request, res: Response) {
@@ -35,7 +35,7 @@ export async function getMarkerController(req: Request, res: Response) {
 export async function createMarkerController(req: Request, res: Response) {
     try {
       const { id, latitud, longitud, titulo} = req.body;
-      const newMarker: IMarker = new Marker({ id, latitud, longitud, titulo});
+      const newMarker: IMarker = new MapMarker({ id, latitud, longitud, titulo});
       await createMarkerServices(newMarker);
       res.json(newMarker);
     } catch (error) {
