@@ -1,7 +1,7 @@
 
 import { Session } from '@inrupt/solid-client-authn-browser';
 import { MapMarker } from '../shared/shareddtypes';
-import {  createSolidDataset, createThing, setThing, addUrl,addStringNoLocale,getSolidDatasetWithAcl,saveSolidDatasetAt} from '@inrupt/solid-client';
+import { buildThing, getSolidDataset, createSolidDataset, createThing, setThing, addUrl,addStringNoLocale,getSolidDatasetWithAcl,saveSolidDatasetAt} from '@inrupt/solid-client';
 
 export async function addMarker(webid:string, nombre:string, x:Number, y:Number, tipo:string, idp:String, session:Session) {
 	const apiEndPoint = process.env.REACT_APP_API_URI || 'http://localhost:5000/api'
@@ -37,7 +37,6 @@ export async function addMarker(webid:string, nombre:string, x:Number, y:Number,
 
 
 export async function addSolidMarker(session:Session, idp:String,marker: MapMarker) {
-
 	const pointName = marker.titulo;
 	const latitude = marker.latitud;
 	const longitude = marker.longitud;
@@ -45,23 +44,27 @@ export async function addSolidMarker(session:Session, idp:String,marker: MapMark
    
 	
 	const mapPointsUrl = webId.replace("card#me", "")+'mapas/puntos.ttl';//proveedor+webId+nombreCategoria
-	const dataset = await getSolidDatasetWithAcl(mapPointsUrl, {fetch:session.fetch});
+	const dataset = await getSolidDataset(mapPointsUrl);
+	console.log("session is logged " + session.info.isLoggedIn);
+	console.log("session " + session.info);
 	//const dataset = getSolidDatasetWithAcl();
 	
-	const mapPointsThing = createThing({ name: pointName });
-	
+	const mapPointsThing = buildThing(createThing({ name: pointName }))
+	//console.log("name " + pointName);
+	//console.log("things " + mapPointsThing);
 	// Añadir las propiedades del punto de mapa como URLs o cadenas de texto sin localización
-	addUrl(mapPointsThing, 'http://schema.org/latitude', `http://www.w3.org/2001/XMLSchema#float(${latitude})`);
-	addUrl(mapPointsThing, 'http://schema.org/longitude', `http://www.w3.org/2001/XMLSchema#float(${longitude})`);
-	addStringNoLocale(mapPointsThing, 'http://schema.org/name', pointName);
+	.addUrl('http://schema.org/latitude', `http://www.w3.org/2001/XMLSchema#float(${latitude})`)
+	.addUrl('http://schema.org/longitude', `http://www.w3.org/2001/XMLSchema#float(${longitude})`)
+	.addStringNoLocale('http://schema.org/name', pointName)
+	.build();
+	
 	
 	// Añadir el punto de mapa al conjunto de datos
 	const updatedDataset = setThing(dataset, mapPointsThing);
-	
+	console.log("dataset " + dataset.graphs);
 	// Escribir el conjunto de datos actualizado en el Pod de Solid
-	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset);
-	
-	console.log(`El punto de mapa '${pointName}' se ha añadido al Pod de Solid en la URL ${updatedDatasetUrl}`);
+	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset, {fetch:session.fetch as any});
+	console.log(`El punto de mapa '${pointName}' se ha añadido al Pod de Solid en la URL ${updatedDatasetUrl.graphs.url}`);
 }
 
 export async function getMarkers(webId: String) {
