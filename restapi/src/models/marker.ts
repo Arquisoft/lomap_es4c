@@ -16,7 +16,7 @@ export interface IMarker extends Document {
   descripcion: String;
   latitud: String;
   longitud: String;
-  categoria: CATEGORIES;
+  categoria: String;
   comentario: String;
   puntuacion: Number;
   imagen: String;
@@ -43,7 +43,7 @@ const MarkerSchema = new Schema({
     type: String,
   },
   categoria: {
-    type: CATEGORIES,
+    type: String,
   },
   comentario: {
     type: String,

@@ -7,6 +7,7 @@ import promBundle from 'express-prom-bundle';
 import routes from "./src/routes/index";
 import userRoutes from "./src/routes/userRoutes";
 import log4js from 'log4js';
+import markerRoutes from "./src/routes/markerRoutes";
 
 const mongoose = require('mongoose');
 
@@ -33,6 +34,7 @@ app.use(bp.json());
 app.set('rest',rest);
 app.use(routes);
 app.use("/api/user", userRoutes);
+app.use("/api/marker", markerRoutes);
 
 app.listen(port, ():void => {
     console.log('Restapi listening on '+ port);
@@ -47,7 +49,4 @@ log4js.configure({
 });
 
 const logger = log4js.getLogger("MyWallapop");
-app.set('logger', logger);
-
-
-
+app.set('logger', logger);

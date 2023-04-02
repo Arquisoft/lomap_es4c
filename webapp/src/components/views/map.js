@@ -6,7 +6,7 @@ import { center, zoom } from "./data";
 import mapboxgl, { Map, Marker } from "mapbox-gl";
 import { mapAccessToken, mapStyleId } from "./data";
 import { useNavigate, Navigate } from 'react-router-dom';
-import { markerFunctionality } from "../marker";
+import { addMarker } from "../marker";
 //import MapMarker, { IMarker } from "../../../../restapi/src/models/marker";
 
 import { MapMarker } from '../../shared/shareddtypes';
@@ -101,8 +101,23 @@ function MapPage() {
                 //const marker = new MapMarker(x, y, nombre, tipo);
                 //NO PUEDE SER UN NEW, PROBAR LOS TIPOS COMO SE CREAN NUEVOS
                 //const newMarker = MapMarker{ webId:session.info.webId , x, y, nombre};
-                
-                markerFunctionality.addMarker(newMarker, "https://inrupt.net/");
+                /*
+                var mark: MapMarker = {
+                  webId: session.info.webId,
+                  id: 0,
+                  titulo: nombre,
+                  descripcion: "",
+                  latitud: x,
+                  longitud: y,
+                  categoria: tipo,
+                  comentario: "",
+                  puntuacion: 0,
+                  imagen: ""
+                };
+              */
+
+              
+                addMarker(session.info.webId,nombre, x, y, tipo, "https://inrupt.net/", session);
                 switch (tipo) {
                   case "Playa":
                     playasMarks.push(marker);

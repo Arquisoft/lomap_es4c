@@ -5,11 +5,10 @@ export type User = {
 
 export type MapMarker = {
   webId: string;
-  id: string;
   titulo: string;
   descripcion: string;
-  latitud: string;
-  longitud: string;
+  latitud: Number;
+  longitud: Number;
   categoria: string;
   comentario: string;
   puntuacion: Number;
