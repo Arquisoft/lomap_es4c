@@ -7,6 +7,7 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { center, zoom } from "./data";
 import mapboxgl, { Map, Marker } from "mapbox-gl";
 import { mapAccessToken, mapStyleId } from "./data";
+import StarRating from "./stars.tsx";
 
 function MapPage() {
   mapboxgl.accessToken = mapAccessToken;
@@ -115,8 +116,40 @@ function MapPage() {
       </a>
       <div className="window-notice" id="window-notice" ref={winpopup}>
         <div className="content">
-          <h2>Valoraciones</h2>    
-          <div className="content-text">Aquí estarán la lista de valoraciones</div>
+        <h1>Añade una valoración</h1>
+        <form>
+          <label>Comentario:</label>
+          <textarea id="comentario" name="comentario"></textarea>
+
+          <label>Agregar foto:</label>
+          <input type="file" name="foto"></input>
+
+          <label>Puntuación:</label>
+          <StarRating />
+          <input type="submit" value="Enviar"></input>
+        </form>
+        <h2>Valoraciones de otros usuarios:</h2>
+
+        <div className="comment">
+          <div className="comment-header">
+            <h3 className="comment-name">Ejemplo(Nombre usuario)</h3>
+            <span className="comment-date">Ejemplo(fecha de valoracion)</span>
+          </div>
+          <div className="comment-body">
+            <p className="comment-text">Aqui irian fotos</p>
+            <p className="comment-text">Ejemplo comentario</p>
+            <div className="comment-rating">
+              <p className="comment-rating-text">Valoración:</p>
+              <div className="rating">
+                <span className="selected">★</span>
+                <span className="selected">★</span>
+                <span className="selected">★</span>
+                <span className="unselected-star">★</span>
+                <span className="unselected-star">★</span>
+              </div>
+            </div>
+          </div>
+        </div>
           <div className="content-buttons"><a href="#" ref={close} id="close-button">Aceptar</a></div>
         </div>
       </div>
