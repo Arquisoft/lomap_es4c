@@ -3,10 +3,12 @@ import React, { useRef, useEffect, useState } from "react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import "./style.css";
+import "./review.css";
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { center, zoom } from "./data";
 import mapboxgl, { Map, Marker } from "mapbox-gl";
 import { mapAccessToken, mapStyleId } from "./data";
+import Review from "./review";
 
 function MapPage() {
   mapboxgl.accessToken = mapAccessToken;
@@ -114,15 +116,27 @@ function MapPage() {
         <img src="./images/add.png" id="pencil" />
       </a>
       <div className="window-notice" id="window-notice" ref={winpopup}>
-        <div className="content">
-          <h2>Valoraciones</h2>    
-          <div className="content-text">Aquí estarán la lista de valoraciones</div>
+        <div className="content id=content">
+          <Review/>
+          
           <div className="content-buttons"><a href="#" ref={close} id="close-button">Aceptar</a></div>
         </div>
       </div>
     </>
   );
 }
+
+
+document.addEventListener('click', function(event) {
+  if(document.getElementById('window-notice')!=null){
+    
+    document.getElementById('formReview').addEventListener('click', function(event) {
+    
+        event.stopPropagation();
+     
+    });}
+    
+});
 
 function loadFiltros(todo,playas,restaurantes,monumentos,otros,plist,rlist,mlist,olist) {
   todo.current.addEventListener('click', () => {
