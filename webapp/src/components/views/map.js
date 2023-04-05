@@ -3,11 +3,12 @@ import React, { useRef, useEffect, useState } from "react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import "./style.css";
+import "./review.css";
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { center, zoom } from "./data";
 import mapboxgl, { Map, Marker } from "mapbox-gl";
 import { mapAccessToken, mapStyleId } from "./data";
-import StarRating from "./stars.tsx";
+import Review from "./review";
 
 function MapPage() {
   mapboxgl.accessToken = mapAccessToken;
@@ -115,47 +116,27 @@ function MapPage() {
         <img src="./images/add.png" id="pencil" />
       </a>
       <div className="window-notice" id="window-notice" ref={winpopup}>
-        <div className="content">
-        <h1>Añade una valoración</h1>
-        <form>
-          <label>Comentario:</label>
-          <textarea id="comentario" name="comentario"></textarea>
-
-          <label>Agregar foto:</label>
-          <input type="file" name="foto"></input>
-
-          <label>Puntuación:</label>
-          <StarRating />
-          <input type="submit" value="Enviar"></input>
-        </form>
-        <h2>Valoraciones de otros usuarios:</h2>
-
-        <div className="comment">
-          <div className="comment-header">
-            <h3 className="comment-name">Ejemplo(Nombre usuario)</h3>
-            <span className="comment-date">Ejemplo(fecha de valoracion)</span>
-          </div>
-          <div className="comment-body">
-            <p className="comment-text">Aqui irian fotos</p>
-            <p className="comment-text">Ejemplo comentario</p>
-            <div className="comment-rating">
-              <p className="comment-rating-text">Valoración:</p>
-              <div className="rating">
-                <span className="selected">★</span>
-                <span className="selected">★</span>
-                <span className="selected">★</span>
-                <span className="unselected-star">★</span>
-                <span className="unselected-star">★</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div className="content id=content">
+          <Review/>
+          
           <div className="content-buttons"><a href="#" ref={close} id="close-button">Aceptar</a></div>
         </div>
       </div>
     </>
   );
 }
+
+
+document.addEventListener('click', function(event) {
+  if(document.getElementById('window-notice')!=null){
+    
+    document.getElementById('formReview').addEventListener('click', function(event) {
+    
+        event.stopPropagation();
+     
+    });}
+    
+});
 
 function loadFiltros(todo,playas,restaurantes,monumentos,otros,plist,rlist,mlist,olist) {
   todo.current.addEventListener('click', () => {

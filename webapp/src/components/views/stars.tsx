@@ -4,18 +4,18 @@ function StarRating() {
   const [rating, setRating] = useState(0);
 
   
-
+  
   const stars = [];
   for (let i = 1; i <= 5; i++) {
     if (i <= rating) {
       stars.push(
-        <span key={i} className="selected" onClick={() => setRating(i)}>
+        <span key={i} className="selected" onMouseDown={() => setRating(i)}>
           ★
         </span>
       );
     } else {
       stars.push(
-        <span key={i} onClick={() => setRating(i)}>
+        <span key={i} onMouseDown={() => setRating(i)}>
           ☆
         </span>
       );
@@ -23,8 +23,8 @@ function StarRating() {
   }
 
   return (
-    <div>
-      <p>Valoración: {stars}</p>
+    <div  id = "estrellas_ivan">
+      <p  id = "estrellas_ivan">Valoración: {stars}</p>
     </div>
   );
 }
