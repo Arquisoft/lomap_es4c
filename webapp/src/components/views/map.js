@@ -73,7 +73,7 @@ function MapPage() {
 
     map.current.on("click", function (e) {
       if (editing) {  
-        addMapMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks);
+        addMapMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks, session);
       }
       if(addroute) {
       
@@ -280,7 +280,7 @@ function markerFuncs(marker, popup, nombre, tipo) {
     });
 }
 
-function addMapMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks) {
+function addMapMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks, session) {
   let z = JSON.stringify(e.lngLat.wrap()).split(",");
   let x = Number.parseFloat(z[0].replace('{"lng":', ""));
   let y = Number.parseFloat(z[1].replace('"lat":', "").replace("}", ""));
@@ -340,7 +340,7 @@ function addMapMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMark
               */
 
               
-                addMarker(this.session.info.webId,nombre, x, y, tipo, "https://inrupt.net/", this.session);
+                addMarker(session.info.webId,nombre, x, y, tipo, "https://inrupt.net/", session);
           switch (tipo) {
             case "Playa":
               playasMarks.push(marker);
