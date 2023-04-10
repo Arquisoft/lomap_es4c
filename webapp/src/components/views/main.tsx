@@ -31,6 +31,11 @@ function App(): JSX.Element {
     // This will navigate to first component
     navigate('/login'); 
   };
+  const callRegister = () => {
+   
+    window.location.replace('http://inrupt.net/register'); 
+   
+  };
 
   return (
     /*
@@ -46,8 +51,7 @@ function App(): JSX.Element {
           <nav>
           
             <button className="separador" onClick={callLogin}>Log in</button>
-
-            <button>sign up</button>
+           <button onClick={callRegister}>Sign up</button>
           </nav>
         </header>
         <div className="portada">

@@ -1,6 +1,6 @@
 import { Session} from '@inrupt/solid-client-authn-browser';
 import { MapMarker,MapMarkerReview } from '../shared/shareddtypes';
-import { getStringNoLocale, buildThing, getSolidDataset, createSolidDataset, createThing,Thing, setThing,getThing, getThingAll,addUrl, addStringNoLocale, getSolidDatasetWithAcl,getUrl, saveSolidDatasetAt } from '@inrupt/solid-client';
+import { getStringNoLocale, buildThing, getSolidDataset, createSolidDataset, createThing,Thing, removeThing,setThing,getThing, getThingAll,addUrl, addStringNoLocale, getSolidDatasetWithAcl,getUrl, saveSolidDatasetAt } from '@inrupt/solid-client';
 
 
 
@@ -41,6 +41,44 @@ export async function addMarker(webid: string,nombre: string, lat: Number, lon: 
 	} else {
 		return false;
 	}
+}
+export async function removeMarker(webid: string,id:string, session: Session) {
+	const apiEndPoint = process.env.REACT_APP_API_URI || 'http://localhost:5000/api'
+
+	
+	
+	let response = await fetch(apiEndPoint + `/marker/${id}`, {//En mongo solo guardamos webId y el titulo
+		method: 'DELETE',
+		headers: { 'Content-Type': 'application/json' },
+	})
+	
+	console.log(response);
+	//console.log(response.body?.getReader);
+	//console.log(response.json());
+	if (response.status == 200) {
+		
+		removeSolidMarker(webid,session, id);
+		return true;
+	} else {
+		return false;
+	}
+}
+
+export async function removeSolidMarker(webId:string,session: Session,  markerId:string) {
+	
+	const mapPointsUrl = webId.replace("card#me", "") + 'mapas/puntos.ttl';//proveedor+webId+nombreCategoria
+
+	let dataset = await getSolidDataset(mapPointsUrl);
+	
+	
+	
+	let punto =  getThing(dataset,markerId) as Thing ;
+	var updatedDataset = removeThing(dataset,punto);
+		console.log("dataset " + dataset.graphs);
+	
+
+	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset,{fetch:session.fetch as any});
+	
 }
 
 export async function updateMarker(session: Session, webId: string, markerId:string, pointName:string) {
