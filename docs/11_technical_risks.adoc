@@ -6,18 +6,21 @@ Y también hay que tener en cuenta el tiempo que tenemos y el resto de asignatur
 |===
 |Riesgo|Problema|Solución
 
-| *Nueva tecnología* | _Dificultades a la hora de empezar el proyecto y de que las cosas funcionen._ | _Practicar y pedir ayuda a profesores o alumnos que cursaron la materia_
+| *Nueva tecnología* | _Dificultades a la hora de empezar el proyecto y con la compatibilidad entre herramientas._ | _Practicar y pedir ayuda a profesores o alumnos que cursaron la materia_
 
-| *Tiempo* | _El resto de asignaturas nos quita mucho tiempo lo cual puede hacer que lleguemos forzados a las entregas._ | _Mejorar nuestra organización_
+| *Tiempo* | _El resto de asignaturas nos quita mucho tiempo lo cual puede hacer que lleguemos forzados a las entregas._ | _Mejorar nuestra organización personal y coordinar horarios con compañeros_
 
-| *Problemas equipo* | _Trabajar en equipo siempre supone algún problema, aquí no va a ser una excepción._ | _Reuniones de equipo, organización y si hay algún problema contatar con el profesor_
+| *Problemas de equipo* | _Trabajar en equipo siempre supone algún problema, aquí no va a ser una excepción._ | _Reuniones de equipo, organización y si hay algún problema contatar con el profesor_
 
-| *GitHub* | _Problemas con versiones de programas e incluso perdidas de archivos_ | _Tener muy claro lo que hace cada función de git, y si hay dudas hablar con profesores_
+| *GitHub* | _Problemas con el manejo de gitHub e incluso pérdidas de archivos_ | _Tener muy claro lo que hace cada función de git, y si hay dudas hablar con profesores_
 
 
 |===
 
 
 === Technical Debts
+Al ser un proyecto que hemos empezado de 0, nos ha sido fácil tener una arquitectura escalable sin deuda técnica.
+Quizá a la hora de hacer la interoperabilidad de la aplicación no se ha escogido la mejor opción y sí la más facil de aprender y de 
+que todo el mundo la pueda utilizar para ahorrar problemas y no perder mucho el tiempo en ello, lo cuál haya generado un poco de deuda técnica
 
 
