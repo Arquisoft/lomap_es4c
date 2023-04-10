@@ -1,10 +1,10 @@
 import React, { useRef, useEffect, useState } from "react";
 
 import "mapbox-gl/dist/mapbox-gl.css";
-import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import "./style.css";
 import "./review.css";
-import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import { center, zoom } from "./data";
 import mapboxgl, { Map, Marker } from "mapbox-gl";
 import { mapAccessToken, mapStyleId } from "./data";
@@ -17,12 +17,15 @@ function MapPage() {
   const map = useRef(null);
   const edit = useRef(null);
   const addroutebtn = useRef(null);
-  
+
   const winpopup = useRef(null);
   const close = useRef(null);
-  
+
   var editing = false;
-  var addroute= false;
+  var addroute = false;
+  var routeCount=0;
+
+  var points = [];
 
   //Listas para filtros
   const filtroTodo = useRef(null);
@@ -30,7 +33,7 @@ function MapPage() {
   const filtroRestaurantes = useRef(null);
   const filtroMonumentos = useRef(null);
   const filtroOtros = useRef(null);
-  
+
   var playasMarks = [];
   var restaurantesMarks = [];
   var monumentosMarks = [];
@@ -46,20 +49,28 @@ function MapPage() {
     });
 
     map.current.addControl(new mapboxgl.FullscreenControl());
- 
+
     map.current.addControl(
       new MapboxGeocoder({
         accessToken: mapboxgl.accessToken,
-        mapboxgl: mapboxgl
+        mapboxgl: mapboxgl,
       })
     );
 
     map.current.on("click", function (e) {
-      if (editing) {  
-        addMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks);
+      if (editing) {
+        addMarker(
+          e,
+          map,
+          editing,
+          playasMarks,
+          restaurantesMarks,
+          monumentosMarks,
+          otrosMarks
+        );
       }
-      if(addroute) {
-      
+      if (addroute) {
+        AddPoint(e,points);
       }
     });
 
@@ -68,26 +79,71 @@ function MapPage() {
     //Botón edit
     edit.current.addEventListener("click", () => {
       editing = !editing;
-      addroute=false;
+      addroute = false;
       console.log(editing);
     });
 
+    //Botón ruta
     addroutebtn.current.addEventListener("click", () => {
-      addroute = !addroute;
-      editing=false;
-      console.log(editing);
+      if (addroute) {
+        //guardar punto
+        map.current.addSource("route"+routeCount, {
+          type: "geojson",
+          data: {
+            type: "Feature",
+            properties: {},
+            geometry: {
+              type: "LineString",
+              coordinates: points,
+            },
+          },
+        });
+        map.current.addLayer({
+          id: "route"+routeCount,
+          type: "line",
+          source: "route"+routeCount,
+          layout: {
+            "line-join": "round",
+            "line-cap": "round",
+          },
+          paint: {
+            "line-color": "#888",
+            "line-width": 8,
+          },
+        });
+        addroute = false;
+        routeCount++;
+        document.getElementById("pencil-route").src="./images/add.png";
+      } else {
+        addroute = true;
+        points = [];
+        editing = false;
+        console.log(editing);
+        document.getElementById("pencil-route").src="./images/save.png";
+      }
     });
 
-    close.current.addEventListener('click', () => {
-      winpopup.current.style.visibility='hidden';
+    //Ventana emergente
+    close.current.addEventListener("click", () => {
+      winpopup.current.style.visibility = "hidden";
     });
 
-    winpopup.current.addEventListener('click', () => {
-      winpopup.current.style.visibility='hidden';
+    winpopup.current.addEventListener("click", () => {
+      winpopup.current.style.visibility = "hidden";
     });
-    
+
     //Filtros
-    loadFiltros(filtroTodo,filtroPlayas,filtroRestaurantes,filtroMonumentos,filtroOtros,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks);
+    loadFiltros(
+      filtroTodo,
+      filtroPlayas,
+      filtroRestaurantes,
+      filtroMonumentos,
+      filtroOtros,
+      playasMarks,
+      restaurantesMarks,
+      monumentosMarks,
+      otrosMarks
+    );
   });
 
   return (
@@ -100,11 +156,21 @@ function MapPage() {
         </nav>
       </header>
       <div id="filtros">
-        <a href="#" id="filterTodo" ref={filtroTodo}>Todo</a>
-        <a href="#" id="filterPlayas" ref={filtroPlayas}>Playas</a>
-        <a href="#" id="filterMonumentos" ref={filtroMonumentos}>Monumentos</a>
-        <a href="#" id="filterRestaurantes" ref={filtroRestaurantes}>Restaurantes</a>
-        <a href="#" id="filterOtros" ref={filtroOtros}>Otros</a>
+        <a href="#" id="filterTodo" ref={filtroTodo}>
+          Todo
+        </a>
+        <a href="#" id="filterPlayas" ref={filtroPlayas}>
+          Playas
+        </a>
+        <a href="#" id="filterMonumentos" ref={filtroMonumentos}>
+          Monumentos
+        </a>
+        <a href="#" id="filterRestaurantes" ref={filtroRestaurantes}>
+          Restaurantes
+        </a>
+        <a href="#" id="filterOtros" ref={filtroOtros}>
+          Otros
+        </a>
       </div>
       <div id="app">
         <div ref={mapContainer} className="map-container" />
@@ -112,105 +178,122 @@ function MapPage() {
       <a href="#" className="btn-flotante" id="edit" ref={edit}>
         <img src="./images/add.png" id="pencil" />
       </a>
-      <a href="#" className="btn-flotante-route" id="editroute" ref={addroutebtn}>
-        <img src="./images/add.png" id="pencil" />
+      <a
+        href="#"
+        className="btn-flotante-route"
+        id="editroute"
+        ref={addroutebtn}
+      >
+        <img src="./images/add.png" id="pencil-route" />
       </a>
       <div className="window-notice" id="window-notice" ref={winpopup}>
         <div className="content id=content">
-          <Review/>
-          
-          <div className="content-buttons"><a href="#" ref={close} id="close-button">Aceptar</a></div>
+          <Review />
+
+          <div className="content-buttons">
+            <a href="#" ref={close} id="close-button">
+              Aceptar
+            </a>
+          </div>
         </div>
       </div>
     </>
   );
 }
 
-
-document.addEventListener('click', function(event) {
-  if(document.getElementById('window-notice')!=null){
-    
-    document.getElementById('formReview').addEventListener('click', function(event) {
-    
+document.addEventListener("click", function (event) {
+  if (document.getElementById("window-notice") != null) {
+    document
+      .getElementById("formReview")
+      .addEventListener("click", function (event) {
         event.stopPropagation();
-     
-    });}
-    
+      });
+  }
 });
 
-function loadFiltros(todo,playas,restaurantes,monumentos,otros,plist,rlist,mlist,olist) {
-  todo.current.addEventListener('click', () => {
+function loadFiltros(
+  todo,
+  playas,
+  restaurantes,
+  monumentos,
+  otros,
+  plist,
+  rlist,
+  mlist,
+  olist
+) {
+  todo.current.addEventListener("click", () => {
     plist.forEach((element) => {
-      element.getElement().style.visibility = 'visible'
+      element.getElement().style.visibility = "visible";
     });
     mlist.forEach((element) => {
-      element.getElement().style.visibility = 'visible'
+      element.getElement().style.visibility = "visible";
     });
     rlist.forEach((element) => {
-      element.getElement().style.visibility = 'visible'
+      element.getElement().style.visibility = "visible";
     });
     olist.forEach((element) => {
-      element.getElement().style.visibility = 'visible'
-    });
-  });
-  
-  playas.current.addEventListener('click', () => {
-    plist.forEach((element) => {
-      element.getElement().style.visibility = 'visible'
-    });
-    mlist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
-    });
-    rlist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
-    });
-    olist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
-    });
-  });
-  
-  monumentos.current.addEventListener('click', () => {
-    plist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
-    });
-    mlist.forEach((element) => {
-      element.getElement().style.visibility = 'visible'
-    });
-    rlist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
-    });
-    olist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
+      element.getElement().style.visibility = "visible";
     });
   });
 
-  restaurantes.current.addEventListener('click', () => {
+  playas.current.addEventListener("click", () => {
     plist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
+      element.getElement().style.visibility = "visible";
     });
     mlist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
+      element.getElement().style.visibility = "hidden";
     });
     rlist.forEach((element) => {
-      element.getElement().style.visibility = 'visible'
+      element.getElement().style.visibility = "hidden";
     });
     olist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
+      element.getElement().style.visibility = "hidden";
     });
   });
-  
-  otros.current.addEventListener('click', () => {
+
+  monumentos.current.addEventListener("click", () => {
     plist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
+      element.getElement().style.visibility = "hidden";
     });
     mlist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
+      element.getElement().style.visibility = "visible";
     });
     rlist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
+      element.getElement().style.visibility = "hidden";
     });
     olist.forEach((element) => {
-      element.getElement().style.visibility = 'visible'
+      element.getElement().style.visibility = "hidden";
+    });
+  });
+
+  restaurantes.current.addEventListener("click", () => {
+    plist.forEach((element) => {
+      element.getElement().style.visibility = "hidden";
+    });
+    mlist.forEach((element) => {
+      element.getElement().style.visibility = "hidden";
+    });
+    rlist.forEach((element) => {
+      element.getElement().style.visibility = "visible";
+    });
+    olist.forEach((element) => {
+      element.getElement().style.visibility = "hidden";
+    });
+  });
+
+  otros.current.addEventListener("click", () => {
+    plist.forEach((element) => {
+      element.getElement().style.visibility = "hidden";
+    });
+    mlist.forEach((element) => {
+      element.getElement().style.visibility = "hidden";
+    });
+    rlist.forEach((element) => {
+      element.getElement().style.visibility = "hidden";
+    });
+    olist.forEach((element) => {
+      element.getElement().style.visibility = "visible";
     });
   });
 }
@@ -223,14 +306,14 @@ function markerFuncs(marker, popup, nombre, tipo) {
       marker.remove();
     });
 
-    popup
+  popup
     .getElement()
-    .getElementsByClassName('val')[0]
-    .addEventListener('click', () => {
-      document.getElementById('window-notice').style.visibility='visible';
-    })
+    .getElementsByClassName("val")[0]
+    .addEventListener("click", () => {
+      document.getElementById("window-notice").style.visibility = "visible";
+    });
 
-    popup
+  popup
     .getElement()
     .getElementsByClassName("ed")[0]
     .addEventListener("click", () => {
@@ -243,9 +326,7 @@ function markerFuncs(marker, popup, nombre, tipo) {
         .getElement()
         .getElementsByClassName("guar")[0]
         .addEventListener("click", () => {
-          nombre = popup
-            .getElement()
-            .getElementsByClassName("desc")[0].value;
+          nombre = popup.getElement().getElementsByClassName("desc")[0].value;
           let e = document.getElementById("tipo");
           tipo = e.options[e.selectedIndex].text;
 
@@ -263,7 +344,15 @@ function markerFuncs(marker, popup, nombre, tipo) {
     });
 }
 
-function addMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks) {
+function addMarker(
+  e,
+  map,
+  editing,
+  playasMarks,
+  restaurantesMarks,
+  monumentosMarks,
+  otrosMarks
+) {
   let z = JSON.stringify(e.lngLat.wrap()).split(",");
   let x = Number.parseFloat(z[0].replace('{"lng":', ""));
   let y = Number.parseFloat(z[1].replace('"lat":', "").replace("}", ""));
@@ -299,9 +388,7 @@ function addMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMarks,o
         .getElementsByClassName("guar")[0]
         .addEventListener("click", () => {
           guardado = true;
-          nombre = popup
-            .getElement()
-            .getElementsByClassName("desc")[0].value;
+          nombre = popup.getElement().getElementsByClassName("desc")[0].value;
           let e = document.getElementById("tipo");
           tipo = e.options[e.selectedIndex].text;
 
@@ -328,17 +415,15 @@ function addMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMarks,o
               '</p><a href="#" class="del"><img src="./images/bin.png" id="pencilpp" /></a> <a href="#" class="ed"><img src="./images/pencil.png" id="pencilpp" /></a> <a href="#" class="val"><img src="/src/star.png" id="pencilpp" /></a>'
           );
 
-          markerFuncs(marker,popup,nombre,tipo);
+          markerFuncs(marker, popup, nombre, tipo);
         });
     } else {
       popup.on("open", () => {
-        if (
-          popup.getElement().getElementsByClassName("del").length === 0
-        ) {
+        if (popup.getElement().getElementsByClassName("del").length === 0) {
           return;
         }
 
-        markerFuncs(marker,popup,nombre,tipo);
+        markerFuncs(marker, popup, nombre, tipo);
       });
     }
   });
@@ -351,6 +436,14 @@ function addMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMarks,o
       marker.togglePopup();
     }
   });
+}
+
+function AddPoint(e,points) {
+  let z = JSON.stringify(e.lngLat.wrap()).split(",");
+  let x = Number.parseFloat(z[0].replace('{"lng":', ""));
+  let y = Number.parseFloat(z[1].replace('"lat":', "").replace("}", ""));
+  points.push([x,y]);
+  console.log(x+"-"+y);
 }
 
 export default MapPage;
