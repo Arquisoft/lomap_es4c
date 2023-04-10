@@ -5,6 +5,7 @@ export type User = {
 
 export type MapMarker = {
   webId: string;
+  id:string;
   titulo: string;
   descripcion: string;
   latitud: Number;
@@ -14,5 +15,14 @@ export type MapMarker = {
   puntuacion: Number;
   imagen: string;
 }
+export type MapMarkerReview = {
+  webId: string;
+  descripcion: string;
+  categoria: string;
+  comentario: string;
+  puntuacion: Number;
+  imagen: string;
+}
+
 
 

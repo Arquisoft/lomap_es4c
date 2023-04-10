@@ -339,7 +339,7 @@ function addMapMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMark
                 };
               */
 
-              
+                
                 addMarker(session.info.webId,nombre, x, y, tipo, "https://inrupt.net/", session);
           switch (tipo) {
             case "Playa":

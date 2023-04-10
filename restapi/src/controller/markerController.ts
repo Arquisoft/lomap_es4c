@@ -37,7 +37,7 @@ export async function createMarkerController(req: Request, res: Response) {
       const { webId, latitud, longitud, titulo} = req.body.marker;
       const newMarker: IMarker = new MapMarker({ webId, latitud, longitud, titulo});
       await createMarkerServices(newMarker);
-      res.json(newMarker);
+      res.json(newMarker._id);
     } catch (error) {
       res.status(500).json({ status: 500, message: error.message });
     }
