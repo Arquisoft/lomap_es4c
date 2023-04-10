@@ -1,14 +1,13 @@
-
-import { Session } from '@inrupt/solid-client-authn-browser';
+import { Session} from '@inrupt/solid-client-authn-browser';
 import { MapMarker,MapMarkerReview } from '../shared/shareddtypes';
-import { buildThing, getSolidDataset, createSolidDataset, createThing,Thing, setThing,getThing, getThingAll,addUrl, addStringNoLocale, getSolidDatasetWithAcl,getUrl, saveSolidDatasetAt } from '@inrupt/solid-client';
+import { getStringNoLocale, buildThing, getSolidDataset, createSolidDataset, createThing,Thing, setThing,getThing, getThingAll,addUrl, addStringNoLocale, getSolidDatasetWithAcl,getUrl, saveSolidDatasetAt } from '@inrupt/solid-client';
 
 
 
 export async function addMarker(webid: string,nombre: string, lat: Number, lon: Number, tipo: string, idp: String, session: Session) {
 	const apiEndPoint = process.env.REACT_APP_API_URI || 'http://localhost:5000/api'
 
-	var marker: MapMarker = {
+	var mapMarker: MapMarker = {
 		webId: webid,
 		id:"",
 		titulo: nombre,
@@ -20,41 +19,37 @@ export async function addMarker(webid: string,nombre: string, lat: Number, lon: 
 		puntuacion: 0,
 		imagen: ""
 	};
-	
+	var marker = JSON.stringify({
+		webId: mapMarker.webId,
+		titulo: mapMarker.titulo
+	});
 	let response = await fetch(apiEndPoint + '/marker/add', {//En mongo solo guardamos webId y el titulo
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
-			webId: marker.webId,
-			titulo: marker.titulo
+			marker
 		})
 	})
-	var prueba = JSON.stringify({
-		webId: webid,
-		titulo: nombre
-	});
+	
 	console.log(response);
 	//console.log(response.body?.getReader);
 	//console.log(response.json());
 	if (response.status == 200) {
-		marker.id=await response.json();
-		addSolidMarker(session, idp,marker);
+		mapMarker.id=await response.json();
+		addSolidMarker(session, idp,mapMarker);
 		return true;
 	} else {
 		return false;
 	}
 }
 
-export async function updateMarker(session: Session, idp: String, marker: MapMarkerReview) {
-	
-	const webId = marker.webId;
-	console.log("marker " + marker.descripcion);
-	var markerId="";
-	var pointName="";
+export async function updateMarker(session: Session, webId: string, markerId:string, pointName:string) {
+	console.log("entro");
 	const mapPointsUrl = webId.replace("card#me", "") + 'mapas/puntos.ttl';//proveedor+webId+nombreCategoria
 
 	let dataset = await getSolidDataset(mapPointsUrl);
-	let url=mapPointsUrl+markerId;
+	let url=mapPointsUrl+"#" + markerId;
+	console.log("url " + url);
 	
 	let punto =  getThing(dataset,url) as Thing ;
 
@@ -64,11 +59,11 @@ export async function updateMarker(session: Session, idp: String, marker: MapMar
 	
 
 	const mapPointsThing = buildThing(punto)
-		.addUrl('http://schema.org/description', `http://www.w3.org/2001/XMLSchema#text(${marker.descripcion})`)
-		.addUrl('http://schema.org/category', `http://www.w3.org/2001/XMLSchema#text(${marker.categoria})`)
-		.addUrl('http://schema.org/reviewAspect', `http://www.w3.org/2001/XMLSchema#text(${marker.comentario})`)
-		.addUrl('http://schema.org/reviewRating', `http://www.w3.org/2001/XMLSchema#number(${marker.puntuacion})`)
-		.addUrl('http://schema.org/image', `http://www.w3.org/2001/XMLSchema#imageObject(${marker.imagen})`)
+		//.addUrl('http://schema.org/description', `http://www.w3.org/2001/XMLSchema#text(${marker.descripcion})`)
+		//.addUrl('http://schema.org/category', `http://www.w3.org/2001/XMLSchema#text(${marker.categoria})`)
+		//.addUrl('http://schema.org/reviewAspect', `http://www.w3.org/2001/XMLSchema#text(${marker.comentario})`)
+		//.addUrl('http://schema.org/reviewRating', `http://www.w3.org/2001/XMLSchema#number(${marker.puntuacion})`)
+		//.addUrl('http://schema.org/image', `http://www.w3.org/2001/XMLSchema#imageObject(${marker.imagen})`)
 		.addStringNoLocale('http://schema.org/name', pointName)
 		.build();
   
@@ -79,7 +74,7 @@ export async function updateMarker(session: Session, idp: String, marker: MapMar
 	
 
 	// Escribir el conjunto de datos actualizado en el Pod de Solid
-	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset, { fetch: fetch });
+	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset,{fetch:session.fetch as any});
 	console.log(`El punto de mapa '${pointName}' se ha añadido al Pod de Solid en la URL ${updatedDatasetUrl.graphs.url}`);
 }
 export async function addSolidMarker(session: Session, idp: String, marker: MapMarker) {
@@ -107,11 +102,7 @@ export async function addSolidMarker(session: Session, idp: String, marker: MapM
 		// Añadir las propiedades del punto de mapa como URLs o cadenas de texto sin localización
 		.addUrl('http://schema.org/latitude', `http://www.w3.org/2001/XMLSchema#float(${marker.latitud})`)
 		.addUrl('http://schema.org/longitude', `http://www.w3.org/2001/XMLSchema#float(${marker.longitud})`)
-		.addUrl('http://schema.org/description', `http://www.w3.org/2001/XMLSchema#text(${marker.descripcion})`)
 		.addUrl('http://schema.org/category', `http://www.w3.org/2001/XMLSchema#text(${marker.categoria})`)
-		.addUrl('http://schema.org/reviewAspect', `http://www.w3.org/2001/XMLSchema#text(${marker.comentario})`)
-		.addUrl('http://schema.org/reviewRating', `http://www.w3.org/2001/XMLSchema#number(${marker.puntuacion})`)
-		.addUrl('http://schema.org/image', `http://www.w3.org/2001/XMLSchema#imageObject(${marker.imagen})`)
 		.addStringNoLocale('http://schema.org/name', pointName)
 		.build();
 
@@ -125,8 +116,9 @@ export async function addSolidMarker(session: Session, idp: String, marker: MapM
 	}
 
 	// Escribir el conjunto de datos actualizado en el Pod de Solid
-	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset, { fetch: session.fetch as any });
+	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset, {fetch:session.fetch as any});
 	console.log(`El punto de mapa '${pointName}' se ha añadido al Pod de Solid en la URL ${updatedDatasetUrl.graphs.url}`);
+	return marker.id;
 }
 
 export async function getMarkers(session: Session,webId: String) {
@@ -134,24 +126,44 @@ export async function getMarkers(session: Session,webId: String) {
 
 	const mapPointsUrl = webId.replace("card#me", "") + 'mapas/puntos.ttl';//proveedor+webId+nombreCategoria
 
-	const dataset = await getSolidDataset(mapPointsUrl,{fetch:fetch});
+	const dataset = await getSolidDataset(mapPointsUrl,{fetch:session.fetch as any});
+
+	var points = [];
 
 	var arayThing=getThingAll(dataset);
 	for(let i = 0; i < arayThing.length; i++){
-		let thing = arayThing[i];
-		//const titulo = thing['http://schema.org/latitude'];
-		///const description = thing['http://schema.org/description'];
+		console.log("arayThing " + arayThing[i])
+		let thi = arayThing[i] as Thing;
+		console.log("thi " + thi.url);
+		let nombre = getStringNoLocale(thi, "http://schema.org/name");
+		let latitud = getUrl(thi, "http://schema.org/latitude") as String;
+		let longitud = getUrl(thi, "http://schema.org/longitude") as String;
+		let categoria = getUrl(thi, "http://schema.org/category") as String;
+		if(categoria === null){
+			categoria = "Otros";
+		}
+		//const descripcion = getUrl(thi, "http://schema.org/description");
+		//console.log("nombre " + nombre);
+		//console.log("latitud " + latitud.replace("http://www.w3.org/2001/XMLSchema#float(", "").replace(")", ""));
+		//console.log("longitud " + longitud);
+		//console.log("categoria " + categoria);
+		var mark = [thi.url, nombre, latitud.replace("http://www.w3.org/2001/XMLSchema#float(", "").replace(")", ""), 
+			longitud.replace("http://www.w3.org/2001/XMLSchema#float(", "").replace(")", ""), 
+			categoria.replace("http://www.w3.org/2001/XMLSchema#text(", "").replace(")", ""), ];
+		points.push(mark);
+		//console.log("descripcion " + descripcion);
+		//const titulo = (thi as Thing)["http://schema.org/latitude"];
+		//const description = thing['http://schema.org/description'];
 	  }
-	let response = await fetch(apiEndPoint + `/marker/user/${webId}`, {
+	/*
+	  let response = await fetch(apiEndPoint + `/marker/user/${webId}`, {
 		method: 'GET',
 		headers: { 'Content-Type': 'application/json' },
 
 	})
-	console.log(response.json());
-
-
-	return await response.json()
-
+	*/
+	//console.log(response.json());
+	return points;
 
 }
 export async function getMarker(id: String) {

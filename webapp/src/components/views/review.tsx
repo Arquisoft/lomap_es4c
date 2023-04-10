@@ -1,26 +1,28 @@
 import React, { useState } from "react";
-import { updateMarker } from "../marker";
+//import { updateMarker } from "../marker";
 import "./review.css";
 import StarRating from "./stars";
-import { MapMarkerReview } from '../shared/shareddtypes';
+import { MapMarkerReview } from '../../shared/shareddtypes';
 
 import { Session } from '@inrupt/solid-client-authn-browser';
 
+type ReviewProps = {
+  sessionId: string;
+};
 
-
-
-function Review(props:Session):JSX.Element{
-  const { session } = props.fetch;
+function Review(props:ReviewProps):JSX.Element{
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
     var marker: MapMarkerReview = {
-     
+      webId: props.sessionId,
       descripcion:"",
+      categoria:"",
       comentario: "",
       puntuacion: 0,
       imagen: ""
     };
-    updateMarker(props.info.webId,props.info.clientAppId,marker);
+    //updateMarker(props.session.info.webId,props.session.info.clientAppId,marker);
    
   
   };
