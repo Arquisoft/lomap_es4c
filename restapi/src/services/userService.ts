@@ -11,7 +11,7 @@ export async function getUsersServices() {
   }
 }
 
-export async function getUserServices(id: ObjectId) {
+export async function getUserServices(id: String) {
   try {
     return await User.findOne({ _id: id });
   } catch (error) {
@@ -30,7 +30,7 @@ export async function createUserServices(user: IUser) {
   }
 }
 
-export async function updateUserServices(id: ObjectId, user: IUser) {
+export async function updateUserServices(id: String, user: IUser) {
     try {
       await User.findOneAndUpdate({ _id: id}, User);
       return user;

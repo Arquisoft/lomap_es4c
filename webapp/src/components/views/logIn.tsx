@@ -14,7 +14,7 @@ function LogIn(): JSX.Element {
   const handleChange = (event: SelectChangeEvent) => {
     setIdp(event.target.value as string);
   };
-  const [currentUrl, setCurrentUrl] = useState("https://localhost:3000/profile");
+  const [currentUrl, setCurrentUrl] = useState("http://localhost:3000/profile");
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     // The default behavior of the button is to resubmit.

@@ -1,4 +1,5 @@
 import { Router } from "express";
+const { body } = require('express-validator');
 import {
   getUserController,
   getUsersController,
@@ -17,7 +18,10 @@ class User {
   routes() {
     this.router.get("/", getUsersController);
     this.router.get("/:id", getUserController);
-    this.router.post("/add", createUserController);
+    this.router.post("/add", [
+    body('nombre').isLength({ min: 1 }),
+    body('email').isEmail(),
+    body('webId').isLength({ min: 10 })], createUserController);
     this.router.put('/:id', updateUserController);
     this.router.delete('/:id', deleteUserController);
   }

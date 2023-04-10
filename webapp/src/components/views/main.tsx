@@ -12,6 +12,7 @@ function App(): JSX.Element {
     const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+
   //With this we can control the login status for solid
   const { session } = useSession();
 
@@ -44,21 +45,22 @@ function App(): JSX.Element {
           <p>LoMap</p>
           <nav>
           
-            <button className="separador" onClick={callLogin}>log in</button>
+            <button className="separador" onClick={callLogin}>Log in</button>
 
             <button>sign up</button>
           </nav>
         </header>
         <div className="portada">
-          <img src="./images/portada.png" alt="portada" />
-          <h1>LoMap</h1>
+        <h1 id="titulo">LoMap</h1>
+          <img id="portada" src="./images/portada.png" alt="portada" />
+          
         </div>
       </div>
       <div className="description">
         <h2> Red social de mapas</h2>
         <p>
           {" "}
-          seleccione el mapa que desee abrir y realice lo que usted quiera!
+          Seleccione el mapa que desee abrir y realice lo que usted quiera!
           desde añadir puntos de interés como restaurantes hasta crear su propia
           ruta y compartirla con sus amigos
         </p>

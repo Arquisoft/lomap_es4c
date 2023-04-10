@@ -19,6 +19,7 @@
     "express-prom-bundle": "^6.6.0",
     "express-validator": "^6.14.2",
     "helmet": "^6.0.1",
+    "log4js": "^6.9.1",
     "mongodb": "^5.1.0",
     "mongoose": "^7.0.0",
     "morgan": "^1.10.0",

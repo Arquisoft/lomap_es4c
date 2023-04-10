@@ -2,11 +2,21 @@ import React from "react";
 import { useSession, CombinedDataProvider, Image, LogoutButton, Text } from "@inrupt/solid-ui-react";
 import { Button, Card, CardActionArea, CardContent, Container, Typography } from "@material-ui/core";
 import { FOAF, VCARD } from "@inrupt/lit-generated-vocab-common";
+import { useNavigate, Navigate } from "react-router-dom";
+
+
 
 
 function Profile(): JSX.Element {
+  const navigate = useNavigate();
   const { session } = useSession();
-  console.log(session.info.webId);
+  //console.log(session.info.webId);
+  const callMap = () => {
+  
+    // This will navigate to first component
+    navigate('/map'); 
+    //<Navigate to="/map" replace={true}/>
+  };
   return (
     /*
     <>
@@ -32,6 +42,14 @@ function Profile(): JSX.Element {
           </footer>
         </>
         */
+    <>
+        <header>
+        <p>LoMap</p>
+        <nav>
+        <button className="separador" onClick={callMap}>Mapa</button>
+        
+        </nav>
+      </header>
 
     <Container fixed>
       {session.info.webId ? (
@@ -63,7 +81,7 @@ function Profile(): JSX.Element {
 
     </Container>
 
-    
+    </>
   );
 }
 

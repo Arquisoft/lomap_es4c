@@ -9,8 +9,25 @@ import { center, zoom } from "./data";
 import mapboxgl, { Map, Marker } from "mapbox-gl";
 import { mapAccessToken, mapStyleId } from "./data";
 import Review from "./review";
+import { useNavigate, Navigate } from 'react-router-dom';
+import { addMarker, updateMarker, getMarkers } from "../marker";
+//import MapMarker, { IMarker } from "../../../../restapi/src/models/marker";
+
+import { MapMarker } from '../../shared/shareddtypes';
+
+import { useSession } from "@inrupt/solid-ui-react";
 
 function MapPage() {
+
+  const navigate = useNavigate();
+  const { session } = useSession();
+  //console.log(session.info.webId);
+  const callPerfil = () => {
+  
+    // This will navigate to first component
+    navigate('/profile'); 
+    //<Navigate to="/profile" replace={true}/>
+  };
   mapboxgl.accessToken = mapAccessToken;
 
   const mapContainer = useRef(null);
@@ -38,13 +55,15 @@ function MapPage() {
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
+    
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: `mapbox://styles/${mapStyleId}`,
       center: center,
       zoom: zoom,
     });
-
+    
+    loadMarkers(map, playasMarks,restaurantesMarks,monumentosMarks,otrosMarks, session);
     map.current.addControl(new mapboxgl.FullscreenControl());
  
     map.current.addControl(
@@ -54,9 +73,13 @@ function MapPage() {
       })
     );
 
+    //console.log(session.info.webId);
+    
+    //console.log(markers);
+
     map.current.on("click", function (e) {
       if (editing) {  
-        addMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks);
+        addMapMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks, session);
       }
       if(addroute) {
       
@@ -95,7 +118,7 @@ function MapPage() {
       <header>
         <p>LoMap</p>
         <nav>
-          <button className="separador">ver perfil</button>
+          <button className="separador" onClick={callPerfil}>ver perfil</button>
           <button>cerrar sesión</button>
         </nav>
       </header>
@@ -117,7 +140,8 @@ function MapPage() {
       </a>
       <div className="window-notice" id="window-notice" ref={winpopup}>
         <div className="content id=content">
-          <Review/>
+          <Review
+            session={session.info.webId}/>
           
           <div className="content-buttons"><a href="#" ref={close} id="close-button">Aceptar</a></div>
         </div>
@@ -215,12 +239,13 @@ function loadFiltros(todo,playas,restaurantes,monumentos,otros,plist,rlist,mlist
   });
 }
 
-function markerFuncs(marker, popup, nombre, tipo) {
+async function markerFuncs(marker, popup, nombre, tipo, session, markId) {
   popup
     .getElement()
     .getElementsByClassName("del")[0]
     .addEventListener("click", () => {
       marker.remove();
+      //eliminar en POD
     });
 
     popup
@@ -250,6 +275,7 @@ function markerFuncs(marker, popup, nombre, tipo) {
           tipo = e.options[e.selectedIndex].text;
 
           //Guardar los nuevos datos en el pod
+          updateMarker(session, session.info.webId, markId, nombre);
           popup.setHTML(
             '<p id="nombre">Nombre: ' +
               nombre +
@@ -263,7 +289,7 @@ function markerFuncs(marker, popup, nombre, tipo) {
     });
 }
 
-function addMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks) {
+function addMapMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks, session) {
   let z = JSON.stringify(e.lngLat.wrap()).split(",");
   let x = Number.parseFloat(z[0].replace('{"lng":', ""));
   let y = Number.parseFloat(z[1].replace('"lat":', "").replace("}", ""));
@@ -276,6 +302,7 @@ function addMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMarks,o
   let deleted = false;
   let nombre = "Nuevo Punto";
   let tipo = "Playa";
+  let markId;
 
   let marker = new mapboxgl.Marker()
     .setLngLat([x, y])
@@ -283,6 +310,7 @@ function addMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMarks,o
     .addTo(map.current);
   let markerDiv = marker.getElement();
 
+  
   //saveSolidDatasetInContainer("inrut.net/pelayodc", {Readonly<Record<String>>"Nuevo punto"});
 
   popup.on("close", () => {
@@ -292,6 +320,7 @@ function addMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMarks,o
     }
   });
 
+  
   popup.on("open", () => {
     if (!guardado) {
       popup
@@ -304,7 +333,26 @@ function addMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMarks,o
             .getElementsByClassName("desc")[0].value;
           let e = document.getElementById("tipo");
           tipo = e.options[e.selectedIndex].text;
+                //const marker = new MapMarker(x, y, nombre, tipo);
+                //NO PUEDE SER UN NEW, PROBAR LOS TIPOS COMO SE CREAN NUEVOS
+                //const newMarker = MapMarker{ webId:session.info.webId , x, y, nombre};
+                /*
+                var mark: MapMarker = {
+                  webId: session.info.webId,
+                  id: 0,
+                  titulo: nombre,
+                  descripcion: "",
+                  latitud: x,
+                  longitud: y,
+                  categoria: tipo,
+                  comentario: "",
+                  puntuacion: 0,
+                  imagen: ""
+                };
+              */
 
+                
+        markId = addMarker(session.info.webId,nombre, x, y, tipo, "https://inrupt.net/", session);
           switch (tipo) {
             case "Playa":
               playasMarks.push(marker);
@@ -328,7 +376,7 @@ function addMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMarks,o
               '</p><a href="#" class="del"><img src="./images/bin.png" id="pencilpp" /></a> <a href="#" class="ed"><img src="./images/pencil.png" id="pencilpp" /></a> <a href="#" class="val"><img src="/src/star.png" id="pencilpp" /></a>'
           );
 
-          markerFuncs(marker,popup,nombre,tipo);
+          markerFuncs(marker,popup,nombre,tipo, session,markId);
         });
     } else {
       popup.on("open", () => {
@@ -338,7 +386,7 @@ function addMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMarks,o
           return;
         }
 
-        markerFuncs(marker,popup,nombre,tipo);
+        markerFuncs(marker,popup,nombre,tipo, session, markId);
       });
     }
   });
@@ -351,6 +399,61 @@ function addMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMarks,o
       marker.togglePopup();
     }
   });
+}
+
+async function loadMarkers(map,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks, session){
+  let points = await getMarkers(session, session.info.webId);
+  console.log("empieza");
+  console.log(points.length);
+  for(let i=0; i<points.length; i++){
+    console.log("entra en el for");
+    loadMarker(points[i], map,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks, session);
+  }
+
+}
+
+async function loadMarker(point, map,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks, session){
+  console.log("se llama bien");
+  let id = point[0];
+  let nombre = point[1];
+  let x = Number.parseFloat(point[2]);
+  let y = Number.parseFloat(point[3]);
+  let categoria = point[4];
+
+  let popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
+    '<p id="nombre">Nombre: ' +
+              nombre +
+              '</p><p id="tipo">Tipo: ' +
+              categoria +
+              '</p><a href="#" class="del"><img src="./images/bin.png" id="pencilpp" /></a> <a href="#" class="ed"><img src="./images/pencil.png" id="pencilpp" /></a> <a href="#" class="val"><img src="/src/star.png" id="pencilpp" /></a>'
+  );
+
+
+  let marker = new mapboxgl.Marker()
+    .setLngLat([x, y])
+    .setPopup(popup)
+    .addTo(map.current);
+  let markerDiv = marker.getElement();
+
+  switch (categoria) {
+    case "Playa":
+      playasMarks.push(marker);
+      break;
+    case "Restaurante":
+      restaurantesMarks.push(marker);
+      break;
+    case "Monumento":
+      monumentosMarks.push(marker);
+      break;
+    default:
+      otrosMarks.push(marker);
+      break;
+  }
+  popup.on("open", () => {
+    markerFuncs(marker,popup,nombre,categoria,session, id);
+  });
+  console.log("acaba");
+  console.log(marker);
 }
 
 export default MapPage;
