@@ -81,27 +81,28 @@ export async function removeSolidMarker(webId:string,session: Session,  markerId
 	
 }
 
-export async function updateMarker(session: Session, webId: string, markerId:string, pointName:string) {
+export async function updateMarker(session: Session, webId: string, markerId:string,des:string, categoria:string,coment:string, puntu:Number,imagen:string,pointName:string) {
 	console.log("entro");
 	const mapPointsUrl = webId.replace("card#me", "") + 'mapas/puntos.ttl';//proveedor+webId+nombreCategoria
-
+	var marker: MapMarkerReview = {
+		webId: webId,
+		id:markerId,//va todo la url
+		descripcion:des,
+		categoria: categoria,
+		comentario:coment,
+		puntuacion: puntu,
+		imagen: imagen
+	};
 	let dataset = await getSolidDataset(mapPointsUrl);
-	let url=mapPointsUrl+"#" + markerId;
-	console.log("url " + url);
 	
-	let punto =  getThing(dataset,url) as Thing ;
-
-	console.log("session is logged " + session.info.isLoggedIn);
-	console.log("session " + session.info);
-
-	
+	let punto =  getThing(dataset,markerId) as Thing ;
 
 	const mapPointsThing = buildThing(punto)
-		//.addUrl('http://schema.org/description', `http://www.w3.org/2001/XMLSchema#text(${marker.descripcion})`)
-		//.addUrl('http://schema.org/category', `http://www.w3.org/2001/XMLSchema#text(${marker.categoria})`)
-		//.addUrl('http://schema.org/reviewAspect', `http://www.w3.org/2001/XMLSchema#text(${marker.comentario})`)
-		//.addUrl('http://schema.org/reviewRating', `http://www.w3.org/2001/XMLSchema#number(${marker.puntuacion})`)
-		//.addUrl('http://schema.org/image', `http://www.w3.org/2001/XMLSchema#imageObject(${marker.imagen})`)
+		.addUrl('http://schema.org/description', `http://www.w3.org/2001/XMLSchema#text(${marker.descripcion})`)
+		.addUrl('http://schema.org/category', `http://www.w3.org/2001/XMLSchema#text(${marker.categoria})`)
+		.addUrl('http://schema.org/reviewAspect', `http://www.w3.org/2001/XMLSchema#text(${marker.comentario})`)
+		.addUrl('http://schema.org/reviewRating', `http://www.w3.org/2001/XMLSchema#ratingValue(${marker.puntuacion})`)
+		.addUrl('http://schema.org/image', `http://www.w3.org/2001/XMLSchema#imageObject(${marker.imagen})`)
 		.addStringNoLocale('http://schema.org/name', pointName)
 		.build();
   
@@ -113,7 +114,7 @@ export async function updateMarker(session: Session, webId: string, markerId:str
 
 	// Escribir el conjunto de datos actualizado en el Pod de Solid
 	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset,{fetch:session.fetch as any});
-	console.log(`El punto de mapa '${pointName}' se ha añadido al Pod de Solid en la URL ${updatedDatasetUrl.graphs.url}`);
+	console.log(`El punto de mapa  has ido modificado'${pointName}'`);
 }
 export async function addSolidMarker(session: Session, idp: String, marker: MapMarker) {
 	const pointName = marker.titulo;

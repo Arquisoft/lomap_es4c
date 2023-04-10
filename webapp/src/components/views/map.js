@@ -283,7 +283,7 @@ async function markerFuncs(marker, popup, nombre, tipo, session, markId) {
           tipo = e.options[e.selectedIndex].text;
 
           //Guardar los nuevos datos en el pod
-          updateMarker(session, session.info.webId, markId, nombre);
+          updateMarker(session, session.info.webId, markId,"desc",tipo,"coment",10,"sdfd", nombre);
           popup.setHTML(
             '<p id="nombre">Nombre: ' +
               nombre +
