@@ -23,6 +23,7 @@ function MapPage() {
 
   var editing = false;
   var addroute = false;
+  var routeCount=0;
 
   var points = [];
 
@@ -69,6 +70,7 @@ function MapPage() {
         );
       }
       if (addroute) {
+        AddPoint(e,points);
       }
     });
 
@@ -85,7 +87,7 @@ function MapPage() {
     addroutebtn.current.addEventListener("click", () => {
       if (addroute) {
         //guardar punto
-        map.current.addSource("route", {
+        map.current.addSource("route"+routeCount, {
           type: "geojson",
           data: {
             type: "Feature",
@@ -97,9 +99,9 @@ function MapPage() {
           },
         });
         map.current.addLayer({
-          id: "route",
+          id: "route"+routeCount,
           type: "line",
-          source: "route",
+          source: "route"+routeCount,
           layout: {
             "line-join": "round",
             "line-cap": "round",
@@ -110,17 +112,14 @@ function MapPage() {
           },
         });
         addroute = false;
-        //cambiar imagen a
+        routeCount++;
+        document.getElementById("pencil-route").src="./images/add.png";
       } else {
         addroute = true;
-        points = [
-          [-3.705, 40.41],
-          [-4, 40.41],
-          [-2, 40.41],
-        ];
+        points = [];
         editing = false;
         console.log(editing);
-        //cambiar imagen b
+        document.getElementById("pencil-route").src="./images/save.png";
       }
     });
 
@@ -185,7 +184,7 @@ function MapPage() {
         id="editroute"
         ref={addroutebtn}
       >
-        <img src="./images/add.png" id="pencil" />
+        <img src="./images/add.png" id="pencil-route" />
       </a>
       <div className="window-notice" id="window-notice" ref={winpopup}>
         <div className="content id=content">
@@ -437,6 +436,14 @@ function addMarker(
       marker.togglePopup();
     }
   });
+}
+
+function AddPoint(e,points) {
+  let z = JSON.stringify(e.lngLat.wrap()).split(",");
+  let x = Number.parseFloat(z[0].replace('{"lng":', ""));
+  let y = Number.parseFloat(z[1].replace('"lat":', "").replace("}", ""));
+  points.push([x,y]);
+  console.log(x+"-"+y);
 }
 
 export default MapPage;
