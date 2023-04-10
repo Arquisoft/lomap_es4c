@@ -250,7 +250,7 @@ async function markerFuncs(marker, popup, nombre, tipo, session, markId) {
     .getElement()
     .getElementsByClassName("del")[0]
     .addEventListener("click", () => {
-      removeMarker(session.info.webId,session,markId);
+      removeMarker(session.info.webId, markId, session);
       marker.remove();
       
       //eliminar en POD
@@ -283,7 +283,7 @@ async function markerFuncs(marker, popup, nombre, tipo, session, markId) {
           tipo = e.options[e.selectedIndex].text;
 
           //Guardar los nuevos datos en el pod
-          updateMarker(session, session.info.webId, markId,"desc",tipo,"coment",10,"sdfd", nombre);
+          updateMarker(session, session.info.webId, markId,"",tipo,"",10,"", nombre);
           popup.setHTML(
             '<p id="nombre">Nombre: ' +
               nombre +
