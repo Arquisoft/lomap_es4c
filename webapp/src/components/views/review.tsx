@@ -16,6 +16,7 @@ function Review(props:ReviewProps):JSX.Element{
 
     var marker: MapMarkerReview = {
       webId: props.sessionId,
+      id:"",
       descripcion:"",
       categoria:"",
       comentario: "",

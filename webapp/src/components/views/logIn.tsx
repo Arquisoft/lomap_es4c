@@ -4,13 +4,16 @@ import { LoginButton } from "@inrupt/solid-ui-react";
 import Select, { SelectChangeEvent} from "@mui/material/Select";
 import { Button, Box,TextField, FormGroup, Container, MenuItem, InputLabel, FormControl } from "@material-ui/core";
 import { login,handleIncomingRedirect,Session } from "@inrupt/solid-client-authn-browser";
+import { useNavigate, Navigate } from 'react-router-dom';
 import React from "react";
+
 
 
 
 function LogIn(): JSX.Element {
  
   const [idp, setIdp] = useState("https://inrupt.net/");
+  const navigate = useNavigate();
   const handleChange = (event: SelectChangeEvent) => {
     setIdp(event.target.value as string);
   };
@@ -31,6 +34,12 @@ function LogIn(): JSX.Element {
    
   
   };
+
+  const callRegister = () => {
+   
+    window.location.replace('http://inrupt.net/register'); 
+   
+  };
  
 
   return (
@@ -39,8 +48,8 @@ function LogIn(): JSX.Element {
         <header>
           <p>LoMap</p>
           <nav>
-            <button className="separador">log in</button>
-            <button>sign up</button>
+            <button className="separador" >Log In</button>
+            <button onClick={callRegister}>Sign up</button>
           </nav>
         </header>
         <h1> Inicio de sesión </h1>

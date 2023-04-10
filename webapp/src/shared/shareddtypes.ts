@@ -17,6 +17,7 @@ export type MapMarker = {
 }
 export type MapMarkerReview = {
   webId: string;
+  id:string;
   descripcion: string;
   categoria: string;
   comentario: string;

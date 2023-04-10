@@ -11,6 +11,11 @@ function Profile(): JSX.Element {
   const navigate = useNavigate();
   const { session } = useSession();
   //console.log(session.info.webId);
+  const logOut = () => {
+    session.logout();
+    navigate('/login'); 
+   
+  };
   const callMap = () => {
   
     // This will navigate to first component
@@ -47,6 +52,7 @@ function Profile(): JSX.Element {
         <p>LoMap</p>
         <nav>
         <button className="separador" onClick={callMap}>Mapa</button>
+        <button onClick={logOut}>Cerrar sesión</button>
         
         </nav>
       </header>

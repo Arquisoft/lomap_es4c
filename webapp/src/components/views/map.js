@@ -10,7 +10,7 @@ import mapboxgl, { Map, Marker } from "mapbox-gl";
 import { mapAccessToken, mapStyleId } from "./data";
 import Review from "./review";
 import { useNavigate, Navigate } from 'react-router-dom';
-import { addMarker, updateMarker, getMarkers } from "../marker";
+import { addMarker, updateMarker, getMarkers,removeMarker } from "../marker";
 //import MapMarker, { IMarker } from "../../../../restapi/src/models/marker";
 
 import { MapMarker } from '../../shared/shareddtypes';
@@ -27,6 +27,12 @@ function MapPage() {
     // This will navigate to first component
     navigate('/profile'); 
     //<Navigate to="/profile" replace={true}/>
+  };
+
+  const logOut = () => {
+    session.logout();
+    navigate('/login'); 
+   
   };
   mapboxgl.accessToken = mapAccessToken;
 
@@ -118,8 +124,8 @@ function MapPage() {
       <header>
         <p>LoMap</p>
         <nav>
-          <button className="separador" onClick={callPerfil}>ver perfil</button>
-          <button>cerrar sesión</button>
+          <button className="separador" onClick={callPerfil}>Ver perfil</button>
+          <button onClick={logOut}>Cerrar sesión</button>
         </nav>
       </header>
       <div id="filtros">
@@ -244,7 +250,9 @@ async function markerFuncs(marker, popup, nombre, tipo, session, markId) {
     .getElement()
     .getElementsByClassName("del")[0]
     .addEventListener("click", () => {
+      removeMarker(session.info.webId,session,markId);
       marker.remove();
+      
       //eliminar en POD
     });
 
@@ -275,7 +283,7 @@ async function markerFuncs(marker, popup, nombre, tipo, session, markId) {
           tipo = e.options[e.selectedIndex].text;
 
           //Guardar los nuevos datos en el pod
-          updateMarker(session, session.info.webId, markId, nombre);
+          updateMarker(session, session.info.webId, markId,"desc",tipo,"coment",10,"sdfd", nombre);
           popup.setHTML(
             '<p id="nombre">Nombre: ' +
               nombre +
