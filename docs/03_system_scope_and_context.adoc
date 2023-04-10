@@ -1,7 +1,7 @@
 [[section-system-scope-and-context]]
 == System Scope and Context
 En puntos anteriores hemos hablado de nuestra meta con esta aplicación, ahora tenemos que explicar un poco cuál va a ser 
-nuestro entorno de trabajo y la forma en la que estos se comunican para llegar a dicho objetivo
+nuestro entorno de trabajo y la forma en la que estos se comunican para llegar a dicho objetivo.
 
 [role="arc42help"]
 ****
@@ -82,7 +82,8 @@ together with a mapping table showing the relationships between channels and inp
 
 
 La aplicación seguirá la arquitectura SOLID, estará escrita en TypeScript y empleará la librería React para la creación de Interfaces de usuario, 
-Aquí debajo se especifica de manera más detallada todo lo que hemos usado en la aplicación y para qué lo utilizamos
+Aquí debajo se especifica de manera más detallada todo lo que hemos usado en la aplicación y para qué lo utilizamos.
+
 [options="header",cols="1,2"]
 |===
 |Tecnología|Descripción

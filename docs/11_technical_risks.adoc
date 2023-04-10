@@ -1,7 +1,7 @@
 [[section-technical-risks]]
 == Risks and Technical Debts
 El principal problema al que nos enfrentamos es a un nuevo entorno de trabajo, el cual tiene una tecnología completamente nueva para la mayoría de integrantes del grupo lo que hace que sea complicado el inicio.
-Y también hay que tener en cuenta el tiempo que tenemos y el resto de asignaturas de la universidad. Aquí hay una tabla que refleja los principales problemas
+Y también hay que tener en cuenta el tiempo que tenemos y el resto de asignaturas de la universidad. Aquí hay una tabla que refleja los principales problemas.
 [options="header",cols="1,2,2"]
 |===
 |Riesgo|Problema|Solución
@@ -21,6 +21,6 @@ Y también hay que tener en cuenta el tiempo que tenemos y el resto de asignatur
 === Technical Debts
 Al ser un proyecto que hemos empezado de 0, nos ha sido fácil tener una arquitectura escalable sin deuda técnica.
 Quizá a la hora de hacer la interoperabilidad de la aplicación no se ha escogido la mejor opción y sí la más facil de aprender y de 
-que todo el mundo la pueda utilizar para ahorrar problemas y no perder mucho el tiempo en ello, lo cuál haya generado un poco de deuda técnica
+que todo el mundo la pueda utilizar para ahorrar problemas y no perder mucho el tiempo en ello, lo cuál haya generado un poco de deuda técnica.
 
 
