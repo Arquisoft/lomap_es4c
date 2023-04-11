@@ -18,7 +18,6 @@ function Review(props:ReviewProps):JSX.Element{
       webId: props.sessionId,
       id:"",
       descripcion:"",
-      categoria:"",
       comentario: "",
       puntuacion: 0,
       imagen: ""
