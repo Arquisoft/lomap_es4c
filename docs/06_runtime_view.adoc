@@ -34,13 +34,39 @@ There are many notations for describing scenarios, e.g.
 === Casos de uso Nivel 1
 
 ==== Añadir un punto al mapa
-image:añadirPunto.png["Add a Point"]
+*_En este caso de uso observamos como un usuario ya registrado añade un punto nuevo en su mapa._
+[plantuml,"Añadir punto",png]
+----
+actor "User" as user
+participant "LoMap" as LoMap
+database "Solid Pod" as pod
+
+user->LoMap: AñadirPunto()
+LoMap->pod: GuardarPuntoEnPOD()
+LoMap->user: CargarPuntoEnMapa()
+----
 
 ==== Iniciar sesión
-image:06_estado_inicio_sesion.png["Inicio de sesion"]
+*_En este caso de uso observamos como un usuario introduce su perfil y su contraseña para entrar en la aplicación._
+[plantuml, "Iniciar sesón", png]
+----
+actor "User" as user
+participant "LoMap" as LoMap
+database "Solid Pod" as pod
+
+user->LoMap: Entra en la pagina y escoge "Log in"
+LoMap->user: Muestra la pantalla de inicio de sesion
+user->LoMap: Introduce datos y slecciona iniciar sesión
+LoMap->pod: Se envian los datos a al pod
+alt Credenciales válidas
+    LoMap->user: Muestra el mapa
+else Credenciales invalidas
+    LoMap->user: No permite inicio
+end
+----
 
 ==== Cargar mapa
-*_El usuario iniciará sesión y automáticamente se cargará el mapa, para ello tiene que llamar a la clase principal y que esta escoja el mapa deseado_
+*_El usuario iniciará sesión y automáticamente se cargará el mapa, para ello tiene que llamar a la clase principal y que esta escoja el mapa deseado._
 [plantuml,"Cargar mapa",png]
 ----
 actor User as user
@@ -57,7 +83,7 @@ lomap <- pod : CargaMapa()
 ----
 
 ==== Añadir un amigo
-En este caso de uso podemos observar el flujo seguido para añadir a un amigo nuestro pod de SOLID
+*_En este caso de uso podemos observar el flujo seguido para añadir a un amigo nuestro pod de SOLID._
 [plantuml,Añadir amigo,png]
 ----
 @startuml
@@ -84,7 +110,7 @@ end
 ----
 
 ==== Eliminar un amigo
-En este caso de uso observamos como eliminar un amigo de nuestro pod
+*_En este caso de uso observamos como eliminar un amigo de nuestro pod._
 [plantuml,"Eliminar amigo",png]
 ----
 actor User as user
@@ -101,8 +127,45 @@ loMap -> pod: EliminaAmigoId()
 
 === Casos de uso Nivel 2
 
+==== Añadir un punto al mapa
+*_En este caso de uso observamos como un usuario ya registrado añade un punto nuevo en su mapa y como se comunica con el POD privado para actualizar la información._
+[plantuml,"Añadir punto lvl2",png]
+----
+actor "User" as user
+participant "LoMap" as LoMap
+Participant "POD Server" as server
+database "User POD" as pod
+
+user->LoMap: AñadirPunto()
+LoMap->server: ComprobarEstadoDeSesion()
+LoMap->server: GuargarPunto()
+Server->POD: GuardarPunto()
+POD->LoMap: ConfirmarRecepcion()
+LoMap->user: CargarPuntoEnMapa()
+----
+
+==== Añadir un amigo
+*_En este caso de uso observamos como añadir un amigo a nuestro pod y como se actualiza la información en ambos pods._
+[plantuml,"Eliminar amigo lvl2",png]
+----
+actor User as user
+participant "loMap" as loMap
+participant "POD Server" as server
+database "User POD" as userp
+database "Friend POD" as friendp
+
+user -> loMap : AñadirAmigo()
+loMap -> server: listaAmigos()
+server -> userp: listaAmigos()
+loMap -> server: buscaPodId()
+server -> userp: buscaPodId()
+loMap -> server : AñadirAmigo(idUser, idAmigo)
+server -> userp : AñadirAmigo(idUser, idAmigo)
+server -> friendp : AñadirAmigo(idUser, idAmigo)
+----
+
 ==== Eliminar un amigo
-En este caso de uso observamos como eliminar un amigo de nuestro pod y como se actualiza la información en ambos pods
+*_En este caso de uso observamos como eliminar un amigo de nuestro pod y como se actualiza la información en ambos pods._
 [plantuml,"Eliminar amigo lvl2",png]
 ----
 actor User as user
