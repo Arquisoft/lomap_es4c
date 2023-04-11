@@ -1,33 +1,90 @@
+import { useState, useEffect } from "react";
+import { SessionProvider, useSession } from "@inrupt/solid-ui-react";
+import { LoginButton } from "@inrupt/solid-ui-react";
+import Select, { SelectChangeEvent} from "@mui/material/Select";
+import { Button, Box,TextField, FormGroup, Container, MenuItem, InputLabel, FormControl } from "@material-ui/core";
+import { login,handleIncomingRedirect,Session } from "@inrupt/solid-client-authn-browser";
+import { useNavigate, Navigate } from 'react-router-dom';
 import React from "react";
 
-import "./index.css";
-import "./images/portada.png";
-import "./images/uniovi.png";
+
+
+
 function LogIn(): JSX.Element {
+ 
+  const [idp, setIdp] = useState("https://inrupt.net/");
+  const navigate = useNavigate();
+  const handleChange = (event: SelectChangeEvent) => {
+    setIdp(event.target.value as string);
+  };
+  const [currentUrl, setCurrentUrl] = useState("http://localhost:3000/profile");
+  
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    // The default behavior of the button is to resubmit.
+    // This prevents the page from reloading.
+    e.preventDefault();
+    // Login will redirect the user away so that they can log in the OIDC issuer,
+    // and back to the provided redirect URL (which should be controlled by your app).
+    
+    login({
+      redirectUrl: currentUrl, // we redirect to the actual page
+      oidcIssuer: idp,
+      clientName: "LoMap",
+    });
+   
+  
+  };
+
+  const callRegister = () => {
+   
+    window.location.replace('http://inrupt.net/register'); 
+   
+  };
+ 
+
   return (
     <>
       <div className="App">
         <header>
           <p>LoMap</p>
           <nav>
-            <button className="separador">log in</button>
-            <button>sign up</button>
+            <button className="separador" >Log In</button>
+            <button onClick={callRegister}>Sign up</button>
           </nav>
         </header>
         <h1> Inicio de sesión </h1>
       </div>
       <div className="description">
-        <form>
-          <label id="userName">
-            Nombre de usuario:
-            <input type="text" name="userName" />
-          </label>
-          <label id="password">
-            Contraseña:
-            <input type="text" name="name" />
-          </label>
-          <input type="submit" value="Entrar" />
-        </form>
+    <Container>
+    <Box
+          component="form"
+          onSubmit={handleSubmit}
+        
+          sx={{ mt: 3, minWidth: 200 }}
+        >
+        <FormControl fullWidth>
+          <InputLabel id="proveedor-pod-label">Seleccione el proveedor</InputLabel>
+          <Select
+            labelId="proveedor-pod-label"
+            id="proveedor-pod"
+            value={idp}
+            label="Seleccione el proveedor"
+            onChange={handleChange}
+          >
+            <MenuItem value={"https://inrupt.net/"}>Inrupt.net</MenuItem>
+            <MenuItem value={"https://solidcommunity.net/"}>Solid Community.net</MenuItem>
+            <MenuItem value={"https://solidweb.me/"}>Solidweb.me</MenuItem>
+          </Select>
+          <div></div>
+        
+          
+          
+        </FormControl>
+        <Button  disabled={idp === ""} variant="contained" color="primary"   type="submit">
+              Login
+            </Button>
+        </Box>
+        </Container>
       </div>
       <footer>
         <p>Escuela Ingeniería informática 2022-2023/ASW grupo lomap_es4c</p>
