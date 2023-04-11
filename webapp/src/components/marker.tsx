@@ -42,12 +42,12 @@ export async function addMarker(webid: string,nombre: string, lat: Number, lon: 
 		return false;
 	}
 }
-export async function removeMarker(webid: string,id:string, session: Session) {
+export async function removeMarker(webid:string, id:string, session: Session) {
 	const apiEndPoint = process.env.REACT_APP_API_URI || 'http://localhost:5000/api'
 
 	
 	
-	let response = await fetch(apiEndPoint + `/marker/${id}`, {//En mongo solo guardamos webId y el titulo
+	let response = await fetch(apiEndPoint + `/marker/${id.substring(id.lastIndexOf("#") + 1)}`, {//En mongo solo guardamos webId y el titulo
 		method: 'DELETE',
 		headers: { 'Content-Type': 'application/json' },
 	})
@@ -97,23 +97,23 @@ export async function updateMarker(session: Session, webId: string, markerId:str
 	
 	let punto =  getThing(dataset,markerId) as Thing ;
 
-	const mapPointsThing = buildThing(punto)
+	const mapPointsThing = setThing(dataset, buildThing(punto)
 		.addUrl('http://schema.org/description', `http://www.w3.org/2001/XMLSchema#text(${marker.descripcion})`)
 		.addUrl('http://schema.org/category', `http://www.w3.org/2001/XMLSchema#text(${marker.categoria})`)
 		.addUrl('http://schema.org/reviewAspect', `http://www.w3.org/2001/XMLSchema#text(${marker.comentario})`)
 		.addUrl('http://schema.org/reviewRating', `http://www.w3.org/2001/XMLSchema#ratingValue(${marker.puntuacion})`)
 		.addUrl('http://schema.org/image', `http://www.w3.org/2001/XMLSchema#imageObject(${marker.imagen})`)
 		.addStringNoLocale('http://schema.org/name', pointName)
-		.build();
-  
+		.build());
+	
 
 	// Añadir el punto de mapa al conjunto de datos
-		var updatedDataset = setThing(dataset, mapPointsThing);
-		console.log("dataset " + dataset.graphs);
+	//var updatedDataset = setThing(dataset, mapPointsThing);
+	//console.log("dataset " + dataset.graphs);
 	
 
 	// Escribir el conjunto de datos actualizado en el Pod de Solid
-	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset,{fetch:session.fetch as any});
+	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, mapPointsThing,{fetch:session.fetch as any});
 	console.log(`El punto de mapa  has ido modificado'${pointName}'`);
 }
 export async function addSolidMarker(session: Session, idp: String, marker: MapMarker) {
@@ -186,7 +186,8 @@ export async function getMarkers(session: Session,webId: String) {
 		//console.log("latitud " + latitud.replace("http://www.w3.org/2001/XMLSchema#float(", "").replace(")", ""));
 		//console.log("longitud " + longitud);
 		//console.log("categoria " + categoria);
-		var mark = [thi.url, nombre, latitud.replace("http://www.w3.org/2001/XMLSchema#float(", "").replace(")", ""), 
+		var mark = [thi.url
+			, nombre, latitud.replace("http://www.w3.org/2001/XMLSchema#float(", "").replace(")", ""), 
 			longitud.replace("http://www.w3.org/2001/XMLSchema#float(", "").replace(")", ""), 
 			categoria.replace("http://www.w3.org/2001/XMLSchema#text(", "").replace(")", ""), ];
 		points.push(mark);
