@@ -5,7 +5,7 @@ body {
   font-family: sans-serif;
 }
 #app {
-  height: 91.6vh;
+  height:86.9vh;
 }
 #titulo{
   display: flex;
@@ -216,4 +216,31 @@ table th {
 .comment .date {
   font-size: 0.8rem;
   color: #777;
+}
+
+#filtros {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #f1f1f1;
+  border-radius: 10px;
+  padding: 3px;
+ margin-bottom: 1px;
+}
+
+#filtros a {
+  text-decoration: none;
+  font-size: 14px;
+  color: #666;
+  background-color: white;
+  border: 1px solid #ddd;
+  padding: 6px 12px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+#filtros a:hover {
+  color: white;
+  background-color: #8e8a3e;
+  border: 1px solid #666;
 }

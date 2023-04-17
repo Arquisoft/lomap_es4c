@@ -34,13 +34,20 @@ function LogIn(): JSX.Element {
    
   
   };
+  const [oculto, setOculto] = useState(false);
 
+  const [showText, setShowText] = useState(false);
+
+  const handleButtonClick = () => {
+    setOculto(true);
+    setShowText(true);
+  };
   const callRegister = () => {
    
     window.location.replace('http://inrupt.net/register'); 
    
   };
- 
+  
 
   return (
     <>
@@ -53,8 +60,9 @@ function LogIn(): JSX.Element {
           </nav>
         </header>
         <h1> Inicio de sesión </h1>
+        <p>inicie sesión para poder abrir un mapa.</p>
       </div>
-      <div className="description">
+      <div id="main">
     <Container>
     <Box
           component="form"
@@ -86,10 +94,17 @@ function LogIn(): JSX.Element {
         </Box>
         </Container>
       </div>
-      <footer>
-        <p>Escuela Ingeniería informática 2022-2023/ASW grupo lomap_es4c</p>
-        <img src="./images/uniovi.png" alt="uniovi" />
-      </footer>
+      <p id="main">Si no tiene una cuenta creada en Solid, clickee en sign up o en su defecto entre en login y créese una cuenta desde ahí</p>
+      <div className="emergente">
+     {!oculto &&<button className="fade-in" onClick={handleButtonClick}>
+       ¿Qué es Solid?
+      </button>}
+      {showText && <p className="fade-in">Solid es un proyecto de descentralización de datos en la web. El objetivo principal de Solid es cambiar de 
+      forma radical la manera en la que las aplicaciones web funcionan hoy en día, siendo el usuario quien 
+      decide dónde almacenar sus datos, mejorando de esta forma la privacidad.
+      Los usuarios pueden decidir dónde almacenar sus datos, incluyendo el control de acceso que estimen oportuno.</p>}
+      </div>
+    
     </>
   );
 }
