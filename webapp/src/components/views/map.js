@@ -11,29 +11,34 @@ import { mapAccessToken, mapStyleId } from "./data";
 import Review from "./review";
 import { useNavigate, Navigate } from 'react-router-dom';
 import { addMarker, updateMarker, getMarkers,removeMarker } from "../marker";
-//import MapMarker, { IMarker } from "../../../../restapi/src/models/marker";
 
 import { MapMarker } from '../../shared/shareddtypes';
 
 import { useSession } from "@inrupt/solid-ui-react";
 
+var dict = {};
+var names = [];
+
+var playasMarks = [];
+var restaurantesMarks = [];
+var monumentosMarks = [];
+var otrosMarks = [];
+
 function MapPage() {
 
   const navigate = useNavigate();
   const { session } = useSession();
-  //console.log(session.info.webId);
+
   const callPerfil = () => {
-  
     // This will navigate to first component
     navigate('/profile'); 
-    //<Navigate to="/profile" replace={true}/>
   };
 
   const logOut = () => {
     session.logout();
     navigate('/login'); 
-   
   };
+
   mapboxgl.accessToken = mapAccessToken;
 
   const mapContainer = useRef(null);
@@ -46,18 +51,16 @@ function MapPage() {
   
   var editing = false;
   var addroute= false;
+  var routeCount=0;
 
-  //Listas para filtros
+  var points = [];
+
+  //botones para filtros
   const filtroTodo = useRef(null);
   const filtroPlayas = useRef(null);
   const filtroRestaurantes = useRef(null);
   const filtroMonumentos = useRef(null);
   const filtroOtros = useRef(null);
-  
-  var playasMarks = [];
-  var restaurantesMarks = [];
-  var monumentosMarks = [];
-  var otrosMarks = [];
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
@@ -69,42 +72,98 @@ function MapPage() {
       zoom: zoom,
     });
     
-    loadMarkers(map, playasMarks,restaurantesMarks,monumentosMarks,otrosMarks, session);
+    loadMarkers(map, session);
+
     map.current.addControl(new mapboxgl.FullscreenControl());
  
+    const coordinatesGeocoder = function (query) {
+      function coordinateFeature(name, lng, lat) {
+        return {
+        center: [lng, lat],
+        geometry: {
+        type: 'Point',
+        coordinates: [lng, lat]
+        },
+        place_name: name,
+        place_type: ['coordinate'],
+        properties: {},
+        type: 'Feature'
+        };
+      }
+        
+      const geocodes = [];
+      
+      for (let i=0;i<names.length;i++) {
+          if(names[i].includes(query)) {
+              geocodes.push(coordinateFeature(names[i],dict[names[i]][0],dict[names[i]][1]));
+          }
+      }
+        
+      return geocodes;  
+    };
+
     map.current.addControl(
       new MapboxGeocoder({
         accessToken: mapboxgl.accessToken,
-        mapboxgl: mapboxgl
+        localGeocoder: coordinatesGeocoder,
+        mapboxgl: mapboxgl,
+        marker: false,
+        zoom: 12
       })
     );
 
-    //console.log(session.info.webId);
-    
-    //console.log(markers);
-
     map.current.on("click", function (e) {
       if (editing) {  
-        addMapMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks, session);
+        addMapMarker(e,map,editing, session);
       }
       if(addroute) {
-      
+        AddPoint(e,points);
       }
     });
-
-    //TODO: guardarlos en el pod
 
     //Botón edit
     edit.current.addEventListener("click", () => {
       editing = !editing;
       addroute=false;
-      console.log(editing);
     });
 
+    //Botón ruta
     addroutebtn.current.addEventListener("click", () => {
-      addroute = !addroute;
-      editing=false;
-      console.log(editing);
+      if (addroute) {
+        //guardar ruta
+        map.current.addSource("route"+routeCount, {
+          type: "geojson",
+          data: {
+            type: "Feature",
+            properties: {},
+            geometry: {
+              type: "LineString",
+              coordinates: points,
+            },
+          },
+        });
+        map.current.addLayer({
+          id: "route"+routeCount,
+          type: "line",
+          source: "route"+routeCount,
+          layout: {
+            "line-join": "round",
+            "line-cap": "round",
+          },
+          paint: {
+            "line-color": "#888",
+            "line-width": 5,
+          },
+        });
+        addroute = false;
+        routeCount++;
+        document.getElementById("pencil-route").src="./images/add.png";
+      } else {
+        addroute = true;
+        points = [];
+        editing = false;
+        document.getElementById("pencil-route").src="./images/save.png";
+      }
     });
 
     close.current.addEventListener('click', () => {
@@ -142,7 +201,7 @@ function MapPage() {
         <img src="./images/add.png" id="pencil" />
       </a>
       <a href="#" className="btn-flotante-route" id="editroute" ref={addroutebtn}>
-        <img src="./images/add.png" id="pencil" />
+        <img src="./images/add.png" id="pencil-route" />
       </a>
       <div className="window-notice" id="window-notice" ref={winpopup}>
         <div className="content id=content">
@@ -168,92 +227,37 @@ document.addEventListener('click', function(event) {
     
 });
 
-function loadFiltros(todo,playas,restaurantes,monumentos,otros,plist,rlist,mlist,olist) {
-  todo.current.addEventListener('click', () => {
-    plist.forEach((element) => {
-      element.getElement().style.visibility = 'visible'
-    });
-    mlist.forEach((element) => {
-      element.getElement().style.visibility = 'visible'
-    });
-    rlist.forEach((element) => {
-      element.getElement().style.visibility = 'visible'
-    });
-    olist.forEach((element) => {
-      element.getElement().style.visibility = 'visible'
-    });
-  });
-  
-  playas.current.addEventListener('click', () => {
-    plist.forEach((element) => {
-      element.getElement().style.visibility = 'visible'
-    });
-    mlist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
-    });
-    rlist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
-    });
-    olist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
-    });
-  });
-  
-  monumentos.current.addEventListener('click', () => {
-    plist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
-    });
-    mlist.forEach((element) => {
-      element.getElement().style.visibility = 'visible'
-    });
-    rlist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
-    });
-    olist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
-    });
-  });
+function loadFiltros(todo,playas,restaurantes,monumentos,otros) {
+  const filters = [
+    {button: todo.current, list: [playasMarks, monumentosMarks, restaurantesMarks, otrosMarks], visibility: 'visible'},
+    {button: playas.current, list: [playasMarks], visibility: 'visible'},
+    {button: monumentos.current, list: [monumentosMarks], visibility: 'visible'},
+    {button: restaurantes.current, list: [restaurantesMarks], visibility: 'visible'},
+    {button: otros.current, list: [otrosMarks], visibility: 'visible'}
+  ];
 
-  restaurantes.current.addEventListener('click', () => {
-    plist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
-    });
-    mlist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
-    });
-    rlist.forEach((element) => {
-      element.getElement().style.visibility = 'visible'
-    });
-    olist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
-    });
-  });
-  
-  otros.current.addEventListener('click', () => {
-    plist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
-    });
-    mlist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
-    });
-    rlist.forEach((element) => {
-      element.getElement().style.visibility = 'hidden'
-    });
-    olist.forEach((element) => {
-      element.getElement().style.visibility = 'visible'
+  filters.forEach(filter => {
+    filter.button.addEventListener('click', () => {
+      playasMarks.concat(monumentosMarks, restaurantesMarks, otrosMarks).forEach(element => {
+        element.getElement().style.visibility = 'hidden';
+      });
+
+      filter.list.forEach( e => { e.forEach(element => {
+        element.getElement().style.visibility = filter.visibility;
+      }); });
     });
   });
 }
 
-async function markerFuncs(marker, popup, nombre, tipo, session, markId) {
+async function markerFuncs(marker, popup, nombre, descripcion, tipo, x, y, session, markId) {
   popup
     .getElement()
     .getElementsByClassName("del")[0]
     .addEventListener("click", () => {
       removeMarker(session.info.webId, markId, session);
+      removeCategoria(tipo, marker);
+      names.splice(names.indexOf(nombre), 1);
       marker.remove();
-      
-      //eliminar en POD
     });
 
     popup
@@ -268,28 +272,41 @@ async function markerFuncs(marker, popup, nombre, tipo, session, markId) {
     .getElementsByClassName("ed")[0]
     .addEventListener("click", () => {
       popup.setHTML(
-        '<label for="desc">Descripción:</label><input type="text" id="desc" class="desc" value="' +
-          nombre +
+        '<label for="name">Nombre:</label><input type="text" id="name" class="name" value="' +
+          nombre + '"<label for="desc">Descripción:</label><input type="text" id="desc" class="desc" value="' +
+          descripcion +
           '"/><label for="desc">Tipo:</label><select id="tipo"><option value="playa">Playa</option><option value="monumento">Monumento</option><option value="restaurante">Restaurante</option><option value="otro">Otro</option></select><button href="#" class="guar">Guardar</button>'
       );
       popup
         .getElement()
         .getElementsByClassName("guar")[0]
         .addEventListener("click", () => {
+          names.splice(names.indexOf(nombre), 1);
           nombre = popup
             .getElement()
+            .getElementsByClassName("name")[0].value;
+          descripcion = popup
+            .getElement()
             .getElementsByClassName("desc")[0].value;
-          let e = document.getElementById("tipo");
-          tipo = e.options[e.selectedIndex].text;
+          names.push(nombre);
+          dict[nombre] = [x,y];
 
+          let e = document.getElementById("tipo");
+
+          removeCategoria(tipo,marker);
+          tipo = e.options[e.selectedIndex].text;
+          addCategoria(tipo,marker); 
+          
           //Guardar los nuevos datos en el pod
-          updateMarker(session, session.info.webId, markId,"",tipo,"",10,"", nombre);
+          updateMarker(session, session.info.webId, markId, tipo, nombre);
           popup.setHTML(
             '<p id="nombre">Nombre: ' +
-              nombre +
-              '</p><p id="tipo">Tipo: ' +
-              tipo +
-              '</p><a href="#" class="del"><img src="./images/bin.png" id="pencilpp" /></a> <a href="#" class="ed"><img src="./images/pencil.png" id="pencilpp" /></a> <a href="#" class="val"><img src="/src/star.png" id="pencilpp" /></a>'
+                      nombre +
+                      '<p id="descrip">Descripción: ' +
+                      descripcion +
+                      '</p><p id="tipo">Tipo: ' +
+                      tipo +
+                      '</p><a href="#" class="del"><img src="./images/bin.png" id="pencilpp" /></a> <a href="#" class="ed"><img src="./images/pencil.png" id="pencilpp" /></a> <a href="#" class="val"><img src="/src/star.png" id="pencilpp" /></a>'
           );
 
           marker.togglePopup();
@@ -297,18 +314,19 @@ async function markerFuncs(marker, popup, nombre, tipo, session, markId) {
     });
 }
 
-function addMapMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks, session) {
+function addMapMarker(e, map, editing, session) {
   let z = JSON.stringify(e.lngLat.wrap()).split(",");
   let x = Number.parseFloat(z[0].replace('{"lng":', ""));
   let y = Number.parseFloat(z[1].replace('"lat":', "").replace("}", ""));
 
   let popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
-    '<label for="desc">Descripción:</label><input type="text" id="desc" class="desc" value="Nuevo Punto"/><label for="desc">Tipo:</label><select id="tipo"><option value="playa">Playa</option><option value="monumento">Monumento</option><option value="restaurante">Restaurante</option><option value="otro">Otro</option></select><button href="#" class="guar">Guardar</button>'
+    '<label for="name">Nombre:</label><input type="text" id="name" class="name" value="Nuevo Punto"/><label for="desc">Descripción:</label><input type="text" id="desc" class="desc" value="Nuevo Punto"/><label for="tipo">Tipo:</label><select id="tipo"><option value="playa">Playa</option><option value="monumento">Monumento</option><option value="restaurante">Restaurante</option><option value="otro">Otro</option></select><button href="#" class="guar">Guardar</button>'
   );
 
   let guardado = false;
   let deleted = false;
   let nombre = "Nuevo Punto";
+  let descripcion = "Nuevo Punto";
   let tipo = "Playa";
   let markId;
 
@@ -317,9 +335,6 @@ function addMapMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMark
     .setPopup(popup)
     .addTo(map.current);
   let markerDiv = marker.getElement();
-
-  
-  //saveSolidDatasetInContainer("inrut.net/pelayodc", {Readonly<Record<String>>"Nuevo punto"});
 
   popup.on("close", () => {
     if (!guardado && !deleted) {
@@ -338,53 +353,30 @@ function addMapMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMark
           guardado = true;
           nombre = popup
             .getElement()
+            .getElementsByClassName("name")[0].value;
+          descripcion = popup
+            .getElement()
             .getElementsByClassName("desc")[0].value;
           let e = document.getElementById("tipo");
           tipo = e.options[e.selectedIndex].text;
-                //const marker = new MapMarker(x, y, nombre, tipo);
-                //NO PUEDE SER UN NEW, PROBAR LOS TIPOS COMO SE CREAN NUEVOS
-                //const newMarker = MapMarker{ webId:session.info.webId , x, y, nombre};
-                /*
-                var mark: MapMarker = {
-                  webId: session.info.webId,
-                  id: 0,
-                  titulo: nombre,
-                  descripcion: "",
-                  latitud: x,
-                  longitud: y,
-                  categoria: tipo,
-                  comentario: "",
-                  puntuacion: 0,
-                  imagen: ""
-                };
-              */
 
-                
-        markId = addMarker(session.info.webId,nombre, x, y, tipo, "https://inrupt.net/", session);
-          switch (tipo) {
-            case "Playa":
-              playasMarks.push(marker);
-              break;
-            case "Restaurante":
-              restaurantesMarks.push(marker);
-              break;
-            case "Monumento":
-              monumentosMarks.push(marker);
-              break;
-            default:
-              otrosMarks.push(marker);
-              break;
-          }
+          markId = addMarker(session.info.webId,nombre, x, y, tipo, "https://inrupt.net/", session);
+
+          addCategoria(tipo,marker);
+          names.push(nombre);
+          dict[nombre] = [x,y];
 
           popup.setHTML(
             '<p id="nombre">Nombre: ' +
-              nombre +
-              '</p><p id="tipo">Tipo: ' +
-              tipo +
-              '</p><a href="#" class="del"><img src="./images/bin.png" id="pencilpp" /></a> <a href="#" class="ed"><img src="./images/pencil.png" id="pencilpp" /></a> <a href="#" class="val"><img src="/src/star.png" id="pencilpp" /></a>'
+                      nombre +
+                      '<p id="descrip">Descripción: ' +
+                      descripcion +
+                      '</p><p id="tipo">Tipo: ' +
+                      tipo +
+                      '</p><a href="#" class="del"><img src="./images/bin.png" id="pencilpp" /></a> <a href="#" class="ed"><img src="./images/pencil.png" id="pencilpp" /></a> <a href="#" class="val"><img src="/src/star.png" id="pencilpp" /></a>'
           );
 
-          markerFuncs(marker,popup,nombre,tipo, session,markId);
+          markerFuncs(marker,popup,nombre,descripcion,tipo,x,y,session,markId);
         });
     } else {
       popup.on("open", () => {
@@ -394,7 +386,7 @@ function addMapMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMark
           return;
         }
 
-        markerFuncs(marker,popup,nombre,tipo, session, markId);
+        markerFuncs(marker,popup,nombre,descripcion,tipo,x,y,session, markId);
       });
     }
   });
@@ -403,27 +395,22 @@ function addMapMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMark
 
   markerDiv.addEventListener("click", () => {
     if (!editing) {
-      //marker.remove()
       marker.togglePopup();
     }
   });
 }
 
-async function loadMarkers(map,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks, session){
+async function loadMarkers(map, session){
   let points = await getMarkers(session, session.info.webId);
-  console.log("empieza");
-  console.log(points.length);
   for(let i=0; i<points.length; i++){
-    console.log("entra en el for");
-    loadMarker(points[i], map,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks, session);
+    loadMarker(points[i], map, session);
   }
-
 }
 
-async function loadMarker(point, map,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks, session){
-  console.log("se llama bien");
+async function loadMarker(point, map, session){
   let id = point[0];
   let nombre = point[1];
+  let descripcion = "Por cargar en pod";
   let x = Number.parseFloat(point[2]);
   let y = Number.parseFloat(point[3]);
   let categoria = point[4];
@@ -431,18 +418,36 @@ async function loadMarker(point, map,playasMarks,restaurantesMarks,monumentosMar
   let popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
     '<p id="nombre">Nombre: ' +
               nombre +
+              '<p id="descrip">Descripción: ' +
+              descripcion +
               '</p><p id="tipo">Tipo: ' +
               categoria +
               '</p><a href="#" class="del"><img src="./images/bin.png" id="pencilpp" /></a> <a href="#" class="ed"><img src="./images/pencil.png" id="pencilpp" /></a> <a href="#" class="val"><img src="/src/star.png" id="pencilpp" /></a>'
   );
 
-
   let marker = new mapboxgl.Marker()
     .setLngLat([x, y])
     .setPopup(popup)
     .addTo(map.current);
-  let markerDiv = marker.getElement();
 
+  addCategoria(categoria,marker);
+
+  popup.on("open", () => {
+    markerFuncs(marker,popup,nombre,descripcion,categoria,x,y,session, id);
+  });
+
+  names.push(nombre);
+  dict[nombre]=[x,y];
+}
+
+function AddPoint(e,points) {
+  let z = JSON.stringify(e.lngLat.wrap()).split(",");
+  let x = Number.parseFloat(z[0].replace('{"lng":', ""));
+  let y = Number.parseFloat(z[1].replace('"lat":', "").replace("}", ""));
+  points.push([x,y]);
+}
+
+function addCategoria(categoria,marker) {
   switch (categoria) {
     case "Playa":
       playasMarks.push(marker);
@@ -457,11 +462,26 @@ async function loadMarker(point, map,playasMarks,restaurantesMarks,monumentosMar
       otrosMarks.push(marker);
       break;
   }
-  popup.on("open", () => {
-    markerFuncs(marker,popup,nombre,categoria,session, id);
-  });
-  console.log("acaba");
-  console.log(marker);
+}
+
+function removeCategoria(categoria,marker) {
+  let cat;
+  switch (categoria) {
+    case "Playa":
+      cat=playasMarks;
+      break;
+    case "Restaurante":
+      cat=restaurantesMarks;
+      break;
+    case "Monumento":
+      cat=monumentosMarks;
+      break;
+    default:
+      cat=otrosMarks;
+      break;
+  }
+  let index = cat.indexOf(marker);
+  cat.splice(index, 1);
 }
 
 export default MapPage;
