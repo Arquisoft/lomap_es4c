@@ -11,9 +11,6 @@ import { mapAccessToken, mapStyleId } from "./data";
 import Review from "./review";
 import { useNavigate, Navigate } from 'react-router-dom';
 import { addMarker, updateMarker, getMarkers,removeMarker } from "../marker";
-
-import { MapMarker } from '../../shared/shareddtypes';
-
 import { useSession } from "@inrupt/solid-ui-react";
 
 var dict = {};
@@ -24,16 +21,20 @@ var restaurantesMarks = [];
 var monumentosMarks = [];
 var otrosMarks = [];
 
+var editing = false;
+var addroute= false;
+
+var routeCount=0;
+var points = [];
+
 function MapPage() {
 
   const navigate = useNavigate();
   const { session } = useSession();
 
   const callPerfil = () => {
-    // This will navigate to first component
     navigate('/profile'); 
   };
-
   const logOut = () => {
     session.logout();
     navigate('/login'); 
@@ -43,17 +44,11 @@ function MapPage() {
 
   const mapContainer = useRef(null);
   const map = useRef(null);
+  
   const edit = useRef(null);
   const addroutebtn = useRef(null);
-  
   const winpopup = useRef(null);
   const close = useRef(null);
-  
-  var editing = false;
-  var addroute= false;
-  var routeCount=0;
-
-  var points = [];
 
   //botones para filtros
   const filtroTodo = useRef(null);
@@ -114,7 +109,7 @@ function MapPage() {
 
     map.current.on("click", function (e) {
       if (editing) {  
-        addMapMarker(e,map,editing, session);
+        addMapMarker(e,map, session);
       }
       if(addroute) {
         AddPoint(e,points);
@@ -123,47 +118,12 @@ function MapPage() {
 
     //Botón edit
     edit.current.addEventListener("click", () => {
-      editing = !editing;
-      addroute=false;
+      editAction();
     });
 
     //Botón ruta
     addroutebtn.current.addEventListener("click", () => {
-      if (addroute) {
-        //guardar ruta
-        map.current.addSource("route"+routeCount, {
-          type: "geojson",
-          data: {
-            type: "Feature",
-            properties: {},
-            geometry: {
-              type: "LineString",
-              coordinates: points,
-            },
-          },
-        });
-        map.current.addLayer({
-          id: "route"+routeCount,
-          type: "line",
-          source: "route"+routeCount,
-          layout: {
-            "line-join": "round",
-            "line-cap": "round",
-          },
-          paint: {
-            "line-color": "#888",
-            "line-width": 5,
-          },
-        });
-        addroute = false;
-        routeCount++;
-        document.getElementById("pencil-route").src="./images/add.png";
-      } else {
-        addroute = true;
-        points = [];
-        editing = false;
-        document.getElementById("pencil-route").src="./images/save.png";
-      }
+      addrouteAction(map);
     });
 
     close.current.addEventListener('click', () => {
@@ -201,7 +161,7 @@ function MapPage() {
         <img src="./images/add.png" id="pencil" />
       </a>
       <a href="#" className="btn-flotante-route" id="editroute" ref={addroutebtn}>
-        <img src="./images/add.png" id="pencil-route" />
+        <img src="./images/add-route.png" id="pencil-route" />
       </a>
       <div className="window-notice" id="window-notice" ref={winpopup}>
         <div className="content id=content">
@@ -226,6 +186,68 @@ document.addEventListener('click', function(event) {
     });}
     
 });
+
+function editAction() {
+  if(addroute){
+    addroute=false;
+    document.getElementById("pencil-route").src="./images/add-route.png";
+    document.getElementById("pencil").src="./images/add.png";
+  } else {
+    if(editing) {
+      //addroutebtn.current.style.visibility='visible';
+      document.getElementById("editroute").style.visibility="visible";
+      document.getElementById("pencil").src="./images/add.png";
+    } else {
+      //addroutebtn.current.style.visibility='hidden';
+      document.getElementById("editroute").style.visibility="hidden";
+      document.getElementById("pencil").src="./images/cross.png";
+    }
+    editing = !editing;
+  }
+}
+
+function addrouteAction(map) {
+  if(editing){
+    return;
+  }
+
+  if (addroute) {
+    //guardar ruta
+    map.current.addSource("route"+routeCount, {
+      type: "geojson",
+      data: {
+        type: "Feature",
+        properties: {},
+        geometry: {
+          type: "LineString",
+          coordinates: points,
+        },
+      },
+    });
+    map.current.addLayer({
+      id: "route"+routeCount,
+      type: "line",
+      source: "route"+routeCount,
+      layout: {
+        "line-join": "round",
+        "line-cap": "round",
+      },
+      paint: {
+        "line-color": "#888",
+        "line-width": 5,
+      },
+    });
+    addroute = false;
+    routeCount++;
+    document.getElementById("pencil-route").src="./images/add-route.png";
+    document.getElementById("pencil").src="./images/add.png";
+  } else {
+    addroute = true;
+    points = [];
+    document.getElementById("pencil-route").src="./images/save.png";
+    document.getElementById("pencil").src="./images/cross.png";
+  }
+}
 
 function loadFiltros(todo,playas,restaurantes,monumentos,otros) {
   const filters = [
@@ -271,12 +293,7 @@ async function markerFuncs(marker, popup, nombre, descripcion, tipo, x, y, sessi
     .getElement()
     .getElementsByClassName("ed")[0]
     .addEventListener("click", () => {
-      popup.setHTML(
-        '<label for="name">Nombre:</label><input type="text" id="name" class="name" value="' +
-          nombre + '"<label for="desc">Descripción:</label><input type="text" id="desc" class="desc" value="' +
-          descripcion +
-          '"/><label for="desc">Tipo:</label><select id="tipo"><option value="playa">Playa</option><option value="monumento">Monumento</option><option value="restaurante">Restaurante</option><option value="otro">Otro</option></select><button href="#" class="guar">Guardar</button>'
-      );
+      popup.setHTML(setEditHTML(nombre,descripcion,tipo));
       popup
         .getElement()
         .getElementsByClassName("guar")[0]
@@ -299,22 +316,14 @@ async function markerFuncs(marker, popup, nombre, descripcion, tipo, x, y, sessi
           
           //Guardar los nuevos datos en el pod
           updateMarker(session, session.info.webId, markId, tipo, nombre);
-          popup.setHTML(
-            '<p id="nombre">Nombre: ' +
-                      nombre +
-                      '<p id="descrip">Descripción: ' +
-                      descripcion +
-                      '</p><p id="tipo">Tipo: ' +
-                      tipo +
-                      '</p><a href="#" class="del"><img src="./images/bin.png" id="pencilpp" /></a> <a href="#" class="ed"><img src="./images/pencil.png" id="pencilpp" /></a> <a href="#" class="val"><img src="/src/star.png" id="pencilpp" /></a>'
-          );
+          popup.setHTML(setPointHTML(nombre,descripcion,tipo));
 
           marker.togglePopup();
         });
     });
 }
 
-function addMapMarker(e, map, editing, session) {
+function addMapMarker(e, map, session) {
   let z = JSON.stringify(e.lngLat.wrap()).split(",");
   let x = Number.parseFloat(z[0].replace('{"lng":', ""));
   let y = Number.parseFloat(z[1].replace('"lat":', "").replace("}", ""));
@@ -334,7 +343,6 @@ function addMapMarker(e, map, editing, session) {
     .setLngLat([x, y])
     .setPopup(popup)
     .addTo(map.current);
-  let markerDiv = marker.getElement();
 
   popup.on("close", () => {
     if (!guardado && !deleted) {
@@ -350,6 +358,7 @@ function addMapMarker(e, map, editing, session) {
         .getElement()
         .getElementsByClassName("guar")[0]
         .addEventListener("click", () => {
+          editAction();
           guardado = true;
           nombre = popup
             .getElement()
@@ -360,21 +369,13 @@ function addMapMarker(e, map, editing, session) {
           let e = document.getElementById("tipo");
           tipo = e.options[e.selectedIndex].text;
 
-          markId = addMarker(session.info.webId,nombre, x, y, tipo, "https://inrupt.net/", session);
+          markId = addMarker(session.info.webId,nombre, x, y, tipo, "https://inrupt.net/", session); //pasar descripcion
 
           addCategoria(tipo,marker);
           names.push(nombre);
           dict[nombre] = [x,y];
 
-          popup.setHTML(
-            '<p id="nombre">Nombre: ' +
-                      nombre +
-                      '<p id="descrip">Descripción: ' +
-                      descripcion +
-                      '</p><p id="tipo">Tipo: ' +
-                      tipo +
-                      '</p><a href="#" class="del"><img src="./images/bin.png" id="pencilpp" /></a> <a href="#" class="ed"><img src="./images/pencil.png" id="pencilpp" /></a> <a href="#" class="val"><img src="/src/star.png" id="pencilpp" /></a>'
-          );
+          popup.setHTML(setPointHTML(nombre,descripcion,tipo));
 
           markerFuncs(marker,popup,nombre,descripcion,tipo,x,y,session,markId);
         });
@@ -391,13 +392,6 @@ function addMapMarker(e, map, editing, session) {
     }
   });
   marker.togglePopup();
-  editing = false;
-
-  markerDiv.addEventListener("click", () => {
-    if (!editing) {
-      marker.togglePopup();
-    }
-  });
 }
 
 async function loadMarkers(map, session){
@@ -410,20 +404,12 @@ async function loadMarkers(map, session){
 async function loadMarker(point, map, session){
   let id = point[0];
   let nombre = point[1];
-  let descripcion = "Por cargar en pod";
+  let descripcion = "Por cargar en pod"; //point[5]
   let x = Number.parseFloat(point[2]);
   let y = Number.parseFloat(point[3]);
   let categoria = point[4];
 
-  let popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
-    '<p id="nombre">Nombre: ' +
-              nombre +
-              '<p id="descrip">Descripción: ' +
-              descripcion +
-              '</p><p id="tipo">Tipo: ' +
-              categoria +
-              '</p><a href="#" class="del"><img src="./images/bin.png" id="pencilpp" /></a> <a href="#" class="ed"><img src="./images/pencil.png" id="pencilpp" /></a> <a href="#" class="val"><img src="/src/star.png" id="pencilpp" /></a>'
-  );
+  let popup = new mapboxgl.Popup({ offset: 25 }).setHTML(setPointHTML(nombre, descripcion,categoria));
 
   let marker = new mapboxgl.Marker()
     .setLngLat([x, y])
@@ -445,6 +431,31 @@ function AddPoint(e,points) {
   let x = Number.parseFloat(z[0].replace('{"lng":', ""));
   let y = Number.parseFloat(z[1].replace('"lat":', "").replace("}", ""));
   points.push([x,y]);
+}
+
+function setPointHTML(nombre,descripcion,categoria) {
+  return '<p id="nombre">Nombre: ' +
+  nombre +
+  '<p id="descrip">Descripción: ' +
+  descripcion +
+  '</p><p id="tipo">Tipo: ' +
+  categoria +
+  '</p><a href="#" class="del"><img src="./images/bin.png" id="pencilpp" /></a> <a href="#" class="ed"><img src="./images/pencil.png" id="pencilpp" /></a> <a href="#" class="val"><img src="/src/star.png" id="pencilpp" /></a>';
+}
+
+function setEditHTML(nombre,descripcion,categoria) {
+  return '<label for="name">Nombre:</label><input type="text" id="name" class="name" value="' +
+          nombre + '"<label for="desc">Descripción:</label><input type="text" id="desc" class="desc" value="' + descripcion +
+          '"/><label for="desc">Tipo:</label><select id="tipo">'+getOptionCategoria("Playa",categoria)+getOptionCategoria("Monumento",categoria)+
+          getOptionCategoria("Restaurante",categoria)+getOptionCategoria("Otro",categoria)+ '</select><button href="#" class="guar">Guardar</button>'
+}
+
+function getOptionCategoria(categoria,actual) {
+  if(categoria == actual) {
+    return "<option value='"+categoria+"' selected>" + categoria + "</option>";
+  } else {
+    return "<option value='"+categoria+"'>" + categoria + "</option>";
+  }
 }
 
 function addCategoria(categoria,marker) {
