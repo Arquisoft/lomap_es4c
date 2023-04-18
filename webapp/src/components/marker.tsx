@@ -77,9 +77,15 @@ export async function removeSolidMarker(webId:string,session: Session,  markerId
 	
 }
 
-export async function updateMarkerReviews(session: Session, webId: string, markerId:string,des:string, categoria:string,coment:string, puntu:Number,imagen:string,pointName:string) {
+export async function updateMarkerReviews(session: Session, webId: string, markerId:string,des:string, coment:string, puntu:Number,imagen:string,pointName:string) {
 	console.log("entro");
 	const mapPointsUrl = webId.replace("card#me", "") + 'mapas/puntos.ttl';//proveedor+webId+nombreCategoria
+	console.log("url ");
+	console.log("marker ");
+	let dataset = await getSolidDataset(mapPointsUrl);
+	console.log("crea dataset");
+	let punto =  getThing(dataset,markerId) as Thing ;
+
 	var marker: MapMarkerReview = {
 		webId: webId,
 		id:markerId,//va todo la url
@@ -88,13 +94,18 @@ export async function updateMarkerReviews(session: Session, webId: string, marke
 		puntuacion: puntu,
 		imagen: imagen
 	};
-	let dataset = await getSolidDataset(mapPointsUrl);
-	
-	let punto =  getThing(dataset,markerId) as Thing ;
 
-	
-
+	let latitu = getUrl(punto, 'http://schema.org/latitude') as string;
+	let longitu = getUrl(punto, 'http://schema.org/longitude') as string;
+	let categoria = getUrl(punto, 'http://schema.org/category') as string;	
+	latitu = latitu.replace("http://www.w3.org/2001/XMLSchema#float(", "").replace(")", "");
+	longitu = longitu.replace("http://www.w3.org/2001/XMLSchema#float(", "").replace(")", "");
+	//categoria = categoria.replace("http://www.w3.org/2001/XMLSchema#text(", "").replace(")", "");
+	console.log("llega aqui 1");
 	const mapPointsThing = buildThing(createThing(punto))
+		.setUrl('http://schema.org/latitude', `http://www.w3.org/2001/XMLSchema#float(${latitu})`)
+		.setUrl('http://schema.org/longitude', `http://www.w3.org/2001/XMLSchema#float(${longitu})`)
+		//.setUrl('http://schema.org/category', `http://www.w3.org/2001/XMLSchema#text(${categoria})`)
 		.setUrl('http://schema.org/description', `http://www.w3.org/2001/XMLSchema#text(${marker.descripcion})`)
 		.setUrl('http://schema.org/reviewAspect', `http://www.w3.org/2001/XMLSchema#text(${marker.comentario})`)
 		.setUrl('http://schema.org/reviewRating', `http://www.w3.org/2001/XMLSchema#ratingValue(${marker.puntuacion})`)
@@ -119,7 +130,7 @@ export async function updateMarker(session: Session, webId: string, markerId:str
 	
 	let dataset = await getSolidDataset(mapPointsUrl);
 
-	
+	console.log("crea dataset id: " + markerId);
 	let punto =  getThing(dataset,markerId) as Thing ;
 
 	let latitu = getUrl(punto, 'http://schema.org/latitude') as string;
@@ -134,6 +145,7 @@ export async function updateMarker(session: Session, webId: string, markerId:str
   		latitud: parseFloat(latitu),
   		longitud: parseFloat(longitu),
   		categoria: tipo
+		
 	};
 
 	const mapPointsThing = buildThing(createThing(punto))
