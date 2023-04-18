@@ -10,7 +10,7 @@ import mapboxgl, { Map, Marker } from "mapbox-gl";
 import { mapAccessToken, mapStyleId } from "./data";
 import Review from "./review";
 import { useNavigate, Navigate } from 'react-router-dom';
-import { addMarker, updateMarker, getMarkers,removeMarker } from "../marker";
+import { addMarker, updateMarker, getMarkers,removeMarker,getFriendsSolid } from "../marker";
 //import MapMarker, { IMarker } from "../../../../restapi/src/models/marker";
 
 import { MapMarker } from '../../shared/shareddtypes';
@@ -411,11 +411,15 @@ function addMapMarker(e,map,editing,playasMarks,restaurantesMarks,monumentosMark
 
 async function loadMarkers(map,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks, session){
   let points = await getMarkers(session, session.info.webId);
-  console.log("empieza");
+  let friendsPoint = await getFriendsSolid( session.info.webId,session);
   console.log(points.length);
   for(let i=0; i<points.length; i++){
     console.log("entra en el for");
     loadMarker(points[i], map,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks, session);
+  }
+  for(let i=0; i<friendsPoint.length; i++){
+    console.log("entra en el for de amigos");
+    loadMarker(friendsPoint[i], map,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks, session);
   }
 
 }

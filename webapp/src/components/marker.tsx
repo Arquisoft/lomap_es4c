@@ -228,7 +228,7 @@ export async function getFriendsSolid(webid: String, session: Session) {
 	const dataset = await getSolidDataset(webid.toString());
 
 	// Obtiene la cosa correspondiente al perfil FOAF
-
+	var markers = [];
 	var arayThing = getThingAll(dataset);
 	for (let i = 0; i < arayThing.length; i++) {
 		console.log("arayThing " + arayThing[i].url)
@@ -239,9 +239,11 @@ export async function getFriendsSolid(webid: String, session: Session) {
 		if (arayThing[i].url.includes("card")) {
 			var profiles = String(nombreCompleto).split(",");
 			console.log("profiles " + profiles.length);
-			var markers = [];
-			for (let j = 0; profiles.length; j++) {
-				markers[j] = getMarkers(session, profiles[j]);
+			
+			for (let j = 0;j< profiles.length; j++) {
+				var profile=profiles[j]+"profile/";
+				console.log("perfil "+profile);
+				markers[j] = getMarkers(session, profile);
 				console.log("MARKERS " + markers[j]);
 
 			}
@@ -251,6 +253,8 @@ export async function getFriendsSolid(webid: String, session: Session) {
 
 
 	}
+
+	return markers;
 }
 
 /*
