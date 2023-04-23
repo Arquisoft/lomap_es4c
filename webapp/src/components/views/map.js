@@ -418,9 +418,16 @@ async function loadMarkers(map,playasMarks,restaurantesMarks,monumentosMarks,otr
     loadMarker(points[i], map,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks, session);
   }
   for(let i=0; i<friendsPoint.length; i++){
-    console.log("entra en el for de amigos");
-    loadMarker(friendsPoint[i], map,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks, session);
+    console.log("entra en el for de amigos " + friendsPoint);
+    var array=await friendsPoint[i];
+    console.log((await array).length)
+    for(let j=0; j<array.length; j++){
+      console.log("Nombre del punto" + array[j].nombre)
+    
+    console.log("entra en el for de amigos "+ friendsPoint[0].nombre);
+    loadMarker(array[j], map,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks, session);
   }
+}
 
 }
 

@@ -164,9 +164,10 @@ export async function addSolidMarker(session: Session, idp: String, marker: MapM
 
 export async function getMarkers(session: Session,webId: String) {
 	const apiEndPoint = process.env.REACT_APP_API_URI || 'http://localhost:5000/api'
-	
+			
+
 		const mapPointsUrl = webId.replace("card#me", "") + 'mapas/puntos.ttl';//proveedor+webId+nombreCategoria
-	
+		console.log("url12345678" + mapPointsUrl);
 		const dataset = await getSolidDataset(mapPointsUrl,{fetch:session.fetch as any});
 	
 		var points = [];
@@ -236,15 +237,17 @@ export async function getFriendsSolid(webid: String, session: Session) {
 		var nombreCompleto = getUrlAll(arayThing[i], FOAF.knows.iri.value);
 
 		console.log("Knows  " + nombreCompleto);
-		if (arayThing[i].url.includes("card")) {
+		if (arayThing[i].url.includes("card#me")) {
 			var profiles = String(nombreCompleto).split(",");
 			console.log("profiles " + profiles.length);
 			
 			for (let j = 0;j< profiles.length; j++) {
+				if(!profiles[j].includes(webid.toString())){
 				var profile=profiles[j]+"profile/";
 				console.log("perfil "+profile);
 				markers[j] = getMarkers(session, profile);
 				console.log("MARKERS " + markers[j]);
+				}
 
 			}
 		}
