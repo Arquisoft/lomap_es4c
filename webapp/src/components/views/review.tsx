@@ -18,30 +18,40 @@ type ReviewProps  ={
 function Review(props:ReviewProps):JSX.Element{
   const navigate = useNavigate();
   const { session } = useSession();
-  const rating = 0;
   
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    navigate('/map');
     console.log("submit");
     console.log("imagen: " + (document.getElementById("foto") as HTMLInputElement).files);
+    var rating = 0;
+    if((document.getElementById("estrellas_ivan") as HTMLInputElement) != null){
+        console.log((document.getElementById("estrellas_ivan") as HTMLInputElement).getElementsByClassName("selected").length);
+        rating = (document.getElementById("estrellas_ivan") as HTMLInputElement).getElementsByClassName("selected").length;
+      }
+    console.log("rating: " + rating);
     var marker: MapMarkerReview = {
       webId: session.info.webId as string,
       id:props.pMarkId,
       descripcion:"",
       comentario: (document.getElementById("comentario") as HTMLInputElement).value as string,
-      puntuacion: rating as number,
+      puntuacion: rating,
       imagen: (document.getElementById("foto") as HTMLInputElement).value as string,
     };
     console.log("webid: " + marker.webId);
     console.log("id: " + props.pMarkId);
     console.log("name:" + props.pName);
+    
     updateMarkerReviews(session, marker.webId, props.pMarkId, marker.descripcion, marker.comentario, marker.puntuacion, marker.imagen, props.pName);
-    navigate(-1);
-  
+    //navigate('/map');
+    (document.getElementById("window-notice") as HTMLInputElement).style.visibility = "hidden";
   };
+
     
   return (
     <>
-      <div  >
+      <div>
         <h1>Añade una valoración</h1>
         <div>
         <form id= "formReview" onSubmit={handleSubmit}>
@@ -53,7 +63,7 @@ function Review(props:ReviewProps):JSX.Element{
 
           <label>Puntuación:</label>
           
-          <StarRating  />
+          <StarRating />
           <input type="submit" value="Enviar"></input>
         </form>
         </div>
