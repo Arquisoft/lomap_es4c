@@ -25,6 +25,20 @@ function Review(props:ReviewProps):JSX.Element{
     navigate('/map');
     console.log("submit");
     console.log("imagen: " + (document.getElementById("foto") as HTMLInputElement).files);
+    var blob = new Blob();
+    const inputFile = document.querySelector('input[type="file"]') as HTMLInputElement; 
+    if (inputFile.files && inputFile.files.length > 0) { 
+      const file = inputFile.files[0]; 
+      const reader = new FileReader();
+       reader.addEventListener('load', () => { 
+        blob = new Blob([reader.result as ArrayBuffer], { type: file.type });
+        console.log("type: " + file.type);
+
+         // Utiliza el objeto Blob como necesites 
+        }); 
+        reader.readAsArrayBuffer(file); 
+        }
+
     var rating = 0;
     if((document.getElementById("estrellas_ivan") as HTMLInputElement) != null){
         console.log((document.getElementById("estrellas_ivan") as HTMLInputElement).getElementsByClassName("selected").length);
@@ -37,7 +51,7 @@ function Review(props:ReviewProps):JSX.Element{
       descripcion:"",
       comentario: (document.getElementById("comentario") as HTMLInputElement).value as string,
       puntuacion: rating,
-      imagen: (document.getElementById("foto") as HTMLInputElement).value as string,
+      imagen: blob,
     };
     console.log("webid: " + marker.webId);
     console.log("id: " + props.pMarkId);

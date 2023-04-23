@@ -77,7 +77,7 @@ export async function removeSolidMarker(webId:string,session: Session,  markerId
 	
 }
 
-export async function updateMarkerReviews(session: Session, webId: string, markerId:string,des:string, coment:string, puntu:Number,imagen:string,pointName:string) {
+export async function updateMarkerReviews(session: Session, webId: string, markerId:string,des:string, coment:string, puntu:Number,imagen:Blob,pointName:string) {
 	console.log("entro");
 	const mapPointsUrl = webId.replace("card#me", "") + 'mapas/puntos.ttl';//proveedor+webId+nombreCategoria
 	console.log("url ");
@@ -85,6 +85,7 @@ export async function updateMarkerReviews(session: Session, webId: string, marke
 	let dataset = await getSolidDataset(mapPointsUrl);
 	console.log("crea dataset");
 	let punto =  getThing(dataset,markerId) as Thing ;
+	console.log("Imagn " + imagen);
 
 	var marker: MapMarkerReview = {
 		webId: webId,
@@ -102,6 +103,11 @@ export async function updateMarkerReviews(session: Session, webId: string, marke
 	longitu = longitu.replace("http://www.w3.org/2001/XMLSchema#float(", "").replace(")", "");
 	//categoria = categoria.replace("http://www.w3.org/2001/XMLSchema#text(", "").replace(")", "");
 	console.log("llega aqui 1");
+
+	const url = URL.createObjectURL(marker.imagen);
+	const img = document.createElement('img');
+	img.src = url.replace("blob:", "");
+	console.log("imagen 22222" + img.src);
 	const mapPointsThing = buildThing(createThing(punto))
 		.setUrl('http://schema.org/latitude', `http://www.w3.org/2001/XMLSchema#float(${latitu})`)
 		.setUrl('http://schema.org/longitude', `http://www.w3.org/2001/XMLSchema#float(${longitu})`)
@@ -109,10 +115,9 @@ export async function updateMarkerReviews(session: Session, webId: string, marke
 		.setUrl('http://schema.org/description', `http://www.w3.org/2001/XMLSchema#text(${marker.descripcion})`)
 		.setUrl('http://schema.org/reviewAspect', `http://www.w3.org/2001/XMLSchema#text(${marker.comentario})`)
 		.setUrl('http://schema.org/reviewRating', `http://www.w3.org/2001/XMLSchema#ratingValue(${marker.puntuacion})`)
-		.setUrl('http://schema.org/image', `http://www.w3.org/2001/XMLSchema#imageObject(${marker.imagen})`)
+		.setUrl('http://schema.org/image', `http://www.w3.org/2001/XMLSchema#imageObject(${img.src})`)
 		.setStringNoLocale('http://schema.org/name', pointName)
 		.build();
-	
 
 	// Añadir el punto de mapa al conjunto de datos
 	var updatedDataset = setThing(dataset, mapPointsThing);

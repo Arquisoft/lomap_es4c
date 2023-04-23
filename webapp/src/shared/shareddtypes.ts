@@ -19,7 +19,7 @@ export type MapMarkerReview = {
   descripcion: string;
   comentario: string;
   puntuacion: Number;
-  imagen: string;
+  imagen: Blob;
 }
 
 
