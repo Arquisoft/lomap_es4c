@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-
+import ReactDOM from "react-dom";
 import "mapbox-gl/dist/mapbox-gl.css";
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import "./style.css";
@@ -16,6 +16,9 @@ import { addMarker, updateMarker, getMarkers,removeMarker,getFriendsSolid } from
 import { MapMarker } from '../../shared/shareddtypes';
 
 import { useSession } from "@inrupt/solid-ui-react";
+
+var markerId = "";
+var markerName = "";
 
 function MapPage() {
 
@@ -146,9 +149,7 @@ function MapPage() {
       </a>
       <div className="window-notice" id="window-notice" ref={winpopup}>
         <div className="content id=content">
-          <Review
-            session={session.info.webId}/>
-          
+          <Review pName = {markerName} pMarkId={markerId}/>
           <div className="content-buttons"><a href="#" ref={close} id="close-button">Aceptar</a></div>
         </div>
       </div>
@@ -160,12 +161,13 @@ function MapPage() {
 document.addEventListener('click', function(event) {
   if(document.getElementById('window-notice')!=null){
     
-    document.getElementById('formReview').addEventListener('click', function(event) {
+      document.getElementById('formReview').addEventListener('click', function(event) {
     
         event.stopPropagation();
+        
      
     });}
-    
+  
 });
 
 function loadFiltros(todo,playas,restaurantes,monumentos,otros,plist,rlist,mlist,olist) {
@@ -261,6 +263,12 @@ async function markerFuncs(marker, popup, nombre, tipo, session, markId) {
     .getElementsByClassName('val')[0]
     .addEventListener('click', () => {
       document.getElementById('window-notice').style.visibility='visible';
+      console.log('markId: '+ markId.substring(markId.lastIndexOf("#") + 1));
+      markerId = markId;
+      markerName = nombre;
+      console.log(nombre);
+      var obj = {pNombre: nombre, pMarkId: markId.substring(markId.lastIndexOf("#") + 1), pSession: session, pSessionId: session.info.webId}
+      //ReactDOM.render(<Review {...obj}/>, document.getElementById('window-notice'));
     })
 
     popup
@@ -473,6 +481,19 @@ async function loadMarker(point, map,playasMarks,restaurantesMarks,monumentosMar
   });
   console.log("acaba");
   console.log(marker);
+}
+
+function callReview(obj){
+  console.log("entra en review");
+  console.log(obj);
+  console.log(obj.id);
+  console.log(obj.nombre);
+  console.log(obj.tipo);
+  console.log(obj.session);
+  console.log(obj.markId);
+  //review(obj.id, obj.nombre, obj.tipo, obj.session, obj.markId);
+    
+  
 }
 
 export default MapPage;

@@ -1,9 +1,9 @@
+
 import { Session } from '@inrupt/solid-client-authn-browser';
 import { MapMarker, MapMarkerReview } from '../shared/shareddtypes';
 import { getStringNoLocale, getUrlAll, buildThing, getSolidDataset, createSolidDataset, createThing, Thing, removeThing, setThing, getThing, getThingAll, addUrl, addStringNoLocale, getSolidDatasetWithAcl, getUrl, saveSolidDatasetAt } from '@inrupt/solid-client';
 import { FOAF } from "@inrupt/lit-generated-vocab-common";
 import { Marker } from 'mapbox-gl';
-
 
 
 export async function addMarker(webid: string,nombre: string, lat: Number, lon: Number, tipo: string, idp: String, session: Session) {
@@ -13,13 +13,9 @@ export async function addMarker(webid: string,nombre: string, lat: Number, lon: 
 		webId: webid,
 		id:"",
 		titulo: nombre,
-		descripcion:"",
 		latitud: lat,
 		longitud:lon,
 		categoria: tipo,
-		comentario: "",
-		puntuacion: 0,
-		imagen: ""
 	};
 	var marker = JSON.stringify({
 		webId: mapMarker.webId,
@@ -83,45 +79,102 @@ export async function removeSolidMarker(webId:string,session: Session,  markerId
 
 }
 
-export async function updateMarker(session: Session, webId: string, markerId:string,des:string, categoria:string,coment:string, puntu:Number,imagen:string,pointName:string) {
+export async function updateMarkerReviews(session: Session, webId: string, markerId:string,des:string, coment:string, puntu:Number,imagen:Blob,pointName:string) {
 	console.log("entro");
 	const mapPointsUrl = webId.replace("card#me", "") + 'mapas/puntos.ttl';//proveedor+webId+nombreCategoria
+	console.log("url ");
+	console.log("marker ");
+	let dataset = await getSolidDataset(mapPointsUrl);
+	console.log("crea dataset");
+	let punto =  getThing(dataset,markerId) as Thing ;
+	console.log("Imagn " + imagen);
+
 	var marker: MapMarkerReview = {
 		webId: webId,
 		id:markerId,//va todo la url
 		descripcion:des,
-		categoria: categoria,
 		comentario:coment,
 		puntuacion: puntu,
 		imagen: imagen
 	};
-	let dataset = await getSolidDataset(mapPointsUrl);
 
-	let punto =  getThing(dataset,markerId) as Thing ;
+	let latitu = getUrl(punto, 'http://schema.org/latitude') as string;
+	let longitu = getUrl(punto, 'http://schema.org/longitude') as string;
+	let categoria = getUrl(punto, 'http://schema.org/category') as string;	
+	latitu = latitu.replace("http://www.w3.org/2001/XMLSchema#float(", "").replace(")", "");
+	longitu = longitu.replace("http://www.w3.org/2001/XMLSchema#float(", "").replace(")", "");
+	//categoria = categoria.replace("http://www.w3.org/2001/XMLSchema#text(", "").replace(")", "");
+	console.log("llega aqui 1");
 
-	const mapPointsThing = setThing(dataset, buildThing(punto)
-		.addUrl('http://schema.org/description', `http://www.w3.org/2001/XMLSchema#text(${marker.descripcion})`)
-		.addUrl('http://schema.org/category', `http://www.w3.org/2001/XMLSchema#text(${marker.categoria})`)
-		.addUrl('http://schema.org/reviewAspect', `http://www.w3.org/2001/XMLSchema#text(${marker.comentario})`)
-		.addUrl('http://schema.org/reviewRating', `http://www.w3.org/2001/XMLSchema#ratingValue(${marker.puntuacion})`)
-		.addUrl('http://schema.org/image', `http://www.w3.org/2001/XMLSchema#imageObject(${marker.imagen})`)
-		.addStringNoLocale('http://schema.org/name', pointName)
-		.build());
-
+	const url = URL.createObjectURL(marker.imagen);
+	const img = document.createElement('img');
+	img.src = url.replace("blob:", "");
+	console.log("imagen 22222" + img.src);
+	const mapPointsThing = buildThing(createThing(punto))
+		.setUrl('http://schema.org/latitude', `http://www.w3.org/2001/XMLSchema#float(${latitu})`)
+		.setUrl('http://schema.org/longitude', `http://www.w3.org/2001/XMLSchema#float(${longitu})`)
+		//.setUrl('http://schema.org/category', `http://www.w3.org/2001/XMLSchema#text(${categoria})`)
+		.setUrl('http://schema.org/description', `http://www.w3.org/2001/XMLSchema#text(${marker.descripcion})`)
+		.setUrl('http://schema.org/reviewAspect', `http://www.w3.org/2001/XMLSchema#text(${marker.comentario})`)
+		.setUrl('http://schema.org/reviewRating', `http://www.w3.org/2001/XMLSchema#ratingValue(${marker.puntuacion})`)
+		.setUrl('http://schema.org/image', `http://www.w3.org/2001/XMLSchema#imageObject(${img.src})`)
+		.setStringNoLocale('http://schema.org/name', pointName)
+		.build();
 
 	// Añadir el punto de mapa al conjunto de datos
-	//var updatedDataset = setThing(dataset, mapPointsThing);
-	//console.log("dataset " + dataset.graphs);
-
+	var updatedDataset = setThing(dataset, mapPointsThing);
+	console.log("dataset " + dataset.graphs);
+	
 
 	// Escribir el conjunto de datos actualizado en el Pod de Solid
-	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, mapPointsThing,{fetch:session.fetch as any});
+	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset,{fetch:session.fetch as any});
+	console.log(`El punto de mapa  has ido modificado'${pointName}'`);
+}
+
+export async function updateMarker(session: Session, webId: string, markerId:string, tipo: string, pointName:string) {
+	console.log("entro");
+	const mapPointsUrl = webId.replace("card#me", "") + 'mapas/puntos.ttl';//proveedor+webId+nombreCategoria
+	
+	let dataset = await getSolidDataset(mapPointsUrl);
+
+	console.log("crea dataset id: " + markerId);
+	let punto =  getThing(dataset,markerId) as Thing ;
+
+	let latitu = getUrl(punto, 'http://schema.org/latitude') as string;
+	let longitu = getUrl(punto, 'http://schema.org/longitude') as string;	
+	latitu = latitu.replace("http://www.w3.org/2001/XMLSchema#float(", "").replace(")", "");
+	longitu = longitu.replace("http://www.w3.org/2001/XMLSchema#float(", "").replace(")", "");
+
+	var marker: MapMarker = {
+		webId: webId,
+  		id:markerId,
+		titulo: pointName,
+  		latitud: parseFloat(latitu),
+  		longitud: parseFloat(longitu),
+  		categoria: tipo
+		
+	};
+
+	const mapPointsThing = buildThing(createThing(punto))
+		.setUrl('http://schema.org/latitude', `http://www.w3.org/2001/XMLSchema#float(${marker.latitud})`)
+		.setUrl('http://schema.org/longitude', `http://www.w3.org/2001/XMLSchema#float(${marker.longitud})`)
+		.setUrl('http://schema.org/category', `http://www.w3.org/2001/XMLSchema#text(${marker.categoria})`)
+		.setStringNoLocale('http://schema.org/name', pointName)
+		.build();
+	
+
+	// Añadir el punto de mapa al conjunto de datos
+	var updatedDataset = setThing(dataset, mapPointsThing);
+	console.log("dataset " + dataset.graphs);
+
+	// Escribir el conjunto de datos actualizado en el Pod de Solid
+	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset,{fetch:session.fetch as any});
 	console.log(`El punto de mapa  has ido modificado'${pointName}'`);
 }
 export async function addSolidMarker(session: Session, idp: String, marker: MapMarker) {
 	const pointName = marker.titulo;
 	const webId = marker.webId;
-	console.log("marker " + marker.descripcion);
+
 
 	const mapPointsUrl = webId.replace("card#me", "") + 'mapas/puntos.ttl';//proveedor+webId+nombreCategoria
 
