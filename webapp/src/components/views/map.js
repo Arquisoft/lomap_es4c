@@ -112,13 +112,13 @@ function MapPage() {
         addMapMarker(e,map, session);
       }
       if(addroute) {
-        AddPoint(e,points);
+        AddPoint(e,points,map);
       }
     });
 
     //Botón edit
     edit.current.addEventListener("click", () => {
-      editAction();
+      editAction(map);
     });
 
     //Botón ruta
@@ -187,11 +187,17 @@ document.addEventListener('click', function(event) {
     
 });
 
-function editAction() {
+function editAction(map) {
   if(addroute){
     addroute=false;
     document.getElementById("pencil-route").src="./images/add-route.png";
     document.getElementById("pencil").src="./images/add.png";
+
+    //Borrar layer si existe
+    if(map.current.getLayer("puntos") != undefined){
+      map.current.removeLayer("puntos");
+      map.current.removeSource("puntos");
+    }
   } else {
     if(editing) {
       //addroutebtn.current.style.visibility='visible';
@@ -212,6 +218,12 @@ function addrouteAction(map) {
   }
 
   if (addroute) {
+    //Borrar layer si existe
+    if(map.current.getLayer("puntos") != undefined){
+      map.current.removeLayer("puntos");
+      map.current.removeSource("puntos");
+    }
+
     //guardar ruta
     map.current.addSource("route"+routeCount, {
       type: "geojson",
@@ -358,7 +370,7 @@ function addMapMarker(e, map, session) {
         .getElement()
         .getElementsByClassName("guar")[0]
         .addEventListener("click", () => {
-          editAction();
+          editAction(map);
           guardado = true;
           nombre = popup
             .getElement()
@@ -426,11 +438,99 @@ async function loadMarker(point, map, session){
   dict[nombre]=[x,y];
 }
 
-function AddPoint(e,points) {
+async function loadFriendMarker(point, map, session){
+  let id = point[0];
+  let nombre = point[1];
+  let descripcion = "Por cargar en pod"; //point[5]
+  let x = Number.parseFloat(point[2]);
+  let y = Number.parseFloat(point[3]);
+  let categoria = point[4];
+
+  let popup = new mapboxgl.Popup({ color: 'red', offset: 25 }).setHTML(setFriendPointHTML(nombre, descripcion,categoria));
+
+  let marker = new mapboxgl.Marker()
+    .setLngLat([x, y])
+    .setPopup(popup)
+    .addTo(map.current);
+
+  addCategoria(categoria,marker);
+
+  popup.on("open", () => {
+    markerFuncs(marker,popup,nombre,descripcion,categoria,x,y,session, id);
+  });
+
+  names.push(nombre);
+  dict[nombre]=[x,y];
+}
+
+function AddPoint(e,points,map) {
   let z = JSON.stringify(e.lngLat.wrap()).split(",");
   let x = Number.parseFloat(z[0].replace('{"lng":', ""));
   let y = Number.parseFloat(z[1].replace('"lat":', "").replace("}", ""));
+
   points.push([x,y]);
+
+  //Borrar layer si existe
+  if(map.current.getLayer("puntos") != undefined){
+    map.current.removeLayer("puntos");
+    map.current.removeSource("puntos");
+  }
+
+  if(points.length==1) {
+    map.current.addSource('puntos', {
+      'type': 'geojson',
+      'data': {
+        'type': 'FeatureCollection',
+        'features': [
+          {
+          'type': 'Feature',
+          'properties': {},
+          'geometry': {
+            'type': 'Point',
+            'coordinates': points[0]
+          }
+          }
+        ]
+      }
+    });
+    map.current.addLayer({
+      'id': 'puntos',
+      'type': 'circle',
+      'source': 'puntos',
+      'paint': {
+      'circle-color': '#4264fb',
+      'circle-radius': 8,
+      'circle-stroke-width': 2,
+      'circle-stroke-color': '#ffffff'
+      }
+      });
+  } else {
+    //Añadimos layer temporal
+    map.current.addSource("puntos", {
+      type: "geojson",
+      data: {
+        type: "Feature",
+        properties: {},
+        geometry: {
+          type: "LineString",
+          coordinates: points,
+        },
+      },
+    });
+    map.current.addLayer({
+      id: "puntos",
+      type: "line",
+      source: "puntos",
+      layout: {
+        "line-join": "round",
+        "line-cap": "round",
+      },
+      paint: {
+        "line-color": "#888",
+        "line-width": 5,
+      },
+    });
+  }
 }
 
 function setPointHTML(nombre,descripcion,categoria) {
@@ -441,6 +541,16 @@ function setPointHTML(nombre,descripcion,categoria) {
   '</p><p id="tipo">Tipo: ' +
   categoria +
   '</p><a href="#" class="del"><img src="./images/bin.png" id="pencilpp" /></a> <a href="#" class="ed"><img src="./images/pencil.png" id="pencilpp" /></a> <a href="#" class="val"><img src="/src/star.png" id="pencilpp" /></a>';
+}
+
+function setFriendPointHTML(nombre,descripcion,categoria) {
+  return '<p id="nombre">Nombre: ' +
+  nombre +
+  '<p id="descrip">Descripción: ' +
+  descripcion +
+  '</p><p id="tipo">Tipo: ' +
+  categoria +
+  '<a href="#" class="val"><img src="/src/star.png" id="pencilpp" /></a>';
 }
 
 function setEditHTML(nombre,descripcion,categoria) {
