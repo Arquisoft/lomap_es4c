@@ -220,9 +220,17 @@ export async function getMarkers(session: Session,webId: String) {
 			
 
 		const mapPointsUrl = webId.replace("card#me", "") + 'mapas/puntos.ttl';//proveedor+webId+nombreCategoria
-		console.log("url12345678" + mapPointsUrl);
-		const dataset = await getSolidDataset(mapPointsUrl,{fetch:session.fetch as any});
-	
+		console.log("url12345678 " + mapPointsUrl);
+		var dataset;
+		try{
+			dataset = await getSolidDataset(mapPointsUrl,{fetch:session.fetch as any});
+		}
+		catch(error){
+			console.log("error " + error);
+			return [];
+		}
+		
+		console.log("dataset aaaaaaaaaaaaa " + dataset);
 		var points = [];
 	
 		var arayThing=getThingAll(dataset);
@@ -296,7 +304,7 @@ export async function getFriendsSolid(webid: String, session: Session) {
 			
 			for (let j = 0;j< profiles.length; j++) {
 				if(!profiles[j].includes(webid.toString())){
-				var profile=profiles[j]+"profile/";
+				var profile=profiles[j];
 				console.log("perfil "+profile);
 				markers[j] = getMarkers(session, profile);
 				console.log("MARKERS " + markers[j]);
