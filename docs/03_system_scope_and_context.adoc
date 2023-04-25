@@ -1,6 +1,7 @@
 [[section-system-scope-and-context]]
 == System Scope and Context
-
+En puntos anteriores hemos hablado de nuestra meta con esta aplicación, ahora tenemos que explicar un poco cuál va a ser 
+nuestro entorno de trabajo y la forma en la que estos se comunican para llegar a dicho objetivo.
 
 [role="arc42help"]
 ****
@@ -53,9 +54,9 @@ image:3-system-scope-and-context.png["Business Context"]
 |El POD almacena la información del usuario y es solicitado por la webApp
 |El output es la información del usuario la cuál serán los puntos marcados en el mapa
 
-|webApp
-|Recibirá los datos procesados
-|La información sobre el usuario actual
+|LoMap
+|Es la webApp, Recibirá los datos procesados
+|La información sobre la aplicación y el usuario actual
 
 |Database
 |Recibe querys para obtener información
@@ -79,13 +80,20 @@ together with a mapping table showing the relationships between channels and inp
 
 ****
 
-El objetivo principal es la descentralización de la aplicación, esto es posible gracias a los PODS de usuario
 
-La aplicación estará escrita en TypeScript y empleará la librería React para la creación de Interfaces de usuario
-[options="header",cols="1,2,3"]
+La aplicación seguirá la arquitectura SOLID, estará escrita en TypeScript y empleará la librería React para la creación de Interfaces de usuario, 
+Aquí debajo se especifica de manera más detallada todo lo que hemos usado en la aplicación y para qué lo utilizamos.
+
+[options="header",cols="1,2"]
 |===
 |Tecnología|Descripción
 |SOLID| Arquitectura seguida en la aplicación para el manejo de datos
-|TypeScript|Lenguaje utilizado para la creación de la aplicación
-|React|Librería pra la creación de interfaces de usuario
+|TypeScript| Lenguaje utilizado para la creación de la aplicación
+|React| Librería para la creación de interfaces de usuario
+|Javascript| Lenguaje usado puntualmente para resolver distintos problemas que nos surgieron con código .tsx
+|MapBox| Api para los mapas
+|PODs| Para guardar datos
+|MongoDb| Como base de datos
+|Node.js y express| Todo lo relacionado con la ejecución de la aplicación
+|SonarCloud| Para cobertura de código
 |===

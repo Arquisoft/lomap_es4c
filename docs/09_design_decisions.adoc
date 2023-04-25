@@ -1,18 +1,15 @@
 [[section-design-decisions]]
 == Design Decisions
-=== Decisiones generales
-* Utilizaremos SOLID, un proyecto de descentralización de datos
-* Utilizaremos react para la interfaz
-* Utilizaremos Typescript, un lenguaje muy silimar a javascript
-* Seguiremos el MVC(Modelo Vista Controlador) un patrón de arquitectura muy común
 
-=== Problemas
-* Necesitamos aprender a usar estas nuevas herramientas de trabajo
+Hemos tomado varias decisiones arquitectónicas respecto al diseño de la aplicación. Estas son:
 
-=== Consecuencias
+- SOLID. Utilizaremos SOLID como método de almacenar la información de los usuarios con una gran privacidad.
 
+- React y TypeScript. Como lenguaje para el diseño de la aplicación.
 
-=== Decisiones concretas
+- MVC. Utilizaremos un diseño de modelo-vista-controlador para el desarrollo de la aplicación y comunicación entre sus capas.
+
+- MongoDB. Utilizaremos MongoDB como base de datos para almacenar determinada información.
 
 [role="arc42help"]
 ****

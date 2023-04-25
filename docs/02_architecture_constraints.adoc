@@ -6,10 +6,6 @@
 |===
 |Restricción|Explicación
 
-| *React* | _El frontend de la aplicación será realizado con la librería React._ 
-
-| *Typescript* | _El lenguaje de programación usado para realizar tanto el backend como el frontend de la aplicación._
-
 | *PODs de SOLID* | _Se hará uso de la tecnología de PODs de SOLID para asegurar la privacidad de los datos de los usuarios que interactuen con la aplicación._
 
 | *GitHub* | _El proyecto estará en un repositorio de GitHub_
@@ -22,7 +18,9 @@
 |===
 |Restricción|Explicación
 
-| *Miembros del equipo* | _Somos un equipo de 5 estudiantes, con horarios dispares, 3 de los integrantes trabajan a la vez que estudian y 1 está en evaluación diferenciada._ 
+| *Tamaño del equipo* | _Somos un equipo de 5 estudiantes, 1 está en evaluación diferenciada._ 
+
+| *Horarios* | _Los integrantes del equipo tenemos horarios dispares debido a las a las asignaturas y el trabajo._
 
 | *Tiempo* | _La aplicación debe de ser desarrollada dentro de los márgenes establecidos por los profesores, y las entregas han de estar realizadas en el tiempo establecido._
 
