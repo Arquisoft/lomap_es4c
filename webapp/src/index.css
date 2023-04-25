@@ -1,14 +1,88 @@
 p {
   font-family: Arial, Helvetica, sans-serif;
 }
-h1 {
+body{
+  background-color: #f2f2f2;
+  color: #333;
+  font-family: Arial, sans-serif;
+}
+h1  {
   text-align: center;
+  color: #003366;
   font-family: Arial, Helvetica, sans-serif;
+}
+#title {
+  font-size: 3rem;
+  color: #333;
+  text-align: center;
+  margin-top: 2rem;
+  position: relative;
+  animation: bounce2 0.5s ease-out;
+}
+
+@keyframes bounce2 {
+  0% {
+    top: -20px;
+    opacity: 0;
+  }
+  50% {
+    top: -10px;
+    opacity: 0.7;
+  }
+  100% {
+    top: 0px;
+    opacity: 1;
+  }
+}
+
+#main{
+  text-align: center;
+ 
+  opacity: 0;
+  animation: fadeIn 2s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 h2 {
+  color: #003366;
   font-family: Arial, Helvetica, sans-serif;
 }
+p#tras{
+  animation: bounce 1s ease-in;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0.8, 0, 0.2, 1);
+  }
+  25% {
+    transform: translateY(-30px);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0.8, 0, 0.2, 1);
+  }
+  75% {
+    transform: translateY(-15px);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+  100% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0.8, 0, 0.2, 1);
+  }
+
+}
 h3 {
+  color: #003366;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 0.9em;
 }
@@ -16,6 +90,7 @@ div .Mapa {
   text-align: center;
 }
 header {
+  background-color: #fafafa;
   display: flex;
   border-style: outset;
   justify-content: space-between;
@@ -45,7 +120,7 @@ div.portada {
  justify-content: center;
 }
 footer {
-  display: flex;
+  
   text-align: center;
   justify-content: space-between;
 }
@@ -53,22 +128,26 @@ div.mapa {
   padding-top: 5em;
   padding-bottom: 5em;
 }
+div .App {
+ text-align: center;
+}
 
 form {
-  vertical-align: center;
+  text-align: center;
   align-content: center;
-  width: 25%;
-  border: 0.1em solid #ccc;
+  width:100%;
+
 }
 label {
   display: block;
-  width: 95%;
+  width: 10%;
+  
 }
 input {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   margin-bottom: 1em;
-  width: 100%;
+  width: 50%;
   box-sizing: border-box;
   border: 0.1em solid;
 }
@@ -80,10 +159,58 @@ input[type="submit"]:hover {
   background: #4a88f4;
 }
 img{
-  width: 9em;
+  width: 18em;
 }
 
 .map-container {
   height: 100%;
   width: auto;
+}
+footer{
+  text-align: center;
+}.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+.fade-out {
+  animation: fadeOut 1s ease-in-out forwards;
+}
+
+.fade-in {
+  animation: fadeIn 1s ease-in-out forwards;
+}
+
+
+.emergente{
+  text-align: center;
+}
+.profile{
+  margin-left: 535px;
+  margin-top: 100px;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+button.fade-in{
+  margin-top: 9px;
 }

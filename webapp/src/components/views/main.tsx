@@ -54,24 +54,25 @@ function App(): JSX.Element {
            <button onClick={callRegister}>Sign up</button>
           </nav>
         </header>
-        <div className="portada">
-        <h1 id="titulo">LoMap</h1>
+        
+        <h1 id="title">LoMap</h1>
           <img id="portada" src="./images/portada.png" alt="portada" />
           
-        </div>
-      </div>
+        
+      
       <div className="description">
         <h2> Red social de mapas</h2>
-        <p>
+        <p id="tras">
           {" "}
-          Seleccione el mapa que desee abrir y realice lo que usted quiera!
+         Utilice esta aplicación para abrir su propio mapa y realice lo que usted quiera!
           desde añadir puntos de interés como restaurantes hasta crear su propia
           ruta y compartirla con sus amigos
         </p>
+        </div>
       </div>
       <footer>
-        <p>Escuela Ingeniería informática 2022-2023/ASW grupo lomap_es4c</p>
-        <img src="./images/uniovi.png" alt="portada" />
+        <p id ="main">Escuela Ingeniería informática 2022-2023/ASW grupo lomap_es4c</p>
+      
       </footer>
     </>
     
