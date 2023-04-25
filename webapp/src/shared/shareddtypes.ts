@@ -10,8 +10,7 @@ export type MapMarker = {
   latitud: Number;
   longitud: Number;
   categoria: string;
-  
-  
+
 }
 export type MapMarkerReview = {
   webId: string;

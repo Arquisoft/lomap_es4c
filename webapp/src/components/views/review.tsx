@@ -52,6 +52,7 @@ function Review(props:ReviewProps):JSX.Element{
       comentario: (document.getElementById("comentario") as HTMLInputElement).value as string,
       puntuacion: rating,
       imagen: blob,
+
     };
     console.log("webid: " + marker.webId);
     console.log("id: " + props.pMarkId);
