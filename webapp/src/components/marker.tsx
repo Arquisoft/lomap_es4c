@@ -1,17 +1,18 @@
-import { Session } from '@inrupt/solid-client-authn-browser';
+import { Session, fetch } from '@inrupt/solid-client-authn-browser';
 import { MapMarker, MapMarkerReview } from '../shared/shareddtypes';
-import { getStringNoLocale, getUrlAll, buildThing, getSolidDataset, createSolidDataset, createThing, Thing, removeThing, setThing, getThing, getThingAll, addUrl, addStringNoLocale, getSolidDatasetWithAcl, getUrl, saveSolidDatasetAt } from '@inrupt/solid-client';
+import { getDecimal, getStringNoLocale, getUrlAll, buildThing, getSolidDataset, createSolidDataset, createThing, Thing, removeThing, setThing, getThing, getThingAll, addUrl, addStringNoLocale, getSolidDatasetWithAcl, getUrl, saveSolidDatasetAt } from '@inrupt/solid-client';
 import { FOAF } from "@inrupt/lit-generated-vocab-common";
 import { Marker } from 'mapbox-gl';
 
 
-export async function addMarker(webid: string,nombre: string, lat: Number, lon: Number, tipo: string, idp: String, session: Session) {
+export async function addMarker(webid: string,nombre: string, lat: Number, lon: Number, tipo: string, idp: String, session: Session, descripc:string) {
 	const apiEndPoint = process.env.REACT_APP_API_URI || 'http://localhost:5000/api'
 
 	var mapMarker: MapMarker = {
 		webId: webid,
 		id:"",
 		titulo: nombre,
+		descripcion: descripc,
 		latitud: lat,
 		longitud:lon,
 		categoria: tipo,
@@ -63,7 +64,7 @@ export async function removeMarker(webid:string, id:string, session: Session) {
 
 export async function removeSolidMarker(webId:string,session: Session,  markerId:string) {
 
-	const mapPointsUrl = webId.replace("card#me", "") + 'mapas/puntos.ttl';//proveedor+webId+nombreCategoria
+	const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/Map';//proveedor+webId+nombreCategoria
 
 	let dataset = await getSolidDataset(mapPointsUrl);
 
@@ -78,9 +79,9 @@ export async function removeSolidMarker(webId:string,session: Session,  markerId
 
 }
 
-export async function updateMarkerReviews(session: Session, webId: string, markerId:string,des:string, coment:string, puntu:Number,imagen:Blob,pointName:string) {
+export async function updateMarkerReviews(session: Session, webId: string, markerId:string, coment:string, puntu:Number,imagen:Blob,pointName:string) {
 	console.log("entro");
-	const mapPointsUrl = webId.replace("card#me", "") + 'mapas/puntos.ttl';//proveedor+webId+nombreCategoria
+	const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/Map';//proveedor+webId+nombreCategoria
 	console.log("url ");
 	console.log("marker ");
 	let dataset = await getSolidDataset(mapPointsUrl);
@@ -91,18 +92,15 @@ export async function updateMarkerReviews(session: Session, webId: string, marke
 	var marker: MapMarkerReview = {
 		webId: webId,
 		id:markerId,//va todo la url
-		descripcion:des,
 		comentario:coment,
 		puntuacion: puntu,
 		imagen: imagen
 	};
 
-	let latitu = getUrl(punto, 'http://schema.org/latitude') as string;
-	let longitu = getUrl(punto, 'http://schema.org/longitude') as string;
-	let categoria = getUrl(punto, 'http://schema.org/category') as string;	
-	latitu = latitu.replace("http://www.w3.org/2001/XMLSchema#float(", "").replace(")", "");
-	longitu = longitu.replace("http://www.w3.org/2001/XMLSchema#float(", "").replace(")", "");
-	//categoria = categoria.replace("http://www.w3.org/2001/XMLSchema#text(", "").replace(")", "");
+	let lat = getDecimal(punto, 'https://schema.org/latitude') as number;
+	let lon = getDecimal(punto, 'https://schema.org/longitude') as number;
+	let descripcion = getStringNoLocale(punto, 'https://schema.org/description') as string;	
+
 	console.log("llega aqui 1");
 
 	const url = URL.createObjectURL(marker.imagen);
@@ -110,13 +108,12 @@ export async function updateMarkerReviews(session: Session, webId: string, marke
 	img.src = url.replace("blob:", "");
 	console.log("imagen 22222" + img.src);
 	const mapPointsThing = buildThing(createThing(punto))
-		.setUrl('http://schema.org/latitude', `http://www.w3.org/2001/XMLSchema#float(${latitu})`)
-		.setUrl('http://schema.org/longitude', `http://www.w3.org/2001/XMLSchema#float(${longitu})`)
-		//.setUrl('http://schema.org/category', `http://www.w3.org/2001/XMLSchema#text(${categoria})`)
-		.setUrl('http://schema.org/description', `http://www.w3.org/2001/XMLSchema#text(${marker.descripcion})`)
-		.setUrl('http://schema.org/reviewAspect', `http://www.w3.org/2001/XMLSchema#text(${marker.comentario})`)
-		.setUrl('http://schema.org/reviewRating', `http://www.w3.org/2001/XMLSchema#ratingValue(${marker.puntuacion})`)
-		.setUrl('http://schema.org/image', `http://www.w3.org/2001/XMLSchema#imageObject(${img.src})`)
+		.setDecimal('https://schema.org/latitude', lat)
+		.setDecimal('https://schema.org/longitude', lon)
+		.setStringNoLocale('https://schema.org/description', `${descripcion}`)
+		.setStringNoLocale('https://schema.org/reviewAspect', `${marker.comentario}`)
+		.setDecimal('https://schema.org/reviewRating', marker.puntuacion as number)
+		.setUrl('https://schema.org/image', `${img.src}`)
 		.setStringNoLocale('http://schema.org/name', pointName)
 		.build();
 
@@ -131,9 +128,9 @@ export async function updateMarkerReviews(session: Session, webId: string, marke
 }
 
 
-export async function updateMarker(session: Session, webId: string, markerId:string, tipo: string, pointName:string) {
+export async function updateMarker(session: Session, webId: string, markerId:string, tipo: string, pointName:string, descripcion:string) {
 	console.log("entro");
-	const mapPointsUrl = webId.replace("card#me", "") + 'mapas/puntos.ttl';//proveedor+webId+nombreCategoria
+	const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/Map';//proveedor+webId+nombreCategoria
 	
 	let dataset = await getSolidDataset(mapPointsUrl);
 
@@ -141,25 +138,25 @@ export async function updateMarker(session: Session, webId: string, markerId:str
 	let punto =  getThing(dataset,markerId) as Thing ;
 
 
-	let latitu = getUrl(punto, 'http://schema.org/latitude') as string;
-	let longitu = getUrl(punto, 'http://schema.org/longitude') as string;	
-	latitu = latitu.replace("http://www.w3.org/2001/XMLSchema#float(", "").replace(")", "");
-	longitu = longitu.replace("http://www.w3.org/2001/XMLSchema#float(", "").replace(")", "");
+	let latitu = getDecimal(punto, 'https://schema.org/latitude') as number;
+	let longitu = getDecimal(punto, 'https://schema.org/longitude') as number;	
 
 	var marker: MapMarker = {
 		webId: webId,
   		id:markerId,
 		titulo: pointName,
-  		latitud: parseFloat(latitu),
-  		longitud: parseFloat(longitu),
+		descripcion: descripcion,
+  		latitud: latitu,
+  		longitud: longitu,
   		categoria: tipo
 	};
 
 	const mapPointsThing = buildThing(createThing(punto))
-		.setUrl('http://schema.org/latitude', `http://www.w3.org/2001/XMLSchema#float(${marker.latitud})`)
-		.setUrl('http://schema.org/longitude', `http://www.w3.org/2001/XMLSchema#float(${marker.longitud})`)
-		.setUrl('http://schema.org/category', `http://www.w3.org/2001/XMLSchema#text(${marker.categoria})`)
-		.setStringNoLocale('http://schema.org/name', pointName)
+		.setDecimal('https://schema.org/latitude', marker.latitud as number)
+		.setDecimal('https://schema.org/longitude', marker.longitud as number)
+		.setStringNoLocale('https://schema.org/category', `${marker.categoria}`)
+		.setStringNoLocale('https://schema.org/description', `${marker.descripcion}`)
+		.setStringNoLocale('https://schema.org/name', pointName)
 		.build();
 	
 
@@ -175,29 +172,24 @@ export async function addSolidMarker(session: Session, idp: String, marker: MapM
 	const pointName = marker.titulo;
 	const webId = marker.webId;
 
-
-	const mapPointsUrl = webId.replace("card#me", "") + 'mapas/puntos.ttl';//proveedor+webId+nombreCategoria
-
+	const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/Map';//proveedor+webId+nombreCategoria
 	const dataset = await getSolidDataset(mapPointsUrl).catch(error => console.error(error));;
-
-
 	const newDataset = createSolidDataset();
-
 
 	console.log("session is logged " + session.info.isLoggedIn);
 	console.log("session " + session.info);
 
-
 	//const dataset = getSolidDatasetWithAcl();
-
+	console.log("Descripcion " + marker.descripcion);
 	const mapPointsThing = buildThing(createThing({ name: marker.id }))
 		//console.log("name " + pointName);
 		//console.log("things " + mapPointsThing);
 		// Añadir las propiedades del punto de mapa como URLs o cadenas de texto sin localización
-		.addUrl('http://schema.org/latitude', `http://www.w3.org/2001/XMLSchema#float(${marker.latitud})`)
-		.addUrl('http://schema.org/longitude', `http://www.w3.org/2001/XMLSchema#float(${marker.longitud})`)
-		.addUrl('http://schema.org/category', `http://www.w3.org/2001/XMLSchema#text(${marker.categoria})`)
-		.addStringNoLocale('http://schema.org/name', pointName)
+		.addDecimal('https://schema.org/latitude', marker.latitud as number)
+		.addDecimal('https://schema.org/longitude', marker.longitud as number)
+		.addStringNoLocale('https://schema.org/category', `${marker.categoria}`)
+		.addStringNoLocale('https://schema.org/description', `${marker.descripcion}`)
+		.addStringNoLocale('https://schema.org/name', pointName)
 		.build();
 
 	var updatedDataset = null;
@@ -219,60 +211,43 @@ export async function getMarkers(session: Session,webId: String) {
 	const apiEndPoint = process.env.REACT_APP_API_URI || 'http://localhost:5000/api'
 			
 
-		const mapPointsUrl = webId.replace("card#me", "") + 'mapas/puntos.ttl';//proveedor+webId+nombreCategoria
+		const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/Map';//proveedor+webId+nombreCategoria
 		console.log("url12345678 " + mapPointsUrl);
-		var dataset;
-		try{
-			dataset = await getSolidDataset(mapPointsUrl,{fetch:session.fetch as any});
-		}
-		catch(error){
-			console.log("error " + error);
-			return [];
-		}
+		console.log("session sbkd" + session.fetch);
+		const dataset = await getSolidDataset(mapPointsUrl,{fetch:session.fetch as any}).catch(error => console.log("error " + error));
 		
 		console.log("dataset aaaaaaaaaaaaa " + dataset);
 		var points = [];
-	
-		var arayThing=getThingAll(dataset);
-		for(let i = 0; i < arayThing.length; i++){
-			console.log("arayThing " + arayThing[i])
-			let thi = arayThing[i] as Thing;
-			console.log("thi " + thi.url);
-			let nombre = getStringNoLocale(thi, "http://schema.org/name");
-			let latitud = getUrl(thi, "http://schema.org/latitude") as String;
-			let longitud = getUrl(thi, "http://schema.org/longitude") as String;
-			let categoria = getUrl(thi, "http://schema.org/category") as String;
-			if(categoria === null){
-				categoria = "Otros";
+		if(dataset !== undefined){
+			var arayThing=getThingAll(dataset);
+			for(let i = 0; i < arayThing.length; i++){
+				console.log("arayThing " + arayThing[i])
+				let thi = arayThing[i] as Thing;
+				console.log("thi " + thi.url);
+				let nombre = getStringNoLocale(thi, "https://schema.org/name");
+				let latitud = getDecimal(thi, "https://schema.org/latitude") as number;
+				let longitud = getDecimal(thi, "https://schema.org/longitude") as number;
+				let categoria = getStringNoLocale(thi, "https://schema.org/category") as String;
+				let descripcion = getStringNoLocale(thi, "https://schema.org/description") as String;
+				if(categoria === null){
+					categoria = "Otros";
+				}
+				var mark = [thi.url
+					, nombre, 
+					latitud, 
+					longitud, 
+					categoria, 
+					descripcion];
+				points.push(mark);
+				
 			}
-			//const descripcion = getUrl(thi, "http://schema.org/description");
-			//console.log("nombre " + nombre);
-			//console.log("latitud " + latitud.replace("http://www.w3.org/2001/XMLSchema#float(", "").replace(")", ""));
-			//console.log("longitud " + longitud);
-			//console.log("categoria " + categoria);
-			var mark = [thi.url
-				, nombre, latitud.replace("http://www.w3.org/2001/XMLSchema#float(", "").replace(")", ""), 
-				longitud.replace("http://www.w3.org/2001/XMLSchema#float(", "").replace(")", ""), 
-				categoria.replace("http://www.w3.org/2001/XMLSchema#text(", "").replace(")", ""), ];
-			points.push(mark);
-			//console.log("descripcion " + descripcion);
-			//const titulo = (thi as Thing)["http://schema.org/latitude"];
-			//const description = thing['http://schema.org/description'];
-		  }
-	/*
-	  let response = await fetch(apiEndPoint + `/marker/user/${webId}`, {
-		method: 'GET',
-		headers: { 'Content-Type': 'application/json' },
-
-	})
-	*/
-	//console.log(response.json());
+		
+	}
 	return points;
 
 }
 export async function getMarker(id: String) {
 	const apiEndPoint = process.env.REACT_APP_API_URI || 'http://localhost:5000/api'
-
 
 	let response = await fetch(apiEndPoint + `/marker/${id}`, {
 		method: 'GET',
@@ -309,13 +284,8 @@ export async function getFriendsSolid(webid: String, session: Session) {
 				markers[j] = getMarkers(session, profile);
 				console.log("MARKERS " + markers[j]);
 				}
-
 			}
 		}
-		//console.log(amigos[0]);
-
-
-
 	}
 
 	return markers;

@@ -48,7 +48,6 @@ function Review(props:ReviewProps):JSX.Element{
     var marker: MapMarkerReview = {
       webId: session.info.webId as string,
       id:props.pMarkId,
-      descripcion:"",
       comentario: (document.getElementById("comentario") as HTMLInputElement).value as string,
       puntuacion: rating,
       imagen: blob,
@@ -58,7 +57,7 @@ function Review(props:ReviewProps):JSX.Element{
     console.log("id: " + props.pMarkId);
     console.log("name:" + props.pName);
     
-    updateMarkerReviews(session, marker.webId, props.pMarkId, marker.descripcion, marker.comentario, marker.puntuacion, marker.imagen, props.pName);
+    updateMarkerReviews(session, marker.webId, props.pMarkId, marker.comentario, marker.puntuacion, marker.imagen, props.pName);
     //navigate('/map');
     (document.getElementById("window-notice") as HTMLInputElement).style.visibility = "hidden";
   };

@@ -389,7 +389,7 @@ function addMapMarker(e, map, session) {
           let e = document.getElementById("tipo");
           tipo = e.options[e.selectedIndex].text;
 
-          markId = addMarker(session.info.webId,nombre, x, y, tipo, "https://inrupt.net/", session); //pasar descripcion
+          markId = addMarker(session.info.webId,nombre, x, y, tipo, "https://inrupt.net/", session, descripcion); //pasar descripcion
 
           addCategoria(tipo,marker);
           names.push(nombre);
@@ -429,16 +429,16 @@ async function loadMarkers(map, session){
     for(let j=0; j<array.length; j++){
       console.log("Nombre del punto" + array[j].nombre)
     
-    console.log("entra en el for de amigos "+ friendsPoint[0].nombre);
-    loadFriendMarker(array[j], map,session);
+      console.log("entra en el for de amigos "+ friendsPoint[0].nombre);
+      loadFriendMarker(array[j], map,session);
+    }
   }
-}
-}
+  }
 
 async function loadMarker(point, map, session){
   let id = point[0];
   let nombre = point[1];
-  let descripcion = "Por cargar en pod"; //point[5]
+  let descripcion = point[5]
   let x = Number.parseFloat(point[2]);
   let y = Number.parseFloat(point[3]);
   let categoria = point[4];
@@ -463,7 +463,7 @@ async function loadMarker(point, map, session){
 async function loadFriendMarker(point, map, session){
   let id = point[0];
   let nombre = point[1];
-  let descripcion = "Por cargar en pod"; //point[5]
+  let descripcion = point[5]
   let x = Number.parseFloat(point[2]);
   let y = Number.parseFloat(point[3]);
   let categoria = point[4];
@@ -478,7 +478,7 @@ async function loadFriendMarker(point, map, session){
   addCategoria(categoria,marker);
 
   popup.on("open", () => {
-    markerFuncs(marker,popup,nombre,descripcion,categoria,x,y,session, id);
+    //markerFuncs(marker,popup,nombre,descripcion,categoria,x,y,session, id);
   });
 
   names.push(nombre);
