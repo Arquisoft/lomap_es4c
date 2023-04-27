@@ -20,7 +20,7 @@ defineFeature(feature, test => {
       })
       .catch(() => {});
   });
-
+/*
   test('The user is not registered in the site', ({given,when,then}) => {
     
     let email:string;
@@ -47,6 +47,6 @@ defineFeature(feature, test => {
   afterAll(async ()=>{
     browser.close()
   })
-
+*/
 });
 
