@@ -29,10 +29,12 @@ afterAll(async () => {
     server.close() //close the server
 })
 
+
 describe('marker ', () => {
-    /**
+    /*
+    **
      * Test that we can list users without any error.
-     */
+     *
     it('can be added',async () => {
         const response:Response = await request(app).get("/api/marker/get/1");
         expect(response.statusCode).toBe(200);
