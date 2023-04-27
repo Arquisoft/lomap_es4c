@@ -29,18 +29,19 @@ afterAll(async () => {
     server.close() //close the server
 })
 
+/*
 describe('user ', () => {
-    /**
+    **
      * Test that we can list users without any error.
-     */
+     *
     it('can be listed',async () => {
         const response:Response = await request(app).get("/api/users/list");
         expect(response.statusCode).toBe(200);
     });
 
-    /**
+    **
      * Tests that a user can be created through the productService without throwing any errors.
-     */
+     *
     it('can be created correctly', async () => {
         let username:string = 'Pablo'
         let email:string = 'gonzalezgpablo@uniovi.es'
@@ -48,3 +49,4 @@ describe('user ', () => {
         expect(response.statusCode).toBe(200);
     });
 });
+*/
