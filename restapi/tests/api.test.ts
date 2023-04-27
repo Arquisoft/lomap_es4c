@@ -29,25 +29,22 @@ afterAll(async () => {
     server.close() //close the server
 })
 
-
-describe('marker ', () => {
-    /*
-    **
+describe('user ', () => {
+    /**
      * Test that we can list users without any error.
-     *
-    it('can be added',async () => {
-        const response:Response = await request(app).get("/api/marker/get/1");
+     */
+    it('can be listed',async () => {
+        const response:Response = await request(app).get("/api/users/list");
         expect(response.statusCode).toBe(200);
     });
 
     /**
      * Tests that a user can be created through the productService without throwing any errors.
-     
+     */
     it('can be created correctly', async () => {
         let username:string = 'Pablo'
         let email:string = 'gonzalezgpablo@uniovi.es'
         const response:Response = await request(app).post('/api/users/add').send({name: username,email: email}).set('Accept', 'application/json')
         expect(response.statusCode).toBe(200);
     });
-    */
 });
