@@ -3,7 +3,6 @@ import { SessionProvider, useSession } from "@inrupt/solid-ui-react";
 import LoginForm from "./logIn";
 import ProfileViewer from "./profile";
 import { useState} from "react";
-const { JSDOM } = require("jsdom");
 
 import { useNavigate } from 'react-router-dom';
 
