@@ -3,6 +3,7 @@ import { MapMarker, MapMarkerReview } from '../shared/shareddtypes';
 import { getDecimal, getStringNoLocale, getUrlAll, buildThing, getSolidDataset, createSolidDataset, createThing, Thing, removeThing, setThing, getThing, getThingAll, addUrl, addStringNoLocale, getSolidDatasetWithAcl, getUrl, saveSolidDatasetAt } from '@inrupt/solid-client';
 import { FOAF } from "@inrupt/lit-generated-vocab-common";
 import { Marker } from 'mapbox-gl';
+import { Console } from 'console';
 
 
 export async function addMarker(webid: string,nombre: string, lat: Number, lon: Number, tipo: string, idp: String, session: Session, descripc:string) {
@@ -10,11 +11,11 @@ export async function addMarker(webid: string,nombre: string, lat: Number, lon: 
 
 	var mapMarker: MapMarker = {
 		webId: webid,
-		id:"",
+		id: "",
 		titulo: nombre,
 		descripcion: descripc,
 		latitud: lat,
-		longitud:lon,
+		longitud: lon,
 		categoria: tipo,
 	};
 	var marker = JSON.stringify({
@@ -33,14 +34,14 @@ export async function addMarker(webid: string,nombre: string, lat: Number, lon: 
 	//console.log(response.body?.getReader);
 	//console.log(response.json());
 	if (response.status == 200) {
-		mapMarker.id=await response.json();
-		addSolidMarker(session, idp,mapMarker);
+		mapMarker.id = await response.json();
+		addSolidMarker(session, idp, mapMarker);
 		return true;
 	} else {
 		return false;
 	}
 }
-export async function removeMarker(webid:string, id:string, session: Session) {
+export async function removeMarker(webid: string, id: string, session: Session) {
 	const apiEndPoint = process.env.REACT_APP_API_URI || 'http://localhost:5000/api'
 
 
@@ -55,14 +56,14 @@ export async function removeMarker(webid:string, id:string, session: Session) {
 	//console.log(response.json());
 	if (response.status == 200) {
 
-		removeSolidMarker(webid,session, id);
+		removeSolidMarker(webid, session, id);
 		return true;
 	} else {
 		return false;
 	}
 }
 
-export async function removeSolidMarker(webId:string,session: Session,  markerId:string) {
+export async function removeSolidMarker(webId: string, session: Session, markerId: string) {
 
 	const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/Map';//proveedor+webId+nombreCategoria
 
@@ -70,12 +71,12 @@ export async function removeSolidMarker(webId:string,session: Session,  markerId
 
 
 
-	let punto =  getThing(dataset,markerId) as Thing ;
-	var updatedDataset = removeThing(dataset,punto);
+	let punto = getThing(dataset, markerId) as Thing;
+	var updatedDataset = removeThing(dataset, punto);
 	console.log("dataset " + dataset.graphs);
 
 
-	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset,{fetch:session.fetch as any});
+	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset, { fetch: session.fetch as any });
 
 }
 
@@ -86,7 +87,7 @@ export async function updateMarkerReviews(session: Session, webId: string, marke
 	console.log("marker ");
 	let dataset = await getSolidDataset(mapPointsUrl);
 	console.log("crea dataset");
-	let punto =  getThing(dataset,markerId) as Thing ;
+	let punto = getThing(dataset, markerId) as Thing;
 	console.log("Imagn " + imagen);
 
 	var marker: MapMarkerReview = {
@@ -120,10 +121,10 @@ export async function updateMarkerReviews(session: Session, webId: string, marke
 	// Añadir el punto de mapa al conjunto de datos
 	var updatedDataset = setThing(dataset, mapPointsThing);
 	console.log("dataset " + dataset.graphs);
-	
+
 
 	// Escribir el conjunto de datos actualizado en el Pod de Solid
-	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset,{fetch:session.fetch as any});
+	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset, { fetch: session.fetch as any });
 	console.log(`El punto de mapa  has ido modificado'${pointName}'`);
 }
 
@@ -134,8 +135,8 @@ export async function updateMarker(session: Session, webId: string, markerId:str
 	
 	let dataset = await getSolidDataset(mapPointsUrl);
 
-	
-	let punto =  getThing(dataset,markerId) as Thing ;
+
+	let punto = getThing(dataset, markerId) as Thing;
 
 
 	let latitu = getDecimal(punto, 'https://schema.org/latitude') as number;
@@ -143,7 +144,7 @@ export async function updateMarker(session: Session, webId: string, markerId:str
 
 	var marker: MapMarker = {
 		webId: webId,
-  		id:markerId,
+		id: markerId,
 		titulo: pointName,
 		descripcion: descripcion,
   		latitud: latitu,
@@ -158,14 +159,14 @@ export async function updateMarker(session: Session, webId: string, markerId:str
 		.setStringNoLocale('https://schema.org/description', `${marker.descripcion}`)
 		.setStringNoLocale('https://schema.org/name', pointName)
 		.build();
-	
+
 
 	// Añadir el punto de mapa al conjunto de datos
 	var updatedDataset = setThing(dataset, mapPointsThing);
 	console.log("dataset " + dataset.graphs);
 
 	// Escribir el conjunto de datos actualizado en el Pod de Solid
-	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset,{fetch:session.fetch as any});
+	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset, { fetch: session.fetch as any });
 	console.log(`El punto de mapa  has ido modificado'${pointName}'`);
 }
 export async function addSolidMarker(session: Session, idp: String, marker: MapMarker) {
@@ -202,14 +203,15 @@ export async function addSolidMarker(session: Session, idp: String, marker: MapM
 	}
 
 	// Escribir el conjunto de datos actualizado en el Pod de Solid
-	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset, {fetch:session.fetch as any});
+	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset, { fetch: session.fetch as any });
 	console.log(`El punto de mapa '${pointName}' se ha añadido al Pod de Solid en la URL ${updatedDatasetUrl.graphs.url}`);
 	return marker.id;
 }
 
-export async function getMarkers(session: Session,webId: String) {
+
+export async function getMarkers(session: Session, webId: String) {
 	const apiEndPoint = process.env.REACT_APP_API_URI || 'http://localhost:5000/api'
-			
+
 
 		const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/Map';//proveedor+webId+nombreCategoria
 		console.log("url12345678 " + mapPointsUrl);
@@ -221,6 +223,7 @@ export async function getMarkers(session: Session,webId: String) {
 		if(dataset !== undefined){
 			var arayThing=getThingAll(dataset);
 			for(let i = 0; i < arayThing.length; i++){
+				try{
 				console.log("arayThing " + arayThing[i])
 				let thi = arayThing[i] as Thing;
 				console.log("thi " + thi.url);
@@ -239,6 +242,9 @@ export async function getMarkers(session: Session,webId: String) {
 					categoria, 
 					descripcion];
 				points.push(mark);
+				}catch(error){
+					console.log("Se ha producido un error buscando un marker");
+				}
 				
 			}
 		

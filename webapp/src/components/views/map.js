@@ -468,9 +468,9 @@ async function loadFriendMarker(point, map, session){
   let y = Number.parseFloat(point[3]);
   let categoria = point[4];
 
-  let popup = new mapboxgl.Popup({ color: 'red', offset: 25 }).setHTML(setFriendPointHTML(nombre, descripcion,categoria));
+  let popup = new mapboxgl.Popup({ offset: 25 }).setHTML(setFriendPointHTML(nombre, descripcion,categoria));
 
-  let marker = new mapboxgl.Marker()
+  let marker = new mapboxgl.Marker({color: 'red'})
     .setLngLat([x, y])
     .setPopup(popup)
     .addTo(map.current);
