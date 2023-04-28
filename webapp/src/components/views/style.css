@@ -10,8 +10,7 @@ body {
 #titulo{
   display: flex;
   font-size: 36px;
-color: #000;
-font-family: 'Open Sans';
+  color: #000;
 }
 #portada{
   height: 20%;
