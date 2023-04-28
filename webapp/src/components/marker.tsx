@@ -1,11 +1,9 @@
 import { Session, fetch } from '@inrupt/solid-client-authn-browser';
 import { MapMarker, MapMarkerReview, Comment, Maps,Location, Picture, ReviewScore } from '../shared/shareddtypes';
-import { getDecimal, getStringNoLocale, overwriteFile, getUrlAll, buildThing, getSolidDataset, createSolidDataset, createThing, Thing, removeThing, setThing, getThing, getThingAll, addUrl, addStringNoLocale, getSolidDatasetWithAcl, getUrl, saveSolidDatasetAt } from '@inrupt/solid-client';
+import { getFile, getDecimal, getStringNoLocale, overwriteFile, getUrlAll, buildThing, getSolidDataset, createSolidDataset, createThing, Thing, removeThing, setThing, getThing, getThingAll, addUrl, addStringNoLocale, getSolidDatasetWithAcl, getUrl, saveSolidDatasetAt } from '@inrupt/solid-client';
 import { FOAF } from "@inrupt/lit-generated-vocab-common";
 import { Marker } from 'mapbox-gl';
 import { Console, timeStamp } from 'console';
-
-
 
 
 export async function addMarker(webid: string, nombre: string, lat: Number, lon: Number, tipo: string, idp: String, session: Session, descripc: string) {
@@ -40,31 +38,31 @@ export async function addMarker(webid: string, nombre: string, lat: Number, lon:
 	pictures.push(picture);
 
 
-
+	var locations: Location[] = [];
 
 	var location: Location = {
 		id: Math.random().toString(),
 		name: nombre,
 		category: tipo,
 		description: "",
-		latitude: lat,
-		longitude: lon,
+		latitude: lat as number,
+		longitude: lon as number,
 		comments: comments,
 		reviewScores: reviews,
 		pictures: pictures
 
 	};
+	locations.push(location);
 	var mapMarker: MapMarker = {
 		id: Math.random().toString(),
-		name: "Mapa",
+		name: "MapPrueba2",
 		author: nombre,
-		locations: location
+		locations: locations
 	};
 	var mapMarkers: MapMarker[] = [];
 	mapMarkers.push(mapMarker);
 
 	var map: Maps={
-		
 		maps:mapMarkers
 	}
 
@@ -73,6 +71,7 @@ export async function addMarker(webid: string, nombre: string, lat: Number, lon:
 		webId: webid,
 		titulo: nombre
 	});
+
 	let response = await fetch(apiEndPoint + '/marker/add', {//En mongo solo guardamos webId y el titulo
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
@@ -92,6 +91,125 @@ export async function addMarker(webid: string, nombre: string, lat: Number, lon:
 		return false;
 	}
 }
+
+export async function addSolidMarker(session: Session, idp: String, marker: Maps) {
+	const pointName = 'Prueba';
+	const webId = session.info.webId as string;
+
+	var punto = marker.maps[0];
+	
+	const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/' + punto.name;//proveedor+webId+nombreCategoria
+	//const dataset = await getSolidDataset(mapPointsUrl).catch(error => console.error(error));;
+	//const newDataset = createSolidDataset();
+	
+	console.log("session is logged " + session.info.isLoggedIn);
+	console.log("session " + session.info);
+
+	let mapData = {
+		 "@context": "https://schema.org/",
+            "@type": "Place",
+            "identifier": "aaaaa",
+            "name": punto.name,
+            "author": {
+                "@type":"Person",
+                "identifier": webId
+            },
+            "additionalType": punto.locations[0].category,
+            "latitude": punto.locations[0].latitude,
+            "longitude": punto.locations[0].longitude,
+            "description": punto.locations[0].description,
+            "review": [],
+            "image": [],
+            "dateCreated": new Date().valueOf()
+        };
+	console.log("mapData " + mapData);
+	console.log("mapData " + JSON.stringify(mapData));
+	let originalBlob = await getFile(mapPointsUrl, { fetch: fetch });
+	let blob = new Blob([JSON.stringify(mapData)], { type: "application/json" });
+	let originalFile = new File([originalBlob], punto.name + ".json", { type: originalBlob.type });
+	let file = new File([blob], punto.name + ".json", { type: blob.type });
+	let updated = new File([originalFile, file], punto.name + ".json", { type: blob.type });
+	console.log("updated " + updated);
+	await overwriteFile(mapPointsUrl, updated, { fetch: fetch });
+	
+	/*
+	const dataset = await getSolidDataset(mapPointsUrl).catch(error => console.error(error));
+	
+	const mapPointsThing = buildThing(createThing({ name: punto.locations[0].name }))
+	//console.log("name " + pointName);
+	//console.log("things " + mapPointsThing);
+	// Añadir las propiedades del punto de mapa como URLs o cadenas de texto sin localización
+	.addDecimal('http://schema.org/latitude', punto.locations[0].latitude)
+	.addDecimal('http://schema.org/longitude', punto.locations[0].longitude)
+	.addStringNoLocale('http://schema.org/category', punto.locations[0].category)
+	.addStringNoLocale('http://schema.org/name', pointName)
+	.build();
+
+
+	/*
+		const mapPointsThing = buildThing(createThing({ name: punto.locations[0].name }))
+			.addStringNoLocale('https://schema.org/name', punto.name)
+			.addStringNoLocale('https://schema.org/author', punto.author)
+			
+			
+		for(let i=0; i<punto.locations.length; i++){
+			mapPointsThing.addStringNoLocale('https://schema.org/locations', punto.locations[i].id).build();
+		}
+			//console.log("name " + pointName);
+			//console.log("things " + mapPointsThing);
+			// Añadir las propiedades del punto de mapa como URLs o cadenas de texto sin localización
+			/*
+			.addDecimal('https://schema.org/latitude', punto.latitud as number)
+			.addDecimal('https://schema.org/longitude', punto.longitud as number)
+			.addStringNoLocale('https://schema.org/category', `${punto.categoria}`)
+			.addStringNoLocale('https://schema.org/description', `${punto.descripcion}`)
+			.addStringNoLocale('https://schema.org/name', pointName)
+			.addUrl("https://www.w3.org/TR/rdf-schema/", "https://schema.org/Place")
+			.build();
+			*/
+		//}
+	//}
+	/*
+	await overwriteFile(
+	  mapPointsUrl,
+		file,
+		{ contentType: file.type, fetch: session.fetch }
+	);
+	*/
+/*	
+	var file = overwriteFile(
+		mapPointsUrl + marker.name + '.json',
+		new Blob([
+			JSON.stringify(marker),
+		]),);s
+	console.log(file);
+	
+	
+	/*const savedFile = await overwriteFile(
+		mapPointsUrl + punto.name,
+			new new Blob([JSON.stringify(marker)], { type: "application/json" }),
+		{ contentType: "application/json", fetch: fetch }
+	  );
+	*/
+
+
+
+
+
+
+
+	 
+	
+	// Escribir el conjunto de datos actualizado en el Pod de Solid
+	//const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset, { fetch: session.fetch as any });
+	//console.log(`El punto de mapa '${pointName}' se ha añadido al Pod de Solid en la URL ${updatedDatasetUrl.graphs.url}`);
+	return punto.id;
+}
+
+
+
+
+
 export async function removeMarker(webid: string, id: string, session: Session) {
 	const apiEndPoint = process.env.REACT_APP_API_URI || 'http://localhost:5000/api'
 
@@ -220,76 +338,19 @@ export async function updateMarker(session: Session, webId: string, markerId:str
 	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset, { fetch: session.fetch as any });*/
 	console.log(`El punto de mapa  has ido modificado'${pointName}'`);
 }
-export async function addSolidMarker(session: Session, idp: String, marker: Maps) {
-	const pointName = 'Prueba';
-	const webId = session.info.webId as string;
-
-	const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/Map/';//proveedor+webId+nombreCategoria
-	//const dataset = await getSolidDataset(mapPointsUrl).catch(error => console.error(error));;
-	//const newDataset = createSolidDataset();
-
-	console.log("session is logged " + session.info.isLoggedIn);
-	console.log("session " + session.info);
-
-	//const dataset = getSolidDatasetWithAcl();
-	/*	
-		const mapPointsThing = buildThing(createThing({ name: marker.id }))
-			//console.log("name " + pointName);
-			//console.log("things " + mapPointsThing);
-			// Añadir las propiedades del punto de mapa como URLs o cadenas de texto sin localización
-			.addDecimal('https://schema.org/latitude', marker.latitud as number)
-			.addDecimal('https://schema.org/longitude', marker.longitud as number)
-			.addStringNoLocale('https://schema.org/category', `${marker.categoria}`)
-			.addStringNoLocale('https://schema.org/description', `${marker.descripcion}`)
-			.addStringNoLocale('https://schema.org/name', pointName)
-			.build();
-	
-	var file = overwriteFile(
-		mapPointsUrl + marker.name + '.json',
-		new Blob([
-			JSON.stringify(marker),
-		]),);s
-	console.log(file);
-*/
-var punto = marker.maps[0]
-	/*const savedFile = await overwriteFile(
-		mapPointsUrl + punto.name,
-			new new Blob([JSON.stringify(marker)], { type: "application/json" }),
-		{ contentType: "application/json", fetch: fetch }
-	  );
-*/
-
-
-
-
-
-
-
-	  let blob = new Blob([JSON.stringify(marker)], { type: "application/json" });
-	  let file = new File([blob], punto.name + ".json", { type: blob.type });
-
-	  await overwriteFile(
-		mapPointsUrl + punto.name,
-		  file,
-		  { contentType: file.type, fetch: session.fetch }
-	  );
-	
-	// Escribir el conjunto de datos actualizado en el Pod de Solid
-	//const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset, { fetch: session.fetch as any });
-	//console.log(`El punto de mapa '${pointName}' se ha añadido al Pod de Solid en la URL ${updatedDatasetUrl.graphs.url}`);
-	return punto.id;
-}
 
 
 export async function getMarkers(session: Session, webId: String) {
 	const apiEndPoint = process.env.REACT_APP_API_URI || 'http://localhost:5000/api'
 
 
-	const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/Map';//proveedor+webId+nombreCategoria
+	const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/MapPrueba#spatialCoverage';//proveedor+webId+nombreCategoria
 	console.log("url12345678 " + mapPointsUrl);
 	console.log("session sbkd" + session.fetch);
-	const dataset = await getSolidDataset(mapPointsUrl, { fetch: session.fetch as any }).catch(error => console.log("error " + error));
-
+	const dataset = await getSolidDataset(mapPointsUrl, { fetch: session.fetch as any }).catch(error => createSolidDataset());
+	if(dataset === null){
+		console.log("dataset is null");
+	}
 	console.log("dataset aaaaaaaaaaaaa " + dataset);
 	var points = [];
 	if (dataset !== undefined) {
@@ -371,4 +432,56 @@ export async function getFriendsSolid(webid: String, session: Session) {
 	}
 
 	return markers;
+}
+
+export async function createMap(mapName:string, session:Session, webId:string) {
+	try{
+		const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/MapPrueba2';//proveedor+webId+nombreCategoria
+		const dataset = await getSolidDataset(mapPointsUrl, { fetch: session.fetch as any });
+	}
+	catch(error){
+		console.log("No existe el mapa");
+		const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/MapPrueba2';//proveedor+webId+nombreCategoria
+		const dataset = await createSolidDataset();
+
+		let map : MapMarker = {
+			id: "12345657635452674u5u4yt3yu65",
+			name: mapName,
+			author: webId,
+			locations: []
+		}
+
+		let place = {
+            "@context": "https://schema.org",
+			"@type": "Map",
+			"identifier": map.id,
+			"name": map.name,
+			"author": {
+				"@type": "Person",
+				"identifier": map.author
+			}
+        };
+
+        let blob = new Blob([JSON.stringify(place)], { type: "application/ld+json" });
+        let file = new File([blob], place.name + ".jsonld", { type: blob.type });
+
+        await overwriteFile(
+            mapPointsUrl,
+            file,
+            { contentType: file.type, fetch: session.fetch }
+        );
+
+
+		/*
+		const mapPointsThing = buildThing(createThing(map))
+		.addStringNoLocale('https://schema.org/identifier', map.id)	
+		.addStringNoLocale('https://schema.org/name', map.name)
+		.addStringNoLocale('https://schema.org/author', map.author)
+		.add
+		.build();
+		*/
+		//const savedDataset = await saveSolidDatasetAt(mapPointsUrl, dataset, { fetch: session.fetch as any });
+	}
+	
+	
 }

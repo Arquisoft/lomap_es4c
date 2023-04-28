@@ -10,7 +10,7 @@ import mapboxgl, { Map, Marker } from "mapbox-gl";
 import { mapAccessToken, mapStyleId } from "./data";
 import Review from "./review";
 import { useNavigate, Navigate } from 'react-router-dom';
-import { addMarker, updateMarker, getMarkers,removeMarker,getFriendsSolid } from "../marker";
+import { addMarker, updateMarker, getMarkers,removeMarker,getFriendsSolid, createMap } from "../marker";
 import { useSession } from "@inrupt/solid-ui-react";
 
 var dict = {};
@@ -69,6 +69,8 @@ function MapPage() {
       center: center,
       zoom: zoom,
     });
+
+    createMap("MapPrueba2", session, session.info.webId);
     
     loadMarkers(map, session);
 

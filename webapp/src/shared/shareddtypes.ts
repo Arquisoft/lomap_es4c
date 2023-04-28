@@ -10,15 +10,15 @@ export type MapMarker = {
   id: string;
   name:string;
   author: string;
-  locations:Location;
+  locations:Location[];
 
 }
 export type Location = {
   id: string;
   name:string;
   category: string;
-  latitude: Number;
-  longitude: Number;
+  latitude: number;
+  longitude: number;
   description: string;
   comments:Comment[];
   reviewScores:ReviewScore[];
