@@ -4,9 +4,12 @@ import { getFile, getDecimal, addIri, getStringNoLocale, saveFileInContainer, ov
 import { FOAF } from "@inrupt/lit-generated-vocab-common";
 import { Marker } from 'mapbox-gl';
 import { Console, timeStamp } from 'console';
+import {
+	universalAccess
+} from "@inrupt/solid-client";
 import { Graph, WithContext, Person, Map, Place, Review, ImageObject } from 'schema-dts';
 import { getPropertyForThing } from '@inrupt/solid-ui-react/dist/src/helpers';
-
+import { permisosAccesoPod } from './permisos';
 /**
  * Devulev eun objeto Plaes para añadir al mapa
  */
@@ -166,7 +169,7 @@ export async function addSolidMarker(session: Session, idp: String, newMarker: P
 
 	console.log("session is logged " + session.info.isLoggedIn);
 	console.log("session " + session.info);
-	
+
 
 	let fileContent = await getFile(mapPointsUrl, { fetch: session.fetch as any });
 	let text = await fileContent.text();
@@ -269,94 +272,84 @@ export async function removeSolidMarker(webId: string, session: Session, markerI
 }
 
 export async function updateMarkerReviews(session: Session, webId: string, markerId: string, coment: string, puntu: Number, imagen: Blob, pointName: string) {
-	console.log("entro");
+
 	const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/Map';//proveedor+webId+nombreCategoria
-	console.log("url ");
-	console.log("marker ");
-	let dataset = await getSolidDataset(mapPointsUrl);
-	console.log("crea dataset");
-	let punto = getThing(dataset, markerId) as Thing;
-	console.log("Imagn " + imagen);
-
-	var marker: MapMarkerReview = {
-		webId: webId,
-		id: markerId,//va todo la url
-		comentario: coment,
-		puntuacion: puntu,
-		imagen: imagen
-	};
-
-	let lat = getDecimal(punto, 'https://schema.org/latitude') as number;
-	let lon = getDecimal(punto, 'https://schema.org/longitude') as number;
-	let descripcion = getStringNoLocale(punto, 'https://schema.org/description') as string;
-
-	console.log("llega aqui 1");
-
-	const url = URL.createObjectURL(marker.imagen);
-	const img = document.createElement('img');
-	img.src = url.replace("blob:", "");
-	console.log("imagen 22222" + img.src);
-	const mapPointsThing = buildThing(createThing(punto))
-		.setDecimal('https://schema.org/latitude', lat)
-		.setDecimal('https://schema.org/longitude', lon)
-		.setStringNoLocale('https://schema.org/description', `${descripcion}`)
-		.setStringNoLocale('https://schema.org/reviewAspect', `${marker.comentario}`)
-		.setDecimal('https://schema.org/reviewRating', marker.puntuacion as number)
-		.setUrl('https://schema.org/image', `${img.src}`)
-		.setStringNoLocale('http://schema.org/name', pointName)
-		.build();
-
-	// Añadir el punto de mapa al conjunto de datos
-	var updatedDataset = setThing(dataset, mapPointsThing);
-	console.log("dataset " + dataset.graphs);
 
 
-	// Escribir el conjunto de datos actualizado en el Pod de Solid
-	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset, { fetch: session.fetch as any });
-	console.log(`El punto de mapa  has ido modificado'${pointName}'`);
+	const fileBlob = await getFile(mapPointsUrl, { fetch: session.fetch as any });
+	let jsonStringFy = JSON.stringify(await fileBlob.text());
+	let jsonMarkers = JSON.parse(jsonStringFy);
+	let json = JSON.parse(jsonMarkers);
+
+	if (json.spatialCoverage.length !== undefined) {
+		for (let i = 0; i < json.spatialCoverage.length; i++) {
+			let punto = json.spatialCoverage[i];
+			if (punto.identifier === markerId) {
+				for (let j = 0; j < punto.review.length; j++) {
+					if (punto.review.reviewBody === coment) {
+						punto.review.revieBody = coment;
+						punto.review.identifier = webId.replace("profile/card#me", "");
+						punto.review.reviewRating.ratingValue = puntu;
+						punto.review.reviewRating.datePublished = timeStamp();
+						break;
+
+					}
+				}
+			}
+		}
+	}
+
+	const blob = new Blob([JSON.stringify(json, null, 2)], {
+		type: "application/ld+json",
+	});
+	const f = new File([blob], mapPointsUrl, { type: blob.type });
+
+	await overwriteFile(
+		mapPointsUrl,
+		f,
+		{ contentType: f.type, fetch: session.fetch as any }
+	);
 }
+
 
 
 export async function updateMarker(session: Session, webId: string, markerId: string, tipo: string, pointName: string, descripcion: string) {
-	console.log("entro");
+
 	const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/Map';//proveedor+webId+nombreCategoria
-	/*
-	let dataset = await getSolidDataset(mapPointsUrl);
 
 
-	let punto = getThing(dataset, markerId) as Thing;
+	const fileBlob = await getFile(mapPointsUrl, { fetch: session.fetch as any });
+	let jsonStringFy = JSON.stringify(await fileBlob.text());
+	let jsonMarkers = JSON.parse(jsonStringFy);
+	let json = JSON.parse(jsonMarkers);
+
+	if (json.spatialCoverage.length !== undefined) {
+		for (let i = 0; i < json.spatialCoverage.length; i++) {
+			let punto = json.spatialCoverage[i];
+			if (punto.identifier === markerId) {
+				punto.name = pointName;
+				punto.additionalType = tipo;
+				punto.description = descripcion;
+				break;
+			}
+
+		}
 
 
-	let latitu = getDecimal(punto, 'https://schema.org/latitude') as number;
-	let longitu = getDecimal(punto, 'https://schema.org/longitude') as number;	
+	}
+	const blob = new Blob([JSON.stringify(json, null, 2)], {
+		type: "application/ld+json",
+	});
+	const f = new File([blob], mapPointsUrl, { type: blob.type });
 
-	var marker: MapMarker = {
-		webId: webId,
-		id: markerId,
-		titulo: pointName,
-		descripcion: descripcion,
-			latitud: latitu,
-			longitud: longitu,
-			categoria: tipo
-	};
-
-	const mapPointsThing = buildThing(createThing(punto))
-		.setDecimal('https://schema.org/latitude', marker.latitud as number)
-		.setDecimal('https://schema.org/longitude', marker.longitud as number)
-		.setStringNoLocale('https://schema.org/category', `${marker.categoria}`)
-		.setStringNoLocale('https://schema.org/description', `${marker.descripcion}`)
-		.setStringNoLocale('https://schema.org/name', pointName)
-		.build();
-
-
-	// Añadir el punto de mapa al conjunto de datos
-	var updatedDataset = setThing(dataset, mapPointsThing);
-	console.log("dataset " + dataset.graphs);
-
-	// Escribir el conjunto de datos actualizado en el Pod de Solid
-	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset, { fetch: session.fetch as any });*/
-	console.log(`El punto de mapa  has ido modificado'${pointName}'`);
+	await overwriteFile(
+		mapPointsUrl,
+		f,
+		{ contentType: f.type, fetch: session.fetch as any }
+	);
 }
+
+
 
 
 export async function getMarkers(session: Session, webId: String) {
@@ -371,7 +364,7 @@ export async function getMarkers(session: Session, webId: String) {
 	if (json.spatialCoverage.length !== undefined) {
 		for (let i = 0; i < json.spatialCoverage.length; i++) {
 
-			let punto = json.spatialCoverage[0];
+			let punto = json.spatialCoverage[i];
 			var mark = [punto.identifier
 				, punto.name,
 			punto.latitude,
@@ -385,19 +378,7 @@ export async function getMarkers(session: Session, webId: String) {
 	}
 	return [];
 }
-export async function getMarker(id: String) {
-	const apiEndPoint = process.env.REACT_APP_API_URI || 'http://localhost:5000/api'
 
-	let response = await fetch(apiEndPoint + `/marker/${id}`, {
-		method: 'GET',
-		headers: { 'Content-Type': 'application/json' },
-
-	})
-	console.log(response.json());
-	return await response.json();
-
-
-}
 
 export async function getFriendsSolid(webid: String, session: Session) {
 
@@ -439,6 +420,7 @@ export async function createMap(mapName: string, session: Session, webId: string
 	try {
 		const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/Map';//proveedor+webId+nombreCategoria
 		const dataset = await getSolidDataset(mapPointsUrl, { fetch: session.fetch as any });
+		permisosPublico(mapPointsUrl, session);
 	}
 	catch (error) {
 		console.log("No existe el mapa");
@@ -581,4 +563,18 @@ export async function createMap(mapName: string, session: Session, webId: string
 	}
 
 
+}
+export async function permisosPublico(url: string, session: Session) {
+	universalAccess.setPublicAccess(
+		url,
+		{ read: true, write: false },    // Access object
+		{ fetch: session.fetch as any }                 // fetch function from authenticated session
+	).then((newAccess) => {
+		if (newAccess === null) {
+			console.log("Could not load access details for this Resource.");
+		} else {
+			console.log("Returned Public Access:: ", JSON.stringify(newAccess));
+
+		}
+	});
 }
