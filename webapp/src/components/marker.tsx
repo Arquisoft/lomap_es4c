@@ -496,34 +496,47 @@ export async function createMap(mapName: string, session: Session, webId: string
 		let place: Place = {
 			'@type': 'Place',
 			identifier: '124894891519',
-			name: 'PREUBA',
-			additionalType: 'PREUBA',
+			name: 'Barajas',
+			additionalType: '',
 			latitude: 0,
 			longitude: 0,
-			description: 'PREUBA',
+			description: '',
 			review: [review, review],
 			image: [image]
 
 		};
+		var colectionPuntos: Place[] = [];
+		colectionPuntos.push(place);
+		
+		let punto: Graph = {
+			'@context': 'https://schema.org',
+			'@graph': colectionPuntos
+		};
+		
+	punto['@graph'].forEach(p  =>	console.log("Punto" +p as Place));
 
 
-		let mapa: Map = {
+
+
+		let mapa: WithContext<Map> = {
+			"@context": "https://schema.org",
 			'@type': 'Map',
-			identifier: 'American computer scientist',
-			name: 'Grace Hopper',
+			identifier: '1234872597vdfg78784',
+			name: 'Mapa',
 			author: {
 				'@type': 'Person',
-				identifier: 'American computer scientist',
+				identifier: webId,
 			},
-			spatialCoverage: [place]
+			spatialCoverage: colectionPuntos
+			
 		};
 
-	let lugar  = JSON.parse(JSON.stringify(place))
+	
 		
 	
 	
 	
-		let blob = new Blob([JSON.stringify(place)],{ type: "application/ld+json" });
+		let blob = new Blob([JSON.stringify(mapa)],{ type: "application/ld+json" });
 		let file = new File([blob], 'mapa' + ".jsonld", { type: blob.type });
 	
 		await overwriteFile(
