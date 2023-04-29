@@ -26,6 +26,39 @@ export type Location = {
 
 }
 
+export type review={
+
+    
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "identifier": "?WebId"
+      },
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "?ReviewValue"
+      },
+      "datePublished": "?ReviewDate", 
+      "reviewBody": "?ReviewComment"
+    
+}
+
+export type Place={
+
+  
+    "@type": "Place",
+    "identifier": "?UUID",
+    "name": "?MarkerName",
+    "author": {
+      "@type": "Person",
+      "identifier": "?WebId"
+    },
+    "additionalType": "?MarkerCategory",
+    "latitude": "?MarkerLatitude",
+    "longitude": "?MarkerLongitude",
+    "description": "?MarkerDescription",
+
+}
 export type Comment = {
   author: string;
   comment:string;
