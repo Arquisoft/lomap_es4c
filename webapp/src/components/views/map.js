@@ -337,7 +337,7 @@ async function markerFuncs(marker, popup, nombre, descripcion, tipo, x, y, sessi
           addCategoria(tipo,marker); 
           
           //Guardar los nuevos datos en el pod
-          updateMarker(session, session.info.webId, markId, tipo, nombre);
+          updateMarker(session, session.info.webId, markId, tipo, nombre, descripcion);
           popup.setHTML(setPointHTML(nombre,descripcion,tipo));
 
           marker.togglePopup();

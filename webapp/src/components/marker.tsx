@@ -3,7 +3,6 @@ import { MapMarker, MapMarkerReview, Comment, Maps, Location, Picture, ReviewSco
 import { getFile, getDecimal, addIri, getStringNoLocale, saveFileInContainer, overwriteFile, getUrlAll, buildThing, getSolidDataset, createSolidDataset, createThing, Thing, removeThing, setThing, getThing, getThingAll, addUrl, addStringNoLocale, getSolidDatasetWithAcl, getUrl, saveSolidDatasetAt } from '@inrupt/solid-client';
 import { FOAF } from "@inrupt/lit-generated-vocab-common";
 import { Marker } from 'mapbox-gl';
-import { Console, timeStamp } from 'console';
 import {
 	universalAccess
 } from "@inrupt/solid-client";
@@ -236,12 +235,12 @@ export async function removeMarker(webid: string, id: string, session: Session) 
 	const apiEndPoint = process.env.REACT_APP_API_URI || 'http://localhost:5000/api'
 
 
-
+	/*
 	let response = await fetch(apiEndPoint + `/marker/${id.substring(id.lastIndexOf("#") + 1)}`, {//En mongo solo guardamos webId y el titulo
 		method: 'DELETE',
 		headers: { 'Content-Type': 'application/json' },
 	})
-
+	
 	console.log(response);
 	//console.log(response.body?.getReader);
 	//console.log(response.json());
@@ -252,6 +251,8 @@ export async function removeMarker(webid: string, id: string, session: Session) 
 	} else {
 		return false;
 	}
+	*/
+	removeSolidMarker(webid, session, id);
 }
 
 export async function removeSolidMarker(webId: string, session: Session, markerId: string) {
@@ -260,14 +261,39 @@ export async function removeSolidMarker(webId: string, session: Session, markerI
 
 	let dataset = await getSolidDataset(mapPointsUrl);
 
+	const fileBlob = await getFile(mapPointsUrl, { fetch: session.fetch as any });
+	let jsonStringFy = JSON.stringify(await fileBlob.text());
+	let jsonMarkers = JSON.parse(jsonStringFy);
+	let json = JSON.parse(jsonMarkers);
 
+	if (json.spatialCoverage.length !== undefined) {
+		for (let i = 0; i < json.spatialCoverage.length; i++) {
+			if(json.spatialCoverage[i].identifier === markerId){
+				json.spatialCoverage.splice(i, 1);
+			}
+		}
+	}
+	console.log(json.spatialCoverage)
 
+	/*
 	let punto = getThing(dataset, markerId) as Thing;
 	var updatedDataset = removeThing(dataset, punto);
 	console.log("dataset " + dataset.graphs);
 
 
 	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset, { fetch: session.fetch as any });
+	*/
+
+	const blob = new Blob([JSON.stringify(json, null, 2)], {
+		type: "application/ld+json",
+	});
+	const f = new File([blob], mapPointsUrl, { type: blob.type });
+
+	await overwriteFile(
+		mapPointsUrl,
+		f,
+		{ contentType: f.type, fetch: session.fetch as any }
+	);
 
 }
 
@@ -290,7 +316,7 @@ export async function updateMarkerReviews(session: Session, webId: string, marke
 						punto.review.revieBody = coment;
 						punto.review.identifier = webId.replace("profile/card#me", "");
 						punto.review.reviewRating.ratingValue = puntu;
-						punto.review.reviewRating.datePublished = timeStamp();
+						punto.review.reviewRating.datePublished = new Date().valueOf();
 						break;
 
 					}
