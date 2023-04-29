@@ -49,8 +49,8 @@ export function createPlaceObject(webid: string, nombre: string, lat: number, lo
 		latitude: lat,
 		longitude: lon,
 		description: descripc,
-		review: [review],
-		image: [image]
+		review: [],
+		image: []
 
 	};
 	return place;
@@ -107,7 +107,7 @@ export async function removeSolidMarker(webId: string, session: Session, markerI
 
 	if (json.spatialCoverage.length !== undefined) {
 		for (let i = 0; i < json.spatialCoverage.length; i++) {
-			if(json.spatialCoverage[i].identifier === markerId){
+			if (json.spatialCoverage[i].identifier === markerId) {
 				json.spatialCoverage.splice(i, 1);
 			}
 		}
@@ -142,36 +142,33 @@ export async function updateMarkerReviews(session: Session, webId: string, marke
 
 
 	const fileBlob = await getFile(mapPointsUrl, { fetch: session.fetch as any });
-	let jsonStringFy = JSON.stringify(await fileBlob.text());
-	let jsonMarkers = JSON.parse(jsonStringFy);
+	let jsonStringFy =  JSON.stringify(await fileBlob.text());
+	let jsonMarkers = await JSON.parse(jsonStringFy);
 	let json = JSON.parse(jsonMarkers);
-
+	let flag=true;
 	if (json.spatialCoverage.length !== undefined) {
-		for (let i = 0; i < json.spatialCoverage.length; i++) {
+		for (let i = 0; i < json.spatialCoverage.length && flag; i++) {
 			let punto = json.spatialCoverage[i];
 			if (punto.identifier === markerId) {
+				flag=false;
 				for (let j = 0; j < punto.review.length; j++) {
+					punto.review[j].reviewBody = coment;
+					punto.review[j].author.identifier = webId.replace("profile/card#me", "");
+					punto.review[j].datePublished = Date.now();
+					punto.review[j].reviewRating.ratingValue = puntu;
+					for (let k = 0; k < punto.image.length; k++) {
 
-					punto.review[0].reviewBody = coment;
-					punto.review[0].identifier = webId.replace("profile/card#me", "");
-					punto.review[0].reviewRating.ratingValue = puntu;
-					punto.review[0].datePublished = Date.now();
-
-
-
-
-					
-				}
-				for (let j = 0; j < punto.image.length; j++) {
-					if (punto.image.contentUrl === imagen) {
-						punto.image.identifier = webId.replace("profile/card#me", "");
-						punto.image.contentUrl = imagen;
-
-
+						punto.image[k].identifier = webId.replace("profile/card#me", "");
+						punto.image[k].contentUrl = imagen;
+	
+	
 						break;
-
+	
+	
 					}
+
 				}
+				
 			}
 		}
 	}
@@ -299,7 +296,7 @@ export async function createMap(mapName: string, session: Session, webId: string
 		const dataset = await getSolidDataset(mapPointsUrl, { fetch: session.fetch as any });
 		permisosPublico(mapPointsUrl, session);
 	}
-	catch{
+	catch {
 		const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/Map';//proveedor+webId+nombreCategoria
 		permisosPublico(mapPointsUrl, session);
 
@@ -333,13 +330,13 @@ export async function createMap(mapName: string, session: Session, webId: string
 		let place: Place = {
 			'@type': 'Place',
 			identifier: uuidv4(),
-			name: 'Barajas',
+			name: 'Punto de ejemplo',
 			additionalType: '',
 			latitude: 0,
 			longitude: 0,
 			description: '',
-			review: [review, review],
-			image: [image]
+			review: [],
+			image: []
 
 		};
 		var colectionPuntos: Place[] = [];

@@ -303,7 +303,7 @@ async function markerFuncs(marker, popup, nombre, descripcion, tipo, x, y, sessi
     .getElementsByClassName('val')[0]
     .addEventListener('click', () => {
       document.getElementById('window-notice').style.visibility='visible';
-      console.log('markId: '+ markId.substring(markId.lastIndexOf("#") + 1));
+    
       markerId = markId;
       markerName = nombre;
       console.log(nombre);
