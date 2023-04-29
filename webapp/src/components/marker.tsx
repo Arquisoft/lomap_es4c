@@ -294,88 +294,93 @@ export async function getFriendsSolid(webid: String, session: Session) {
 
 
 export async function createMap(mapName: string, session: Session, webId: string) {
-
-	const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/Map';//proveedor+webId+nombreCategoria
-	permisosPublico(mapPointsUrl, session);
-
-
-	let review: Review = {
-		'@type': 'Review',
-		author: {
-			'@type': 'Person',
-			identifier: '',
-		},
-		reviewRating: {
-			'@type': 'Rating',
-			ratingValue: ""
-		},
-		datePublished: '',
-		reviewBody: ''
-
-	};
-	let image: ImageObject = {
+	try {
+		const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/Map';//proveedor+webId+nombreCategoria
+		const dataset = await getSolidDataset(mapPointsUrl, { fetch: session.fetch as any });
+		permisosPublico(mapPointsUrl, session);
+	}
+	catch{
+		const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/Map';//proveedor+webId+nombreCategoria
+		permisosPublico(mapPointsUrl, session);
 
 
-		'@type': 'ImageObject',
-		author: {
-			'@type': 'Person',
-			identifier: '',
-		},
-		contentUrl: ""
+		let review: Review = {
+			'@type': 'Review',
+			author: {
+				'@type': 'Person',
+				identifier: '',
+			},
+			reviewRating: {
+				'@type': 'Rating',
+				ratingValue: ""
+			},
+			datePublished: '',
+			reviewBody: ''
 
-	};
-
-	let place: Place = {
-		'@type': 'Place',
-		identifier: uuidv4(),
-		name: 'Barajas',
-		additionalType: '',
-		latitude: 0,
-		longitude: 0,
-		description: '',
-		review: [review, review],
-		image: [image]
-
-	};
-	var colectionPuntos: Place[] = [];
-	colectionPuntos.push(place);
-
-	let punto: Graph = {
-		'@context': 'https://schema.org',
-		'@graph': colectionPuntos
-	};
+		};
+		let image: ImageObject = {
 
 
+			'@type': 'ImageObject',
+			author: {
+				'@type': 'Person',
+				identifier: '',
+			},
+			contentUrl: ""
 
-	let mapa: WithContext<Map> = {
-		"@context": "https://schema.org",
-		'@type': 'Map',
-		identifier: uuidv4(),
-		name: 'Mapa',
-		author: {
-			'@type': 'Person',
-			identifier: webId,
-		},
-		spatialCoverage: colectionPuntos
+		};
 
-	};
+		let place: Place = {
+			'@type': 'Place',
+			identifier: uuidv4(),
+			name: 'Barajas',
+			additionalType: '',
+			latitude: 0,
+			longitude: 0,
+			description: '',
+			review: [review, review],
+			image: [image]
+
+		};
+		var colectionPuntos: Place[] = [];
+		colectionPuntos.push(place);
+
+		let punto: Graph = {
+			'@context': 'https://schema.org',
+			'@graph': colectionPuntos
+		};
 
 
 
+		let mapa: WithContext<Map> = {
+			"@context": "https://schema.org",
+			'@type': 'Map',
+			identifier: uuidv4(),
+			name: 'Mapa',
+			author: {
+				'@type': 'Person',
+				identifier: webId,
+			},
+			spatialCoverage: colectionPuntos
+
+		};
 
 
 
-	let blob = new Blob([JSON.stringify(mapa)], { type: "application/ld+json" });
-	let file = new File([blob], 'mapa' + ".jsonld", { type: blob.type });
-
-	await overwriteFile(
-		mapPointsUrl,
-		file,
-		{ contentType: file.type, fetch: session.fetch as any }
-	);
 
 
 
+		let blob = new Blob([JSON.stringify(mapa)], { type: "application/ld+json" });
+		let file = new File([blob], 'mapa' + ".jsonld", { type: blob.type });
+
+		await overwriteFile(
+			mapPointsUrl,
+			file,
+			{ contentType: file.type, fetch: session.fetch as any }
+		);
+
+
+	}
 }
 
 
