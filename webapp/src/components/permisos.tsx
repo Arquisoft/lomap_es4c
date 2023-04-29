@@ -20,14 +20,14 @@ export async function permisosAccesoPod(webId: string, friendWebId: string) {
     let resourceAcl;
     if (!hasResourceAcl(myDatasetWithAcl)) {
         if (!hasAccessibleAcl(myDatasetWithAcl)) {
-            console.error("No tienes permisos");
+           
             throw new Error(
                 "The current user does not have permission to change access rights to this Resource."
             );
 
         }
         if (!hasFallbackAcl(myDatasetWithAcl)) {
-            console.error("No tienes permisos");
+           
             throw new Error(
                 "The current user does not have permission to see who currently has access to this Resource."
             );
