@@ -151,16 +151,16 @@ export async function updateMarkerReviews(session: Session, webId: string, marke
 			let punto = json.spatialCoverage[i];
 			if (punto.identifier === markerId) {
 				for (let j = 0; j < punto.review.length; j++) {
-					if (punto.review.reviewBody === coment) {
-						punto.review.revieBody = coment;
-						punto.review.identifier = webId.replace("profile/card#me", "");
-						punto.review.reviewRating.ratingValue = puntu;
-						punto.review.reviewRating.datePublished = Date.now();
-						punto.review.reviewRating.datePublished = Date.now();
+
+					punto.review[0].reviewBody = coment;
+					punto.review[0].identifier = webId.replace("profile/card#me", "");
+					punto.review[0].reviewRating.ratingValue = puntu;
+					punto.review[0].datePublished = Date.now();
 
 
 
-					}
+
+					
 				}
 				for (let j = 0; j < punto.image.length; j++) {
 					if (punto.image.contentUrl === imagen) {
