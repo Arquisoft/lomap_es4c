@@ -5,7 +5,7 @@ import { FOAF } from "@inrupt/lit-generated-vocab-common";
 import { Marker } from 'mapbox-gl';
 import { Console, timeStamp } from 'console';
 import { Graph, WithContext, Person, Map, Place, Review, ImageObject } from 'schema-dts';
-import { RDF } from "@inrupt/vocab-common-rdf";
+import { getPropertyForThing } from '@inrupt/solid-ui-react/dist/src/helpers';
 
 /**
  * Devulev eun objeto Plaes para añadir al mapa
@@ -55,7 +55,7 @@ export function createPlaceObject(webid: string, nombre: string, lat: number, lo
 
 
 
-export async function addMarker(webid: string, nombre: string, lat: Number, lon: Number, tipo: string, idp: String, session: Session, descripc: string) {
+export async function addMarker(webid: string, nombre: string, lat: number, lon: number, tipo: string, idp: String, session: Session, descripc: string) {
 	const apiEndPoint = process.env.REACT_APP_API_URI || 'http://localhost:5000/api'
 
 
@@ -115,6 +115,19 @@ export async function addMarker(webid: string, nombre: string, lat: Number, lon:
 		maps: mapMarkers
 	}
 
+	var newMarker : Place = {
+		'@type': 'Place',
+		identifier: 'y54xwevu75r865e65e64e',
+		name: nombre,
+		additionalType: tipo,
+		latitude: lat,
+		longitude: lon,
+		description: descripc,
+		review: [],
+		image: []
+
+	};
+
 
 	var marker = JSON.stringify({
 		webId: webid,
@@ -134,18 +147,18 @@ export async function addMarker(webid: string, nombre: string, lat: Number, lon:
 	//console.log(response.json());
 	if (response.status == 200) {
 		mapMarker.id = await response.json();
-		addSolidMarker(session, idp, map);
+		addSolidMarker(session, idp, newMarker);
 		return true;
 	} else {
 		return false;
 	}
 }
 
-export async function addSolidMarker(session: Session, idp: String, marker: Maps) {
-	const pointName = 'Prueba';
+export async function addSolidMarker(session: Session, idp: String, newMarker: Place) {
+	//const pointName = 'Prueba';
 	const webId = session.info.webId as string;
 
-	var punto = marker.maps[0];
+	//var punto = marker.maps[0];
 
 	const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/Map';//proveedor+webId+nombreCategoria
 	//const dataset = await getSolidDataset(mapPointsUrl).catch(error => console.error(error));;
@@ -153,7 +166,7 @@ export async function addSolidMarker(session: Session, idp: String, marker: Maps
 
 	console.log("session is logged " + session.info.isLoggedIn);
 	console.log("session " + session.info);
-	let place = createPlaceObject(webId, punto.name, punto.locations[0].latitude, punto.locations[0].longitude, punto.locations[0].category, punto.locations[0].description);
+	//let place = createPlaceObject(webId, punto.name, punto.locations[0].latitude, punto.locations[0].longitude, punto.locations[0].category, punto.locations[0].description);
 	/*
 	//let originalBlob = await getFile(mapPointsUrl, { fetch: fetch });
 	let blob = new Blob([JSON.stringify(mapData)], { type: "application/json" });
@@ -165,15 +178,58 @@ export async function addSolidMarker(session: Session, idp: String, marker: Maps
 */
 
 	const dataset = await getSolidDataset(mapPointsUrl).catch(error => console.error(error));;
-
-	const newDataset = createSolidDataset();
-
 	console.log("session is logged " + session.info.isLoggedIn);
 	console.log("session " + session.info);
+	/*
+	if (dataset !== undefined) {
+		let fileContent = await getFile(mapPointsUrl, { fetch: session.fetch as any });
+		let file = new File([fileContent], "Map.json", { type: "application/json" });
+		let s = JSON.stringify(fileContent);
+		let json = JSON.parse(s);
+		for(const element of json.spatialCoverage){
+			let review = [];
+			let images = [];
+			let latitude = Number(element.latitude);
+			let longitude = Number(element.longitude);
+			let identifier = element.identifier;
+			let author = element.author.identifier;
+			let name = element.name;
+			let category = element.additionalType;
+			let description = element.description;
+			let date = element.dateCreated;
+		}
+	}
+	*/
 
+	let fileContent = await getFile(mapPointsUrl, { fetch: session.fetch as any });
+	let text = await fileContent.text();
+	//let file = new File([fileContent], "Map.json", { type: "application/json" });
+	let json = JSON.parse(text);
+
+
+
+	console.log("json " + json);
+	console.log("json spatial " + json);	
+	json.spatialCoverage.push(newMarker);
+	//json.spatialCoverage.push(newMarker);
+	const blob = new Blob([JSON.stringify([json], null, 2)], {
+		type: "application/ld+json",
+	});
+	const f = new File([blob], mapPointsUrl, {type: blob.type});
+
+	await overwriteFile(
+		mapPointsUrl,
+		f,
+		{ contentType: f.type, fetch: session.fetch as any }
+	);
+	//const newDataset = createSolidDataset();
+
+	
+
+	
 
 	//const dataset = getSolidDatasetWithAcl();
-	console.log(punto.locations[0].id);
+	//console.log(punto.locations[0].id);
 	/*
 		const mapPointsThing = buildThing(createThing({ name: punto.locations[0].id }))
 			//console.log("name " + pointName);
@@ -199,7 +255,7 @@ export async function addSolidMarker(session: Session, idp: String, marker: Maps
 		const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset, {fetch:session.fetch as any});
 		console.log(`El punto de mapa '${pointName}' se ha añadido al Pod de Solid en la URL ${updatedDatasetUrl.graphs.url}`);
 		*/
-	return punto.locations[0].id;
+	//return newMarker.valueOf();
 }
 
 
