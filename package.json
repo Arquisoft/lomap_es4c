@@ -4,6 +4,10 @@
     "eslint-plugin-jsx-a11y": "^6.7.1"
   },
   "dependencies": {
-    "n3": "^1.16.3"
+    "image-js": "^0.35.3",
+    "image.js": "^0.0.0",
+    "n3": "^1.16.3",
+    "react-star-ratings": "^2.3.0",
+    "uuid": "^9.0.0"
   }
 }

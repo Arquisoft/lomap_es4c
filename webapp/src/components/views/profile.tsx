@@ -56,7 +56,9 @@ function Profile(): JSX.Element {
         
         </nav>
       </header>
-
+      <h1> Datos del usuario</h1>
+<div className ="profile">
+  
     <Container fixed>
       {session.info.webId ? (
         <CombinedDataProvider 
@@ -79,14 +81,16 @@ function Profile(): JSX.Element {
       </CombinedDataProvider>
       ): null }
       <LogoutButton >
+        
         <Button style={{ marginTop: 20 }} variant="contained" color="primary">
           Logout
         </Button>
+        
       </LogoutButton>
 
 
     </Container>
-
+    </div>
     </>
   );
 }
