@@ -1,6 +1,6 @@
 import { Session, fetch } from '@inrupt/solid-client-authn-browser';
 import { MapMarker, MapMarkerReview, Comment, Maps, Location, Picture, ReviewScore, review } from '../shared/shareddtypes';
-import { getFile, getDecimal, addIri, getStringNoLocale, saveFileInContainer, overwriteFile, getUrlAll, buildThing, getSolidDataset, createSolidDataset, createThing, Thing, removeThing, setThing, getThing, getThingAll, addUrl, addStringNoLocale, getSolidDatasetWithAcl, getUrl, saveSolidDatasetAt } from '@inrupt/solid-client';
+import { getFile, getDecimal, getProfileAll, addIri, getStringNoLocale, saveFileInContainer, overwriteFile, getUrlAll, buildThing, getSolidDataset, createSolidDataset, createThing, Thing, removeThing, setThing, getThing, getThingAll, addUrl, addStringNoLocale, getSolidDatasetWithAcl, getUrl, saveSolidDatasetAt } from '@inrupt/solid-client';
 import { FOAF } from "@inrupt/lit-generated-vocab-common";
 import { Marker } from 'mapbox-gl';
 import { v4 as uuidv4 } from 'uuid';
@@ -142,15 +142,15 @@ export async function updateMarkerReviews(session: Session, webId: string, marke
 
 
 	const fileBlob = await getFile(mapPointsUrl, { fetch: session.fetch as any });
-	let jsonStringFy =  JSON.stringify(await fileBlob.text());
+	let jsonStringFy = JSON.stringify(await fileBlob.text());
 	let jsonMarkers = await JSON.parse(jsonStringFy);
 	let json = JSON.parse(jsonMarkers);
-	let flag=true;
+	let flag = true;
 	if (json.spatialCoverage.length !== undefined) {
 		for (let i = 0; i < json.spatialCoverage.length && flag; i++) {
 			let punto = json.spatialCoverage[i];
 			if (punto.identifier === markerId) {
-				flag=false;
+				flag = false;
 				for (let j = 0; j < punto.review.length; j++) {
 					punto.review[j].reviewBody = coment;
 					punto.review[j].author.identifier = webId.replace("profile/card#me", "");
@@ -160,15 +160,15 @@ export async function updateMarkerReviews(session: Session, webId: string, marke
 
 						punto.image[k].identifier = webId.replace("profile/card#me", "");
 						punto.image[k].contentUrl = imagen;
-	
-	
+
+
 						break;
-	
-	
+
+
 					}
 
 				}
-				
+
 			}
 		}
 	}
@@ -255,33 +255,22 @@ export async function getMarkers(session: Session, webId: String) {
 
 
 export async function getFriendsSolid(webid: String, session: Session) {
-
 	const dataset = await getSolidDataset(webid.toString());
-
-	// Obtiene la cosa correspondiente al perfil FOAF
+	const perfil = getThing(dataset, webid.toString()) as Thing;
+	const knows = getUrlAll(perfil, "http://xmlns.com/foaf/0.1/knows");
 	var markers = [];
-	var arayThing = getThingAll(dataset);
-	for (let i = 0; i < arayThing.length; i++) {
-		console.log("arayThing " + arayThing[i].url)
-		// Obtiene el nombre completo del usuario
-		var nombreCompleto = getUrlAll(arayThing[i], FOAF.knows.iri.value);
-
-		console.log("Knows  " + nombreCompleto);
-		if (arayThing[i].url.includes("card#me")) {
-			var profiles = String(nombreCompleto).split(",");
-			console.log("profiles " + profiles.length);
-
-			for (let j = 0; j < profiles.length; j++) {
-				if (!profiles[j].includes(webid.toString())) {
-					var profile = profiles[j];
-					console.log("perfil " + profile);
-					try {
-						markers[j] = getMarkers(session, profile).catch(e => console.log("No existe puntos para el amigo"));
-					} catch (error) {
-						console.log("No existe puntos para el amigo " + profile);
-					}
-					console.log("MARKERS " + markers[j]);
+	if (knows !== undefined) {
+		var profiles = String(knows).split(",");
+		for (let j = 0; j < profiles.length; j++) {
+			console.log("PERRFIL**************** " + profiles);
+			if (!profiles[j].includes(webid.toString())) {
+				var profile = profiles[j];
+				try {
+					markers[j] = await getMarkers(session, profile).catch(e => console.log("No existe puntos para el amigo"));
+				} catch (error) {
+					console.log("No existe puntos para el amigo " + profile);
 				}
+				console.log("MARKERS " + markers[j]);
 			}
 		}
 	}
@@ -290,15 +279,16 @@ export async function getFriendsSolid(webid: String, session: Session) {
 }
 
 
+
 export async function createMap(mapName: string, session: Session, webId: string) {
 	try {
 		const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/Map';//proveedor+webId+nombreCategoria
 		const dataset = await getSolidDataset(mapPointsUrl, { fetch: session.fetch as any });
-		permisosPublico(mapPointsUrl, session);
+		await permisosPublico(mapPointsUrl, session);
 	}
 	catch {
-		const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/Map';//proveedor+webId+nombreCategoria
-		permisosPublico(mapPointsUrl, session);
+		const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap';//proveedor+webId+nombreCategoria
+
 
 
 		let review: Review = {
@@ -383,7 +373,7 @@ export async function createMap(mapName: string, session: Session, webId: string
 
 
 export async function permisosPublico(url: string, session: Session) {
-	universalAccess.setPublicAccess(
+	await universalAccess.setPublicAccess(
 		url,
 		{ read: true, write: false },    // Access object
 		{ fetch: session.fetch as any }                 // fetch function from authenticated session
