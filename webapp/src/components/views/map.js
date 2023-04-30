@@ -8,10 +8,11 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { center, zoom } from "./data";
 import mapboxgl, { Map, Marker } from "mapbox-gl";
 import { mapAccessToken, mapStyleId } from "./data";
-import Review from "./review";
+import Review, {getReview} from "./review";
 import { useNavigate, Navigate } from 'react-router-dom';
-import { addMarker, updateMarker, getMarkers,removeMarker,getFriendsSolid } from "../marker";
+import { addMarker, updateMarker, getMarkers, removeMarker, getFriendsSolid, createMap } from "../marker";
 import { useSession } from "@inrupt/solid-ui-react";
+import {createPortal, render, unmountComponentAtNode} from 'react-dom';
 
 var dict = {};
 var names = [];
@@ -22,9 +23,9 @@ var monumentosMarks = [];
 var otrosMarks = [];
 
 var editing = false;
-var addroute= false;
+var addroute = false;
 
-var routeCount=0;
+var routeCount = 0;
 var points = [];
 
 var markerId = "";
@@ -36,18 +37,18 @@ function MapPage() {
   const { session } = useSession();
 
   const callPerfil = () => {
-    navigate('/profile'); 
+    navigate('/profile');
   };
   const logOut = () => {
     session.logout();
-    navigate('/login'); 
+    navigate('/login');
   };
 
   mapboxgl.accessToken = mapAccessToken;
 
   const mapContainer = useRef(null);
   const map = useRef(null);
-  
+
   const edit = useRef(null);
   const addroutebtn = useRef(null);
   const winpopup = useRef(null);
@@ -62,42 +63,44 @@ function MapPage() {
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
-    
+
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: `mapbox://styles/${mapStyleId}`,
       center: center,
       zoom: zoom,
     });
-    
+
+    createMap("MapPrueba2", session, session.info.webId);
+
     loadMarkers(map, session);
 
     map.current.addControl(new mapboxgl.FullscreenControl());
- 
+
     const coordinatesGeocoder = function (query) {
       function coordinateFeature(name, lng, lat) {
         return {
-        center: [lng, lat],
-        geometry: {
-        type: 'Point',
-        coordinates: [lng, lat]
-        },
-        place_name: name,
-        place_type: ['coordinate'],
-        properties: {},
-        type: 'Feature'
+          center: [lng, lat],
+          geometry: {
+            type: 'Point',
+            coordinates: [lng, lat]
+          },
+          place_name: name,
+          place_type: ['coordinate'],
+          properties: {},
+          type: 'Feature'
         };
       }
-        
+
       const geocodes = [];
-      
-      for (let i=0;i<names.length;i++) {
-          if(names[i].includes(query)) {
-              geocodes.push(coordinateFeature(names[i],dict[names[i]][0],dict[names[i]][1]));
-          }
+
+      for (let i = 0; i < names.length; i++) {
+        if (names[i].includes(query)) {
+          geocodes.push(coordinateFeature(names[i], dict[names[i]][0], dict[names[i]][1]));
+        }
       }
-        
-      return geocodes;  
+
+      return geocodes;
     };
 
     map.current.addControl(
@@ -111,11 +114,11 @@ function MapPage() {
     );
 
     map.current.on("click", function (e) {
-      if (editing) {  
-        addMapMarker(e,map, session);
+      if (editing) {
+        addMapMarker(e, map, session);
       }
-      if(addroute) {
-        AddPoint(e,points,map);
+      if (addroute) {
+        AddPoint(e, points, map);
       }
     });
 
@@ -130,15 +133,15 @@ function MapPage() {
     });
 
     close.current.addEventListener('click', () => {
-      winpopup.current.style.visibility='hidden';
+      winpopup.current.style.visibility = 'hidden';
     });
 
     winpopup.current.addEventListener('click', () => {
-      winpopup.current.style.visibility='hidden';
+      winpopup.current.style.visibility = 'hidden';
     });
-    
+
     //Filtros
-    loadFiltros(filtroTodo,filtroPlayas,filtroRestaurantes,filtroMonumentos,filtroOtros,playasMarks,restaurantesMarks,monumentosMarks,otrosMarks);
+    loadFiltros(filtroTodo, filtroPlayas, filtroRestaurantes, filtroMonumentos, filtroOtros, playasMarks, restaurantesMarks, monumentosMarks, otrosMarks);
   });
 
   return (
@@ -167,67 +170,71 @@ function MapPage() {
         <img src="./images/add-route.png" id="pencil-route" />
       </a>
       <div className="window-notice" id="window-notice" ref={winpopup}>
-        <div className="content id=content">
-          <Review pName = {markerName} pMarkId={markerId}/>
+        <div className="content" id="content">
+          <Review pName={markerName} pMarkId={markerId}/>
           <div className="content-buttons"><a href="#" ref={close} id="close-button">Aceptar</a></div>
         </div>
+        
+        
       </div>
     </>
   );
 }
 
 
-document.addEventListener('click', function(event) {
-  if(document.getElementById('window-notice')!=null){
-    
-      document.getElementById('formReview').addEventListener('click', function(event) {
-    
-        event.stopPropagation();
-        
-     
-    });}
-  
+document.addEventListener('click', function (event) {
+  if (document.getElementById('window-notice') != null) {
+
+    document.getElementById('formReview').addEventListener('click', function (event) {
+
+      event.stopPropagation();
+
+
+    });
+  }
+
 });
 
+
 function editAction(map) {
-  if(addroute){
-    addroute=false;
-    document.getElementById("pencil-route").src="./images/add-route.png";
-    document.getElementById("pencil").src="./images/add.png";
+  if (addroute) {
+    addroute = false;
+    document.getElementById("pencil-route").src = "./images/add-route.png";
+    document.getElementById("pencil").src = "./images/add.png";
 
     //Borrar layer si existe
-    if(map.current.getLayer("puntos") != undefined){
+    if (map.current.getLayer("puntos") != undefined) {
       map.current.removeLayer("puntos");
       map.current.removeSource("puntos");
     }
   } else {
-    if(editing) {
+    if (editing) {
       //addroutebtn.current.style.visibility='visible';
-      document.getElementById("editroute").style.visibility="visible";
-      document.getElementById("pencil").src="./images/add.png";
+      document.getElementById("editroute").style.visibility = "visible";
+      document.getElementById("pencil").src = "./images/add.png";
     } else {
       //addroutebtn.current.style.visibility='hidden';
-      document.getElementById("editroute").style.visibility="hidden";
-      document.getElementById("pencil").src="./images/cross.png";
+      document.getElementById("editroute").style.visibility = "hidden";
+      document.getElementById("pencil").src = "./images/cross.png";
     }
     editing = !editing;
   }
 }
 
 function addrouteAction(map) {
-  if(editing){
+  if (editing) {
     return;
   }
 
   if (addroute) {
     //Borrar layer si existe
-    if(map.current.getLayer("puntos") != undefined){
+    if (map.current.getLayer("puntos") != undefined) {
       map.current.removeLayer("puntos");
       map.current.removeSource("puntos");
     }
 
     //guardar ruta
-    map.current.addSource("route"+routeCount, {
+    map.current.addSource("route" + routeCount, {
       type: "geojson",
       data: {
         type: "Feature",
@@ -239,9 +246,9 @@ function addrouteAction(map) {
       },
     });
     map.current.addLayer({
-      id: "route"+routeCount,
+      id: "route" + routeCount,
       type: "line",
-      source: "route"+routeCount,
+      source: "route" + routeCount,
       layout: {
         "line-join": "round",
         "line-cap": "round",
@@ -253,23 +260,23 @@ function addrouteAction(map) {
     });
     addroute = false;
     routeCount++;
-    document.getElementById("pencil-route").src="./images/add-route.png";
-    document.getElementById("pencil").src="./images/add.png";
+    document.getElementById("pencil-route").src = "./images/add-route.png";
+    document.getElementById("pencil").src = "./images/add.png";
   } else {
     addroute = true;
     points = [];
-    document.getElementById("pencil-route").src="./images/save.png";
-    document.getElementById("pencil").src="./images/cross.png";
+    document.getElementById("pencil-route").src = "./images/save.png";
+    document.getElementById("pencil").src = "./images/cross.png";
   }
 }
 
-function loadFiltros(todo,playas,restaurantes,monumentos,otros) {
+function loadFiltros(todo, playas, restaurantes, monumentos, otros) {
   const filters = [
-    {button: todo.current, list: [playasMarks, monumentosMarks, restaurantesMarks, otrosMarks], visibility: 'visible'},
-    {button: playas.current, list: [playasMarks], visibility: 'visible'},
-    {button: monumentos.current, list: [monumentosMarks], visibility: 'visible'},
-    {button: restaurantes.current, list: [restaurantesMarks], visibility: 'visible'},
-    {button: otros.current, list: [otrosMarks], visibility: 'visible'}
+    { button: todo.current, list: [playasMarks, monumentosMarks, restaurantesMarks, otrosMarks], visibility: 'visible' },
+    { button: playas.current, list: [playasMarks], visibility: 'visible' },
+    { button: monumentos.current, list: [monumentosMarks], visibility: 'visible' },
+    { button: restaurantes.current, list: [restaurantesMarks], visibility: 'visible' },
+    { button: otros.current, list: [otrosMarks], visibility: 'visible' }
   ];
 
   filters.forEach(filter => {
@@ -278,9 +285,11 @@ function loadFiltros(todo,playas,restaurantes,monumentos,otros) {
         element.getElement().style.visibility = 'hidden';
       });
 
-      filter.list.forEach( e => { e.forEach(element => {
-        element.getElement().style.visibility = filter.visibility;
-      }); });
+      filter.list.forEach(e => {
+        e.forEach(element => {
+          element.getElement().style.visibility = filter.visibility;
+        });
+      });
     });
   });
 }
@@ -296,24 +305,25 @@ async function markerFuncs(marker, popup, nombre, descripcion, tipo, x, y, sessi
       marker.remove();
     });
 
-    popup
+  popup
     .getElement()
     .getElementsByClassName('val')[0]
     .addEventListener('click', () => {
-      document.getElementById('window-notice').style.visibility='visible';
-      console.log('markId: '+ markId.substring(markId.lastIndexOf("#") + 1));
+      document.getElementById('window-notice').style.visibility = 'visible';
+
       markerId = markId;
       markerName = nombre;
       console.log(nombre);
-      var obj = {pNombre: nombre, pMarkId: markId.substring(markId.lastIndexOf("#") + 1), pSession: session, pSessionId: session.info.webId}
-      //ReactDOM.render(<Review {...obj}/>, document.getElementById('window-notice'));
+      var obj = { pNombre: nombre, pMarkId: markId.substring(markId.lastIndexOf("#") + 1), pSession: session, pSessionId: session.info.webId }
+      //unmountComponentAtNode(document.getElementById('content'));
+      getReview(session, markerId, markerName);
     })
 
-    popup
+  popup
     .getElement()
     .getElementsByClassName("ed")[0]
     .addEventListener("click", () => {
-      popup.setHTML(setEditHTML(nombre,descripcion,tipo));
+      popup.setHTML(setEditHTML(nombre, descripcion, tipo));
       popup
         .getElement()
         .getElementsByClassName("guar")[0]
@@ -326,17 +336,17 @@ async function markerFuncs(marker, popup, nombre, descripcion, tipo, x, y, sessi
             .getElement()
             .getElementsByClassName("desc")[0].value;
           names.push(nombre);
-          dict[nombre] = [x,y];
+          dict[nombre] = [x, y];
 
           let e = document.getElementById("tipo");
 
-          removeCategoria(tipo,marker);
+          removeCategoria(tipo, marker);
           tipo = e.options[e.selectedIndex].text;
-          addCategoria(tipo,marker); 
-          
+          addCategoria(tipo, marker);
+
           //Guardar los nuevos datos en el pod
-          updateMarker(session, session.info.webId, markId, tipo, nombre);
-          popup.setHTML(setPointHTML(nombre,descripcion,tipo));
+          updateMarker(session, session.info.webId, markId, tipo, nombre, descripcion);
+          popup.setHTML(setPointHTML(nombre, descripcion, tipo));
 
           marker.togglePopup();
         });
@@ -371,7 +381,7 @@ function addMapMarker(e, map, session) {
     }
   });
 
-  
+
   popup.on("open", () => {
     if (!guardado) {
       popup
@@ -389,15 +399,15 @@ function addMapMarker(e, map, session) {
           let e = document.getElementById("tipo");
           tipo = e.options[e.selectedIndex].text;
 
-          markId = addMarker(session.info.webId,nombre, x, y, tipo, "https://inrupt.net/", session); //pasar descripcion
+          markId = addMarker(session.info.webId, nombre, x, y, tipo, "https://inrupt.net/", session, descripcion); //pasar descripcion
 
-          addCategoria(tipo,marker);
+          addCategoria(tipo, marker);
           names.push(nombre);
-          dict[nombre] = [x,y];
+          dict[nombre] = [x, y];
 
-          popup.setHTML(setPointHTML(nombre,descripcion,tipo));
+          popup.setHTML(setPointHTML(nombre, descripcion, tipo));
 
-          markerFuncs(marker,popup,nombre,descripcion,tipo,x,y,session,markId);
+          markerFuncs(marker, popup, nombre, descripcion, tipo, x, y, session, markId);
         });
     } else {
       popup.on("open", () => {
@@ -407,110 +417,109 @@ function addMapMarker(e, map, session) {
           return;
         }
 
-        markerFuncs(marker,popup,nombre,descripcion,tipo,x,y,session, markId);
+        markerFuncs(marker, popup, nombre, descripcion, tipo, x, y, session, markId);
       });
     }
   });
   marker.togglePopup();
 }
 
-async function loadMarkers(map, session){
+async function loadMarkers(map, session) {
   let points = await getMarkers(session, session.info.webId);
-  let friendsPoint = await getFriendsSolid( session.info.webId,session);
+  let friendsPoint =  await getFriendsSolid(session.info.webId, session);
 
-  for(let i=0; i<points.length; i++){
-    loadMarker(points[i], map, session);
+  for (let i = 0; i < points.length; i++) {
+      loadMarker(points[i], map, session);
   }
 
-  for(let i=0; i<friendsPoint.length; i++){
+  for (let i = 0; i < friendsPoint.length; i++) {
     console.log("entra en el for de amigos " + friendsPoint);
-    var array=await friendsPoint[i];
-    console.log((await array).length)
-    for(let j=0; j<array.length; j++){
-      console.log("Nombre del punto" + array[j].nombre)
-    
-    console.log("entra en el for de amigos "+ friendsPoint[0].nombre);
-    loadFriendMarker(array[j], map,session);
+    var array =  friendsPoint[i];
+    if (array !== undefined) {
+      for (let j = 0; j < array.length; j++) {
+        console.log("Nombre del punto" + array[j].nombre);
+         loadFriendMarker(array[j], map, session);
+      }
+    }
   }
 }
-}
 
-async function loadMarker(point, map, session){
+async function loadMarker(point, map, session) {
   let id = point[0];
   let nombre = point[1];
-  let descripcion = "Por cargar en pod"; //point[5]
+  let descripcion = point[5]
   let x = Number.parseFloat(point[2]);
   let y = Number.parseFloat(point[3]);
   let categoria = point[4];
 
-  let popup = new mapboxgl.Popup({ offset: 25 }).setHTML(setPointHTML(nombre, descripcion,categoria));
+  let popup = new mapboxgl.Popup({ offset: 25 }).setHTML(setPointHTML(nombre, descripcion, categoria));
 
   let marker = new mapboxgl.Marker()
     .setLngLat([x, y])
     .setPopup(popup)
     .addTo(map.current);
 
-  addCategoria(categoria,marker);
+  addCategoria(categoria, marker);
 
   popup.on("open", () => {
-    markerFuncs(marker,popup,nombre,descripcion,categoria,x,y,session, id);
+    markerFuncs(marker, popup, nombre, descripcion, categoria, x, y, session, id);
   });
 
   names.push(nombre);
-  dict[nombre]=[x,y];
+  dict[nombre] = [x, y];
 }
 
-async function loadFriendMarker(point, map, session){
+async function loadFriendMarker(point, map, session) {
   let id = point[0];
   let nombre = point[1];
-  let descripcion = "Por cargar en pod"; //point[5]
+  let descripcion = point[5]
   let x = Number.parseFloat(point[2]);
   let y = Number.parseFloat(point[3]);
   let categoria = point[4];
 
-  let popup = new mapboxgl.Popup({ color: 'red', offset: 25 }).setHTML(setFriendPointHTML(nombre, descripcion,categoria));
+  let popup = new mapboxgl.Popup({ offset: 25 }).setHTML(setFriendPointHTML(nombre, descripcion, categoria));
 
-  let marker = new mapboxgl.Marker()
+  let marker = new mapboxgl.Marker({ color: 'red' })
     .setLngLat([x, y])
     .setPopup(popup)
     .addTo(map.current);
 
-  addCategoria(categoria,marker);
+  addCategoria(categoria, marker);
 
   popup.on("open", () => {
-    markerFuncs(marker,popup,nombre,descripcion,categoria,x,y,session, id);
+    //markerFuncs(marker,popup,nombre,descripcion,categoria,x,y,session, id);
   });
 
   names.push(nombre);
-  dict[nombre]=[x,y];
+  dict[nombre] = [x, y];
 }
 
-function AddPoint(e,points,map) {
+function AddPoint(e, points, map) {
   let z = JSON.stringify(e.lngLat.wrap()).split(",");
   let x = Number.parseFloat(z[0].replace('{"lng":', ""));
   let y = Number.parseFloat(z[1].replace('"lat":', "").replace("}", ""));
 
-  points.push([x,y]);
+  points.push([x, y]);
 
   //Borrar layer si existe
-  if(map.current.getLayer("puntos") != undefined){
+  if (map.current.getLayer("puntos") != undefined) {
     map.current.removeLayer("puntos");
     map.current.removeSource("puntos");
   }
 
-  if(points.length==1) {
+  if (points.length == 1) {
     map.current.addSource('puntos', {
       'type': 'geojson',
       'data': {
         'type': 'FeatureCollection',
         'features': [
           {
-          'type': 'Feature',
-          'properties': {},
-          'geometry': {
-            'type': 'Point',
-            'coordinates': points[0]
-          }
+            'type': 'Feature',
+            'properties': {},
+            'geometry': {
+              'type': 'Point',
+              'coordinates': points[0]
+            }
           }
         ]
       }
@@ -520,12 +529,12 @@ function AddPoint(e,points,map) {
       'type': 'circle',
       'source': 'puntos',
       'paint': {
-      'circle-color': '#4264fb',
-      'circle-radius': 8,
-      'circle-stroke-width': 2,
-      'circle-stroke-color': '#ffffff'
+        'circle-color': '#4264fb',
+        'circle-radius': 8,
+        'circle-stroke-width': 2,
+        'circle-stroke-color': '#ffffff'
       }
-      });
+    });
   } else {
     //Añadimos layer temporal
     map.current.addSource("puntos", {
@@ -555,42 +564,42 @@ function AddPoint(e,points,map) {
   }
 }
 
-function setPointHTML(nombre,descripcion,categoria) {
+function setPointHTML(nombre, descripcion, categoria) {
   return '<p id="nombre">Nombre: ' +
-  nombre +
-  '<p id="descrip">Descripción: ' +
-  descripcion +
-  '</p><p id="tipo">Tipo: ' +
-  categoria +
-  '</p><a href="#" class="del"><img src="./images/bin.png" id="pencilpp" /></a> <a href="#" class="ed"><img src="./images/pencil.png" id="pencilpp" /></a> <a href="#" class="val"><img src="/src/star.png" id="pencilpp" /></a>';
+    nombre +
+    '<p id="descrip">Descripción: ' +
+    descripcion +
+    '</p><p id="tipo">Tipo: ' +
+    categoria +
+    '</p><a href="#" class="del"><img src="./images/bin.png" id="pencilpp" /></a> <a href="#" class="ed"><img src="./images/pencil.png" id="pencilpp" /></a> <a href="#" class="val"><img src="/src/star.png" id="pencilpp" /></a>';
 }
 
-function setFriendPointHTML(nombre,descripcion,categoria) {
+function setFriendPointHTML(nombre, descripcion, categoria) {
   return '<p id="nombre">Nombre: ' +
-  nombre +
-  '<p id="descrip">Descripción: ' +
-  descripcion +
-  '</p><p id="tipo">Tipo: ' +
-  categoria +
-  '<a href="#" class="val"><img src="/src/star.png" id="pencilpp" /></a>';
+    nombre +
+    '<p id="descrip">Descripción: ' +
+    descripcion +
+    '</p><p id="tipo">Tipo: ' +
+    categoria +
+    '<a href="#" class="val"><img src="/src/star.png" id="pencilpp" /></a>';
 }
 
-function setEditHTML(nombre,descripcion,categoria) {
+function setEditHTML(nombre, descripcion, categoria) {
   return '<label for="name">Nombre:</label><input type="text" id="name" class="name" value="' +
-          nombre + '"<label for="desc">Descripción:</label><input type="text" id="desc" class="desc" value="' + descripcion +
-          '"/><label for="desc">Tipo:</label><select id="tipo">'+getOptionCategoria("Playa",categoria)+getOptionCategoria("Monumento",categoria)+
-          getOptionCategoria("Restaurante",categoria)+getOptionCategoria("Otro",categoria)+ '</select><button href="#" class="guar">Guardar</button>'
+    nombre + '"<label for="desc">Descripción:</label><input type="text" id="desc" class="desc" value="' + descripcion +
+    '"/><label for="desc">Tipo:</label><select id="tipo">' + getOptionCategoria("Playa", categoria) + getOptionCategoria("Monumento", categoria) +
+    getOptionCategoria("Restaurante", categoria) + getOptionCategoria("Otro", categoria) + '</select><button href="#" class="guar">Guardar</button>'
 }
 
-function getOptionCategoria(categoria,actual) {
-  if(categoria == actual) {
-    return "<option value='"+categoria+"' selected>" + categoria + "</option>";
+function getOptionCategoria(categoria, actual) {
+  if (categoria == actual) {
+    return "<option value='" + categoria + "' selected>" + categoria + "</option>";
   } else {
-    return "<option value='"+categoria+"'>" + categoria + "</option>";
+    return "<option value='" + categoria + "'>" + categoria + "</option>";
   }
 }
 
-function addCategoria(categoria,marker) {
+function addCategoria(categoria, marker) {
   switch (categoria) {
     case "Playa":
       playasMarks.push(marker);
@@ -607,27 +616,27 @@ function addCategoria(categoria,marker) {
   }
 }
 
-function removeCategoria(categoria,marker) {
+function removeCategoria(categoria, marker) {
   let cat;
   switch (categoria) {
     case "Playa":
-      cat=playasMarks;
+      cat = playasMarks;
       break;
     case "Restaurante":
-      cat=restaurantesMarks;
+      cat = restaurantesMarks;
       break;
     case "Monumento":
-      cat=monumentosMarks;
+      cat = monumentosMarks;
       break;
     default:
-      cat=otrosMarks;
+      cat = otrosMarks;
       break;
   }
   let index = cat.indexOf(marker);
   cat.splice(index, 1);
 }
 
-function callReview(obj){
+function callReview(obj) {
   console.log("entra en review");
   console.log(obj);
   console.log(obj.id);
@@ -636,8 +645,8 @@ function callReview(obj){
   console.log(obj.session);
   console.log(obj.markId);
   //review(obj.id, obj.nombre, obj.tipo, obj.session, obj.markId);
-    
-  
+
+
 }
 
 export default MapPage;
