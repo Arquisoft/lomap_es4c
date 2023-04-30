@@ -8,10 +8,11 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { center, zoom } from "./data";
 import mapboxgl, { Map, Marker } from "mapbox-gl";
 import { mapAccessToken, mapStyleId } from "./data";
-import Review from "./review";
+import Review, {getReview} from "./review";
 import { useNavigate, Navigate } from 'react-router-dom';
 import { addMarker, updateMarker, getMarkers, removeMarker, getFriendsSolid, createMap } from "../marker";
 import { useSession } from "@inrupt/solid-ui-react";
+import {createPortal, render, unmountComponentAtNode} from 'react-dom';
 
 var dict = {};
 var names = [];
@@ -169,10 +170,12 @@ function MapPage() {
         <img src="./images/add-route.png" id="pencil-route" />
       </a>
       <div className="window-notice" id="window-notice" ref={winpopup}>
-        <div className="content id=content">
-          <Review pName={markerName} pMarkId={markerId} />
+        <div className="content" id="content">
+          <Review pName={markerName} pMarkId={markerId}/>
           <div className="content-buttons"><a href="#" ref={close} id="close-button">Aceptar</a></div>
         </div>
+        
+        
       </div>
     </>
   );
@@ -191,6 +194,7 @@ document.addEventListener('click', function (event) {
   }
 
 });
+
 
 function editAction(map) {
   if (addroute) {
@@ -311,7 +315,8 @@ async function markerFuncs(marker, popup, nombre, descripcion, tipo, x, y, sessi
       markerName = nombre;
       console.log(nombre);
       var obj = { pNombre: nombre, pMarkId: markId.substring(markId.lastIndexOf("#") + 1), pSession: session, pSessionId: session.info.webId }
-      //ReactDOM.render(<Review {...obj}/>, document.getElementById('window-notice'));
+      //unmountComponentAtNode(document.getElementById('content'));
+      getReview(session, markerId, markerName);
     })
 
   popup

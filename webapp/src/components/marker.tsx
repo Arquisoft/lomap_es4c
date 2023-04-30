@@ -264,9 +264,9 @@ export async function getMarkersReview(session: Session, webId: String, markerId
 				flag = false;
 				let punto = json.spatialCoverage[i];
 				 review = [markerId,
-					punto.review[0].identifier
+					punto.review[0].author.identifier
 					, punto.review[0].reviewBody,
-					punto.review[0].reviewRating,
+					punto.review[0].reviewRating.ratingValue,
 					punto.image[0].contentUrl];
 
 				
