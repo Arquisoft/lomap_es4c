@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { updateMarkerReviews } from "../marker";
+import React, { useState,useRef ,useEffect} from "react";
+import {createPortal, render, unmountComponentAtNode} from 'react-dom';
+import { updateMarkerReviews, getMarkersReview } from "../marker";
 import "./review.css";
 import StarRating from "./stars";
 import { MapMarkerReview } from '../../shared/shareddtypes';
@@ -8,6 +9,7 @@ import { useNavigate, Navigate } from 'react-router-dom';
 import { Rating } from '@mui/material';
 import StarRatings from 'react-star-ratings';
 
+
 import { Session } from '@inrupt/solid-client-authn-browser';
 
 type ReviewProps = {
@@ -15,20 +17,50 @@ type ReviewProps = {
   pMarkId: string;
 };
 
+export async function getReview(session: Session, pMarkId: string, pName: string) {
+  let punto = await getMarkersReview(session, pMarkId, pName);
+  if (punto !== undefined) {
+
+    let id = punto[0];
+    let nombre = punto[1];
+    let reviewbody = punto[2];
+    let puntuacion = Number.parseFloat(punto[3]);
+    let imagen = punto[4];
+
+
+    const imgElement = new Image();
+    imgElement.src = imagen;
+    (document.getElementById("comment-name") as HTMLInputElement).value = nombre;
+    (document.getElementById("comment-text") as HTMLInputElement).value = reviewbody;
+    (document.getElementById("comment-name") as HTMLInputElement).value = id;
+    (document.getElementById("imagen") as HTMLInputElement).value = imagen;
+
+
+  }
+}
+
+
+function getImageDataUrl(file: File): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      resolve(reader.result as string);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+
+
 function Review(props: ReviewProps): JSX.Element {
   const navigate = useNavigate();
   const { session } = useSession();
 
-  function getImageDataUrl(file: File): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        resolve(reader.result as string);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
+ 
+
+
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     navigate('/map');
@@ -69,11 +101,18 @@ function Review(props: ReviewProps): JSX.Element {
     (document.getElementById("comentario") as HTMLInputElement).value = "";
     for (let element in (document.getElementById("estrellas_ivan") as HTMLInputElement).getElementsByClassName("selected")) {
       (document.getElementById("estrellas_ivan") as HTMLInputElement).getElementsByClassName("selected").item(0)?.remove();
-
+      (document.getElementById("estrellas_ivan") as HTMLInputElement).getElementsByClassName("noSelected").item(0)?.remove();
+      
+      //const node = myNode.containerInfo;
+      //(document.getElementById("estrellas_ivan-div") as HTMLElement).appendChild(myNode);
 
 
 
     }
+    unmountComponentAtNode(document.getElementById("estrellas_ivan-div") as HTMLElement);
+    render(<StarRating />, document.getElementById("estrellas_ivan-div"));
+    (document.getElementById("window-notice") as HTMLInputElement).style.visibility = "hidden";
+
   }
 
 
@@ -103,9 +142,9 @@ function Review(props: ReviewProps): JSX.Element {
 
           </div>
           <div className="comment-body">
-            <p className="comment-text">Aqui irian fotos</p>
-            <p className="comment-text">Ejemplo comentario</p>
-            <div className="comment-rating">
+            <p><img id="imagen" src="image.png" alt="Text to display when image can not be displayed" />Aqui irian fotos</p>
+            <p id="comment-text">Ejemplo comentario</p>
+            <div id="comment-rating">
               <p className="comment-rating-text">Valoración:</p>
               <div className="rating">
                 <span className="selected">★</span>

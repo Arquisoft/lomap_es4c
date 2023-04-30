@@ -135,7 +135,7 @@ export async function removeSolidMarker(webId: string, session: Session, markerI
 	);
 
 }
-export async function createReviewObject(webId: string, coment: string, puntu: number) {
+export function createReviewObject(webId: string, coment: string, puntu: number) {
 
 	let review: Review = {
 		'@type': 'Review',
@@ -153,7 +153,7 @@ export async function createReviewObject(webId: string, coment: string, puntu: n
 	};
 	return review;
 }
-export async function createImageObject(webId: string, imagen: string) {
+export function createImageObject(webId: string, imagen: string) {
 	let image: ImageObject = {
 
 
@@ -180,7 +180,7 @@ export async function updateMarkerReviews(session: Session, webId: string, marke
 	let jsonMarkers = await JSON.parse(jsonStringFy);
 	let json = JSON.parse(jsonMarkers);
 	let flag = true;
-	
+
 	if (json.spatialCoverage.length !== undefined) {
 		for (let i = 0; i < json.spatialCoverage.length && flag; i++) {
 			let punto = json.spatialCoverage[i];
@@ -189,6 +189,7 @@ export async function updateMarkerReviews(session: Session, webId: string, marke
 				punto.review[0] = createReviewObject(webId, coment, puntu);
 
 				punto.image[0] = createImageObject(webId, imagen);
+				json.spatialCoverage[i] = punto;
 
 			}
 		}
@@ -205,7 +206,7 @@ export async function updateMarkerReviews(session: Session, webId: string, marke
 		{ contentType: f.type, fetch: session.fetch as any }
 	);
 
-	
+
 }
 
 
@@ -246,7 +247,39 @@ export async function updateMarker(session: Session, webId: string, markerId: st
 	);
 }
 
+export async function getMarkersReview(session: Session, webId: String, markerId: string) {
 
+	const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/Map';//proveedor+webId+nombreCategoria
+
+	const fileBlob = await getFile(mapPointsUrl, { fetch: session.fetch as any });
+	let jsonStringFy = JSON.stringify(await fileBlob.text());
+	let jsonMarkers = JSON.parse(jsonStringFy);
+	let json = JSON.parse(jsonMarkers);
+	var review;
+	let flag = true;
+	if (json.spatialCoverage.length !== undefined) {
+		for (let i = 0; i < json.spatialCoverage.length && flag; i++) {
+			let punto = json.spatialCoverage[i];
+			if (punto.identifier === markerId) {
+				flag = false;
+				let punto = json.spatialCoverage[i];
+				 review = [markerId,
+					punto.review[0].identifier
+					, punto.review[0].reviewBody,
+					punto.review[0].reviewRating,
+					punto.image[0].contentUrl];
+
+				
+				break;
+
+
+			}
+
+		}
+
+	}
+	return review;
+}
 
 
 export async function getMarkers(session: Session, webId: String) {
