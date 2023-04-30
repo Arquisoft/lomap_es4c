@@ -80,8 +80,8 @@ export type MapMarkerReview = {
   webId: string;
   id:string;
   comentario: string;
-  puntuacion: Number;
-  imagen: Blob;
+  puntuacion: number;
+  imagen: string;
 }
 
 

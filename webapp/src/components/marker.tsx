@@ -135,8 +135,42 @@ export async function removeSolidMarker(webId: string, session: Session, markerI
 	);
 
 }
+export async function createReviewObject(webId: string, coment: string, puntu: number) {
 
-export async function updateMarkerReviews(session: Session, webId: string, markerId: string, coment: string, puntu: Number, imagen: Blob, pointName: string) {
+	let review: Review = {
+		'@type': 'Review',
+		author: {
+			'@type': 'Person',
+			identifier: webId.replace("profile/card#me", ""),
+		},
+		reviewRating: {
+			'@type': 'Rating',
+			ratingValue: puntu
+		},
+		datePublished: new Date().toDateString(),
+		reviewBody: coment
+
+	};
+	return review;
+}
+export async function createImageObject(webId: string, imagen: string) {
+	let image: ImageObject = {
+
+
+		'@type': 'ImageObject',
+		author: {
+			'@type': 'Person',
+			identifier: webId.replace("profile/card#me", ""),
+		},
+		contentUrl: imagen
+
+	};
+	return image;
+}
+
+
+
+export async function updateMarkerReviews(session: Session, webId: string, markerId: string, coment: string, puntu: number, imagen: string, pointName: string) {
 
 	const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/Map';//proveedor+webId+nombreCategoria
 
@@ -146,28 +180,15 @@ export async function updateMarkerReviews(session: Session, webId: string, marke
 	let jsonMarkers = await JSON.parse(jsonStringFy);
 	let json = JSON.parse(jsonMarkers);
 	let flag = true;
+	
 	if (json.spatialCoverage.length !== undefined) {
 		for (let i = 0; i < json.spatialCoverage.length && flag; i++) {
 			let punto = json.spatialCoverage[i];
 			if (punto.identifier === markerId) {
 				flag = false;
-				for (let j = 0; j < punto.review.length; j++) {
-					punto.review[j].reviewBody = coment;
-					punto.review[j].author.identifier = webId.replace("profile/card#me", "");
-					punto.review[j].datePublished = Date.now();
-					punto.review[j].reviewRating.ratingValue = puntu;
-					for (let k = 0; k < punto.image.length; k++) {
+				punto.review[0] = createReviewObject(webId, coment, puntu);
 
-						punto.image[k].identifier = webId.replace("profile/card#me", "");
-						punto.image[k].contentUrl = imagen;
-
-
-						break;
-
-
-					}
-
-				}
+				punto.image[0] = createImageObject(webId, imagen);
 
 			}
 		}
@@ -183,6 +204,8 @@ export async function updateMarkerReviews(session: Session, webId: string, marke
 		f,
 		{ contentType: f.type, fetch: session.fetch as any }
 	);
+
+	
 }
 
 
