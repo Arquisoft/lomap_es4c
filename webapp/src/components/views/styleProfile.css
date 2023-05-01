@@ -26,18 +26,32 @@ img {
   width: 50%;
 }
 #profile{
-  display:block;
+  position: absolute;
+  top: 8px;
+  left: 16px;
+  font-size: 18px;
+
 }
-#id{
-  font-size: 1.1em;
+#bienvenida{
+text-align: left;
+
+}
+#info{
+  font-size: 1em;
   margin-left: 1.1em;
   color: rgba(14, 13, 13, 0.596);
  
 }
-#name{
+#pinfo{
+  font-size: 1em;
+  margin-left: 1.1em;
+  color: rgb(0, 0, 0);
+ 
+}
+#nombre{
   font-size: 1.1em;
   margin-left: 1.1em;
-  color: rgb(21, 9, 199);
+  color: #003366;
  
 }
 .btn-flotante {
@@ -160,9 +174,9 @@ textarea {
   
 }
 span {
-  font-size: 2rem;
+  font-size: 1.2em;
   color: gray;
-  cursor: pointer;
+  
 }
 
 .selected {
