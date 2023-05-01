@@ -14,6 +14,7 @@ Y también hay que tener en cuenta el tiempo que tenemos y el resto de asignatur
 
 | *GitHub* | _Problemas con el manejo de gitHub e incluso pérdidas de archivos_ | _Tener muy claro lo que hace cada función de git, y si hay dudas hablar con profesores_
 
+<<<<<<< HEAD
 Existen una variedad de riesgos a la hora de desarrollar el proyecto LoMap con los que tendremos que lidiar:
 
 - Utilizar el principio SOLID. Utilizar información descentralizada hace más complicado el desarrollo del proyecto respecto a lo que sería utilizar una base de datos propia.
@@ -24,6 +25,9 @@ Existen una variedad de riesgos a la hora de desarrollar el proyecto LoMap con l
 
 También hay otros riesgos que son la utilización de tecnologías con las que no estamos acostumbrados y que aprenderemos a usar correctamente a lo largo del desarrollo del proyecto.
 
+=======
+ 
+>>>>>>> documentación-ivan2
 |===
 
 
