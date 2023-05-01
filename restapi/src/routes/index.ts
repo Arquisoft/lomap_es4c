@@ -1,4 +1,5 @@
 import { Router } from "express";
+import * as MarkerController from "../controller/markerController";
 
 class Routes {
   public router: Router;
@@ -11,6 +12,9 @@ class Routes {
   routes() {
     this.router.get("/", (req, res) =>
       res.send("ApiRest Typescript, Node js and MongoDB")
+    );
+    this.router.get("/markers", (req, res) =>
+      MarkerController.getMarkersController(req, res)
     );
   }
 }
