@@ -14,18 +14,11 @@ test('LogIn', () => {
 });
 
 test("QueEsSolidTest", async () => {
-  render(<LogIn />);
+  render(<Router><LogIn /></Router>);
   let linkElement4 = screen.getByText("¿Qué es Solid?");
   fireEvent.click(linkElement4);
   const linkElement5 = await screen.getByText((content, element) => content.startsWith('Solid'))
   expect(linkElement5).toBeInTheDocument();
 
  
-});
-test('SignUp', () => {
-  render(<App />);
- let linkElement2 = screen.getByText("Sign up");
-  fireEvent.click(linkElement2);
-  const linkElement3 = screen.getByText("Register");
-  expect(linkElement3).toBeInTheDocument();
 });

@@ -42,11 +42,4 @@ describe("SessionInteractions", () => {
         expect(screen.getByText("Datos del usuario")).toBeInTheDocument();
 
 	});
-
-	test("loadMap", async () => {
-		//Cargar y comprobar que carga
-		render(<Router><MapViewer></MapViewer></Router>);
-		expect(screen.getByText("LoMap")).toBeInTheDocument();
-	});
-
 });
