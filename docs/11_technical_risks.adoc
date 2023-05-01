@@ -14,7 +14,7 @@ Y también hay que tener en cuenta el tiempo que tenemos y el resto de asignatur
 
 | *GitHub* | _Problemas con el manejo de gitHub e incluso pérdidas de archivos_ | _Tener muy claro lo que hace cada función de git, y si hay dudas hablar con profesores_
 
-
+ 
 |===
 
 
