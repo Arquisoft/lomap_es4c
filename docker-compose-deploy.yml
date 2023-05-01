@@ -4,5 +4,3 @@ services:
     image: ghcr.io/arquisoft/lomap_es4c/webapp:latest
     ports:
       - "443:443"
-    depends_on: 
-      - restapi
