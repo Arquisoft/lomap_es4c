@@ -5,9 +5,6 @@ on:
     branches: [ master ]
   push:
     branches: [ master ]
-    
-  workflow_dispatch:
-  
 jobs:
   unit-e2e-tests:
     runs-on: ubuntu-latest
@@ -19,7 +16,9 @@ jobs:
       with:
         node-version: 18
     - run: npm --prefix webapp ci
+    - run: npm --prefix restapi ci
     - run: npm --prefix webapp test --coverage --watchAll
+    - run: npm --prefix restapi test --coverage --watchAll
     - run: CI=false && npm --prefix webapp run build
     - run: npm --prefix webapp run test:e2e --coverage --watchAll
     - name: Analyze with SonarCloud
@@ -45,10 +44,25 @@ jobs:
           registry: ghcr.io
           workdir: webapp
           buildargs: API_URI
+  docker-push-restapi:
+    name: Push restapi Docker Image to GitHub Packages
+    runs-on: ubuntu-latest
+    #needs: [e2e-tests]
+    needs: [unit-e2e-tests]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Publish to Registry
+      uses: elgohr/Publish-Docker-Github-Action@v5
+      with:
+          name: arquisoft/lomap_es4c/restapi
+          username: ${{ github.actor }}
+          password: ${{ secrets.DOCKER_PUSH_TOKEN }}
+          registry: ghcr.io
+          workdir: restapi
   deploy:
     name: Deploy over SSH
     runs-on: ubuntu-latest
-    needs: [docker-push-webapp]
+    needs: [docker-push-restapi,docker-push-webapp]
     steps:
     - name: Deploy over SSH
       uses: fifsky/ssh-action@master
