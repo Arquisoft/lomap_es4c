@@ -171,6 +171,7 @@ function MapPage() {
       </a>
       <div className="window-notice" id="window-notice" ref={winpopup}>
         <div className="content" id="content">
+          <div className="content-buttons"><a href="#" ref={close} id="close-button">x</a></div>
           <Review pName={markerName} pMarkId={markerId}/>
           <div className="content-buttons"><a href="#" ref={close} id="close-button">Aceptar</a></div>
         </div>
@@ -317,8 +318,6 @@ async function markerFuncs(marker, popup, nombre, descripcion, tipo, x, y, sessi
 
       markerId = markId;
       markerName = nombre;
-      console.log(nombre);
-      var obj = { pNombre: nombre, pMarkId: markId.substring(markId.lastIndexOf("#") + 1), pSession: session, pSessionId: session.info.webId }
       //unmountComponentAtNode(document.getElementById('content'));
       getReview(session, markerId, markerName);
     })

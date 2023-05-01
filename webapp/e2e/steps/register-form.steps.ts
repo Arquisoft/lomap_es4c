@@ -9,16 +9,15 @@ let browser: puppeteer.Browser;
 defineFeature(feature, test => {
   
   beforeAll(async () => {
+    console.log("Iniciando test");
     browser = process.env.GITHUB_ACTIONS
       ? await puppeteer.launch()
       : await puppeteer.launch({ headless: false, slowMo: 50 });
     page = await browser.newPage();
 
     await page
-      .goto("http://localhost:3000", {
-        waitUntil: "networkidle0",
-      })
-      .catch(() => {});
+      .goto("http://localhost:3000")
+      .catch(() => {console.log("error");});
   });
 
   test('The user wants to login', ({given,when,then}) => {

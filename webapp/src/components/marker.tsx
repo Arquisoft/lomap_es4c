@@ -2,11 +2,38 @@ import { Session } from '@inrupt/solid-client-authn-browser';
 import { getFile, overwriteFile, getUrlAll, getSolidDataset, Thing, getThing } from '@inrupt/solid-client';
 import { v4 as uuidv4 } from 'uuid';
 import {universalAccess} from "@inrupt/solid-client";
-import { WithContext,  Map, Place, Review, ImageObject } from 'schema-dts';
+import { Graph, WithContext, Person, Map, Place, Review, ImageObject } from 'schema-dts';
 
+/**
+ * Devulev eun objeto Plaes para añadir al mapa
+ */
 export function createPlaceObject(webid: string, nombre: string, lat: number, lon: number, tipo: string, descripc: string) {
 
+	let review: Review = {
+		'@type': 'Review',
+		author: {
+			'@type': 'Person',
+			identifier: '',
+		},
+		reviewRating: {
+			'@type': 'Rating',
+			ratingValue: ""
+		},
+		datePublished: '',
+		reviewBody: ''
 
+	};
+	let image: ImageObject = {
+
+
+		'@type': 'ImageObject',
+		author: {
+			'@type': 'Person',
+			identifier: '',
+		},
+		contentUrl: ""
+
+	};
 
 	let place: Place = {
 		'@type': 'Place',
@@ -65,6 +92,8 @@ export async function removeSolidMarker(webId: string, session: Session, markerI
 
 	const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap/Map';//proveedor+webId+nombreCategoria
 
+	let dataset = await getSolidDataset(mapPointsUrl);
+
 	const fileBlob = await getFile(mapPointsUrl, { fetch: session.fetch as any });
 	let jsonStringFy = JSON.stringify(await fileBlob.text());
 	let jsonMarkers = JSON.parse(jsonStringFy);
@@ -77,8 +106,16 @@ export async function removeSolidMarker(webId: string, session: Session, markerI
 			}
 		}
 	}
+	console.log(json.spatialCoverage)
+
+	/*
+	let punto = getThing(dataset, markerId) as Thing;
+	var updatedDataset = removeThing(dataset, punto);
+	console.log("dataset " + dataset.graphs);
 
 
+	const updatedDatasetUrl = await saveSolidDatasetAt(mapPointsUrl, updatedDataset, { fetch: session.fetch as any });
+	*/
 
 	const blob = new Blob([JSON.stringify(json, null, 2)], {
 		type: "application/ld+json",
@@ -143,10 +180,9 @@ export async function updateMarkerReviews(session: Session, webId: string, marke
 			let punto = json.spatialCoverage[i];
 			if (punto.identifier === markerId) {
 				flag = false;
+				punto.review[0] = createReviewObject(webId, coment, puntu);
 
-				punto.review = [createReviewObject(webId, coment, puntu)];
-				punto.image = [createImageObject(webId, imagen)];
-
+				punto.image[0] = createImageObject(webId, imagen);
 				json.spatialCoverage[i] = punto;
 
 			}
@@ -178,12 +214,11 @@ export async function updateMarker(session: Session, webId: string, markerId: st
 	let jsonStringFy = JSON.stringify(await fileBlob.text());
 	let jsonMarkers = JSON.parse(jsonStringFy);
 	let json = JSON.parse(jsonMarkers);
-	let flag = true;
+
 	if (json.spatialCoverage.length !== undefined) {
-		for (let i = 0; i < json.spatialCoverage.length && flag; i++) {
+		for (let i = 0; i < json.spatialCoverage.length; i++) {
 			let punto = json.spatialCoverage[i];
 			if (punto.identifier === markerId) {
-				flag = false;
 				punto.name = pointName;
 				punto.additionalType = tipo;
 				punto.description = descripcion;
@@ -222,13 +257,13 @@ export async function getMarkersReview(session: Session, webId: String, markerId
 			if (punto.identifier === markerId) {
 				flag = false;
 				let punto = json.spatialCoverage[i];
-				review = [markerId,
+				 review = [markerId,
 					punto.review[0].author.identifier
 					, punto.review[0].reviewBody,
 					punto.review[0].reviewRating.ratingValue,
 					punto.image[0].contentUrl];
 
-
+				
 				break;
 
 
@@ -277,13 +312,15 @@ export async function getFriendsSolid(webid: String, session: Session) {
 	if (knows !== undefined) {
 		var profiles = String(knows).split(",");
 		for (let j = 0; j < profiles.length; j++) {
+			console.log("PERRFIL**************** " + profiles);
 			if (!profiles[j].includes(webid.toString())) {
 				var profile = profiles[j];
 				try {
-					markers[j] = await getMarkers(session, profile).catch(e => console.debug("No existe puntos para el amigo"));
+					markers[j] = await getMarkers(session, profile).catch(e => console.log("No existe puntos para el amigo"));
 				} catch (error) {
-					console.debug("No existe puntos para el amigo " + profile);
+					console.log("No existe puntos para el amigo " + profile);
 				}
+				console.log("MARKERS " + markers[j]);
 			}
 		}
 	}
@@ -303,20 +340,52 @@ export async function createMap(mapName: string, session: Session, webId: string
 		const mapPointsUrl = webId.replace("profile/card#me", "") + 'public/lomap';//proveedor+webId+nombreCategoria
 
 
+
+		let review: Review = {
+			'@type': 'Review',
+			author: {
+				'@type': 'Person',
+				identifier: '',
+			},
+			reviewRating: {
+				'@type': 'Rating',
+				ratingValue: ""
+			},
+			datePublished: '',
+			reviewBody: ''
+
+		};
+		let image: ImageObject = {
+
+
+			'@type': 'ImageObject',
+			author: {
+				'@type': 'Person',
+				identifier: '',
+			},
+			contentUrl: ""
+
+		};
+
 		let place: Place = {
 			'@type': 'Place',
 			identifier: uuidv4(),
 			name: 'Punto de ejemplo',
-			additionalType: 'Otro',
+			additionalType: '',
 			latitude: 0,
 			longitude: 0,
-			description: 'Soy un punto de ejemplo',
+			description: '',
 			review: [],
 			image: []
 
 		};
 		var colectionPuntos: Place[] = [];
 		colectionPuntos.push(place);
+
+		let punto: Graph = {
+			'@context': 'https://schema.org',
+			'@graph': colectionPuntos
+		};
 
 
 
@@ -332,6 +401,9 @@ export async function createMap(mapName: string, session: Session, webId: string
 			spatialCoverage: colectionPuntos
 
 		};
+
+
+
 
 
 
@@ -357,9 +429,9 @@ export async function permisosPublico(url: string, session: Session) {
 		{ fetch: session.fetch as any }                 // fetch function from authenticated session
 	).then((newAccess) => {
 		if (newAccess === null) {
-			console.debug("Could not load access details for this Resource.");
+			console.log("Could not load access details for this Resource.");
 		} else {
-			console.debug("Returned Public Access:: ", JSON.stringify(newAccess));
+			console.log("Returned Public Access:: ", JSON.stringify(newAccess));
 
 		}
 	});
