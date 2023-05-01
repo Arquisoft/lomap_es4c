@@ -2,7 +2,7 @@
 == Design Decisions
 === Decisiones generales
 Durante las diferentes semanas de trabajo hemos tenido que tomar diferentes decisiones importantes para encaminar el proyecto,
-Aunque la mayoría están reflejadas en nuestra wiki, vamos a hacer un análisis global de todas ellas, decidimos no incluir gitHub o otras herramientas como SonarCloud ya que
+Aunque la mayoría están reflejadas en nuestra wiki, vamos a hacer un análisis global de todas ellas, decidimos no incluir gitHub u otras herramientas como SonarCloud ya que
 no fue una decisión del equipo como tal:
 * Utilizaremos SOLID, un proyecto de descentralización de datos
 * Utilizaremos react para la interfaz
@@ -11,7 +11,7 @@ no fue una decisión del equipo como tal:
 * Node.js será nuestro programa para ejecutar la aplicación junto a express
 * Nos decantamos por mongoDb para nuestra base de datos
 * Utilizamos MapBox para las APIs de los mapas
-=== Problemas
+=== Problemas 
 * Necesitamos aprender a usar estas nuevas herramientas de trabajo. SOLID y sus PODs, react, MapBox y TypeScript son tecnologías completamente
 nuevas para la mayoría de los participantes del grupo
 * Un problema que tiene node.js es su dificultad para entender su código, y su tecnología moderna puede ser un problema a la hora de buscar
@@ -20,9 +20,14 @@ información
 encontramos a esta tecnología, como que no deja hacer joins y que su joven tecnología, al igual que node.js puede ser un problema
 * Hemos tenido problemas a la hora de mezclar la tecnología typescript y react con mapBox
 
-- MVC. Utilizaremos un diseño de modelo-vista-controlador para el desarrollo de la aplicación y comunicación entre sus capas.
+=== Consecuencias
+* Hemos tenido que indagar mucho para aprender a usar las nuevas tecnologías, tanto para las que no sabíamos cómo utilizar como para
+las que sí podemos aprender a utilizar más fácilmente, pero su información en internet es escasa, perdiendo tiempo
+* Para utilizar los mapas, hemos usado javascript para evitar los errores que teníamos con Mapbox y con código .tsx
 
-- MongoDB. Utilizaremos MongoDB como base de datos para almacenar determinada información.
+=== Decisiones concretas
+* Utilizamos javascript de manera puntual
+* Reestructuración de proyecto: Como un compañero de equipo dejó la asignatura, tuvimos que volver a repartir el trabajo para cada miembro
 
 [role="arc42help"]
 ****
