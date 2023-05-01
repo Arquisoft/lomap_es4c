@@ -15,6 +15,7 @@ let users: Array<User> = [];
 api.get(
     "/users/list",
     async (req: Request, res: Response): Promise<Response> => {
+        console.log("Entra en api"); 
         return res.status(200).send(users);
     }
 );

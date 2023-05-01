@@ -5,7 +5,7 @@ import App from './App';
 
 test('renders learn react link', () => {
   render(<App />);
-  const linkElement = screen.getByText(/Source code/i);
+  const linkElement = screen.getByText("Escuela Ingeniería informática 2022-2023/ASW grupo lomap_es4c");
   expect(linkElement).toBeInTheDocument();
 });
 

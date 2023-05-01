@@ -5,9 +5,10 @@ import LoginForm from "./components/views/logIn"
 import Main from "./components/views/main"
 import ProfileViewer from "./components/views/profile"
 import MapViewer from "./components/views/map"
-import { BrowserRouter as Router, Routes, Route }
+import { BrowserRouter as Router, Routes, Route, useParams }
     from "react-router-dom";
   import { login,handleIncomingRedirect, onSessionRestore} from "@inrupt/solid-client-authn-browser";
+  import Review from "./components/views/review";
 
 
 import "./index.css";
@@ -72,6 +73,7 @@ const [webId, setwebId] = useState("");
             <Route path="/map" element={<SessionProvider sessionId="login">
                 {(!isLoggedIn) ? <LoginForm /> : <MapViewer/>}
             </SessionProvider>}/>
+            
             <Route path="/" element={<Main />}/>
           </Routes>
         </Router>
