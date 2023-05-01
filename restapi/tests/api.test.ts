@@ -47,4 +47,24 @@ describe('user ', () => {
         const response:Response = await request(app).post('/api/users/add').send({name: username,email: email}).set('Accept', 'application/json')
         expect(response.statusCode).toBe(200);
     });
+
+});
+
+describe('marker', () =>{
+
+    /**
+     * Test a marker can be added
+     */
+    it('can add a marker', async () => {
+        const response:Response = await request(app).post('/api/marker/add').send({titulo: 'Prueba1',
+                                                                                descripcion: '',
+                                                                                latitud: 43.36198435787454,
+                                                                                longitud: -5.850000000984415,
+                                                                                categoria: "Otro",
+                                                                                comentario: "",
+                                                                                puntuacion: 5,
+                                                                                imagen: ""})
+                                                                                .set('Accept', 'application/json')
+        expect(response.statusCode).toBe(200);
+    });
 });

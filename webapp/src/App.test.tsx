@@ -11,12 +11,15 @@ test('renders learn react link', () => {
 
 test("Home page is rendered", async () => {
   const { getByText, container } = render(
+    <Router>
       <App></App>
+    </Router>
   );
 
   //Check that the info about stock is rendered correctly
-  expect(screen.getByText("Red social de mapas")).toBeInTheDocument();
+  expect(getByText("LoMap")).toBeInTheDocument();
+  expect(getByText("Seleccione el mapa que desee abrir")).toBeInTheDocument();
 
   // Expect there are 2 elements inside the first (stack)
-  //expect(container.childNodes[0].childNodes.length).toBe(2);
+  expect(container.childNodes[0].childNodes.length).toBe(2);
 });
