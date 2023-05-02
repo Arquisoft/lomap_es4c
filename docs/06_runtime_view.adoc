@@ -81,10 +81,8 @@ user -> loMap : CargaMapa()
 
 ==== Añadir un amigo
 *_En este caso de uso podemos observar el flujo seguido para añadir a un amigo nuestro pod de SOLID._
-[plantuml,Añadir amigo,png]
+[plantuml,"Añadir amigo",png]
 ----
-@startuml
-autonumber
 
 actor User as user
 participant "loMap" as loMap
@@ -97,8 +95,6 @@ loMap -> pod: buscaPodId()
 loMap -> pod: AñadeAmigoId()
 user -> loMap : listaAmigos()
 loMap -> pod: comprobarAmigoYaAñadido()
-end
-@enduml
 ----
 
 ==== Eliminar un amigo
