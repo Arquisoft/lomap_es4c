@@ -26,6 +26,7 @@ Potentially more columns in case you need translations.
 [options="header"]
 |===
 | Term         | Definition
-| <Term-1>     | <definition-1>
-| <Term-2>     | <definition-2>
+| POD    |Personal Online Datastore , plataforma de de almacenamiento descentralizada, donde el suaurio tiene le control de la información
+| TypeScript  | Lenguaje de programación similar a javascript 
+| MVC   | (Modelo Vista Controlador) patrón de diseño que consiste en la separción de las caps de una aplicación
 |===

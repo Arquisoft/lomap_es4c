@@ -61,11 +61,11 @@ In the best case you will get away with examples or simple signatures.
 
 LoMap se subdivide en 3 sistemas, sistema LoMap4c, base de datos no relacional mongoDb y POD's. Las flechas del siguiente diagrma representan las dependenicas entre los componentes.
 
-image:diagrama_punto5.jpg["Diagrama de caja blanca"]
+image:diagrama5_.jpg["Diagrama de caja blanca"]
 
 [cols="1,2" options="header"]
 |===
-| **Name** | **Responsibility**
+| **Name** | **Responsabilidad**
 | Sistema de PODs| Almacenamiento de infromacion de fomra decentralizada tanto de nuestro pod, como de datos que haya decidido ser publicos de nuestros amigos.
  |LoMap4c| Interfaz gráfica y flujo de datos con los sitemas previamente definidos de almacenamiento.
 |===
@@ -73,6 +73,6 @@ image:diagrama_punto5.jpg["Diagrama de caja blanca"]
 
 === Level 2
 En este subnivel detallamos mas especificamente como se decompondria internamente tanto el componente LoMap4c, como el sistema de pods
-_<white box template>_
+
 === Level 3
-Sigueindo con la descomposicion del sistema LoMap, nos centramos en en el componente WebApp, descantando dentro de este el uso del componente MapBox.
+Siguiendo con la descomposición del sistema LoMap, nos centramos  en el componente WebApp, destacando dentro de este el uso del componente MapBox.
