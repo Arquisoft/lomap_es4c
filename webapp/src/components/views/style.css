@@ -1,0 +1,246 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+#app {
+  height:86.9vh;
+}
+#titulo{
+  display: flex;
+  font-size: 36px;
+  color: #000;
+}
+#portada{
+  height: 20%;
+  width: 20%;
+}
+img {
+  height: 32px;
+  width: 32px;
+}
+
+.btn-flotante {
+  font-size: 16px; /* Cambiar el tamaño de la tipografia */
+  text-transform: uppercase; /* Texto en mayusculas */
+  font-weight: bold; /* Fuente en negrita o bold */
+  color: #ffffff; /* Color del texto */
+  border-radius: 5px; /* Borde del boton */
+  letter-spacing: 2px; /* Espacio entre letras */
+  background-color: #e91e63; /* Color de fondo */
+  padding: 12px 20px; /* Relleno del boton */
+  position: fixed;
+  bottom: 40px;
+  left: 40px;
+  transition: all 300ms ease 0ms;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  z-index: 99;
+}
+.btn-flotante:hover {
+  background-color: #2c2fa5; /* Color de fondo al pasar el cursor */
+  box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.3);
+  transform: translateY(-7px);
+}
+
+.btn-flotante-route {
+  font-size: 16px; /* Cambiar el tamaño de la tipografia */
+  text-transform: uppercase; /* Texto en mayusculas */
+  font-weight: bold; /* Fuente en negrita o bold */
+  color: #ffffff; /* Color del texto */
+  border-radius: 5px; /* Borde del boton */
+  letter-spacing: 2px; /* Espacio entre letras */
+  background-color: #e91e63; /* Color de fondo */
+  padding: 12px 20px; /* Relleno del boton */
+  position: fixed;
+  bottom: 120px;
+  left: 40px;
+  transition: all 300ms ease 0ms;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  z-index: 99;
+}
+.btn-flotante-route:hover {
+  background-color: #2c2fa5; /* Color de fondo al pasar el cursor */
+  box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.3);
+  transform: translateY(-7px);
+}
+
+.window-notice {
+  visibility: hidden;
+    background: rgba(33, 41, 52, .85);
+    left: 0;
+    bottom: 0;
+    right: 0;
+    top: 0;
+    display: flex;
+    position: fixed;
+    z-index: 999;
+}
+
+
+.window-notice .content {
+    background: #fff;
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgba(33, 41, 52, .75);
+    box-sizing: content-box;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    max-width: 600px;
+    min-width: 320px !important;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    padding: 2rem;
+    font-size: 1.3rem;
+}
+
+@media only screen and (max-width: 300px) {
+  .btn-flotante {
+    font-size: 14px;
+    padding: 12px 20px;
+    bottom: 20px;
+    right: 20px;
+  }
+  .btn-flotante-route {
+    font-size: 14px;
+    padding: 12px 20px;
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+#formReview{
+  width: 46%;
+  margin: 0 auto;
+  padding-left: 120px;
+  padding-right:120px;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+label {
+  
+  
+  font-weight: bold;
+  color: #555;
+}
+
+input[type="text"],
+select,
+textarea {
+ 
+  width: 100%;
+  
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+  
+}
+span {
+  font-size: 2rem;
+  color: gray;
+  cursor: pointer;
+}
+
+.selected {
+  color: yellow;
+}
+input[type="file"] {
+  margin: 5px;
+  width: 100%;
+}
+
+input[type="submit"] {
+  background-color: #c3c822c5;
+  color: #fff;
+  
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+input[type="submit"]:hover {
+  background-color: #8e8a3e;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+
+}
+
+table td,
+table th {
+  padding: 18px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+table th {
+  background-color: #4caf50;
+  color: #fff;
+  font-weight: bold;
+}
+.comment {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+ 
+  margin-bottom: 20px;
+}
+
+.comment img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.comment h4 {
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+}
+
+.comment p {
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.comment .date {
+  font-size: 0.8rem;
+  color: #777;
+}
+
+#filtros {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #f1f1f1;
+  border-radius: 10px;
+  padding: 3px;
+ margin-bottom: 1px;
+}
+
+#filtros a {
+  text-decoration: none;
+  font-size: 14px;
+  color: #666;
+  background-color: white;
+  border: 1px solid #ddd;
+  padding: 6px 12px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+#filtros a:hover {
+  color: white;
+  background-color: #8e8a3e;
+  border: 1px solid #666;
+}

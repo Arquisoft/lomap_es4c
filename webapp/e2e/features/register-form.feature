@@ -1,6 +1,6 @@
-Feature: Registering a new user
+Feature: Login in
 
-Scenario: The user is not registered in the site
-  Given An unregistered user
-  When I fill the data in the form and press submit
-  Then A confirmation message should be shown in the screen
+Scenario: The user wants to login
+  Given An unlogged user
+  When I select the login option
+  Then The page for the POD provider will show, asking for credentials

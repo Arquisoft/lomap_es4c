@@ -1,37 +1,87 @@
-import React, { useState, useEffect } from 'react';
-import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
-import Container from '@mui/material/Container';
-import EmailForm from './components/EmailForm';
-import Welcome from './components/Welcome';
-import UserList from './components/UserList';
-import  {getUsers} from './api/api';
-import {User} from './shared/shareddtypes';
-import './App.css';
+import React from "react";
+import { SessionProvider, useSession } from "@inrupt/solid-ui-react";
+import { useState,useEffect} from "react";
+import LoginForm from "./components/views/logIn"
+import Main from "./components/views/main"
+import ProfileViewer from "./components/views/profile"
+import MapViewer from "./components/views/map"
+import { BrowserRouter as Router, Routes, Route, useParams }
+    from "react-router-dom";
+  import { login,handleIncomingRedirect, onSessionRestore} from "@inrupt/solid-client-authn-browser";
+  import Review from "./components/views/review";
+
+
+import "./index.css";
+function callLogin(){
+  console.log("Hola");
+  
+  
+}
+/*
+const router = useRouter();
+
+// 1. Register the callback to restore the user's page after refresh and
+//    redirection from the Solid Identity Provider.
+onSessionRestore((url) => {
+  router.push(url)
+});
+
+useEffect(() => {
+  // 2. When loading the component, call `handleIncomingRedirect` to authenticate
+  //    the user if appropriate, or to restore a previous session.
+  handleIncomingRedirect({
+    restorePreviousSession: true
+  }).then((info) => {
+    console.log(`Logged in with WebID [${info.webId}]`)
+  })
+}, []);
+*/
 
 function App(): JSX.Element {
+ const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const [users,setUsers] = useState<User[]>([]);
+  //With this we can control the login status for solid
+  const { session } = useSession();
 
-  const refreshUserList = async () => {
-    setUsers(await getUsers());
-  }
+ // We have logged in
+  session.onLogin(()=>{
+    setIsLoggedIn(true)
+  })
 
-  useEffect(()=>{
-    refreshUserList();
-  },[]);
+  //We have logged out
+  session.onLogout(()=>{
+    setIsLoggedIn(false)
+  })
+const [webId, setwebId] = useState("");
 
+  
   return (
+    
+    /*<SessionProvider sessionId="log-in-example">
+      {(!isLoggedIn) ? <LoginForm/> : <MapViewer/>}
+    </SessionProvider>
+    */
+    
     <>
-      <Container maxWidth="sm">
-        <Welcome message="ASW students"/>
-        <Box component="div" sx={{ py: 2}}>This is a basic example of a React application using Typescript. You can add your email to the list filling the form below.</Box>
-        <EmailForm OnUserListChange={refreshUserList}/>        
-        <UserList users={users}/>
-        <Link href="https://github.com/arquisoft/lomap_0">Source code</Link>
-      </Container>
+     
+          <Router>
+          <Routes>
+            <Route path="/login" element={<LoginForm />}/>
+            <Route path="/profile" element={ <SessionProvider sessionId="login">
+                {(!isLoggedIn) ? <LoginForm /> : <ProfileViewer/>}
+            </SessionProvider>}/>
+            <Route path="/map" element={<SessionProvider sessionId="login">
+                {(!isLoggedIn) ? <LoginForm /> : <MapViewer/>}
+            </SessionProvider>}/>
+            
+            <Route path="/" element={<Main />}/>
+          </Routes>
+        </Router>
+        
     </>
+  
   );
+  
 }
 
 export default App;

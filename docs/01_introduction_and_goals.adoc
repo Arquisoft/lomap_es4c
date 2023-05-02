@@ -1,6 +1,10 @@
 [[section-introduction-and-goals]]
 == Introduction and Goals
 
+Este documento explica el proyecto realizado durante la asignatura de Arquitectura de Software. En ella se nos ha contratado para realizar un sistema web denominado Lo Map basado en la arquitectura SOLID.
+
+Este proyecto esta desarrollado por un equipo de 5 personas.
+
 [role="arc42help"]
 ****
 Describes the relevant requirements and the driving forces that software architects and development team must consider. These include
@@ -11,6 +15,16 @@ Describes the relevant requirements and the driving forces that software archite
 ****
 
 === Requirements Overview
+
+El objetivo principal de este sistema es ofrecer un mapa donde los usuarios puedan guardar y situar distintos puntos de interes que ellos valoren. Los requisitos que se piden realizar en este proyecto son:
+
+* Guardar la información en pods individuales
+* Mostrar en un mapa los diferentes lugares que los usuarios quieran guardar
+* Selección entre diferentes categorias para los lugares (tiendas, bares, restaurantes...)
+* Los usuarios pueden acceder a información compartida por otros usuarios
+* Se permite realizar filtros a las busquedas del mapa
+* Se puede asociar puntuación comentarios
+
 
 [role="arc42help"]
 ****
@@ -31,6 +45,16 @@ Keep these excerpts as short as possible. Balance readability of this document w
 ****
 
 === Quality Goals
+
+[options="header",cols="1,2"]
+|===
+|Objetivo|Descripción
+| _Usabilidad_ | _Tener un sistema que cualquier usuario pueda utilizar fácilmente_ 
+| _Descentralizado_ | _Evitar tener la información en una base de datos central para evitar problemas de seguridad con la información_
+| _Privacidad_ | _Cada usuario pueda controlar su información y quien tiene acceso a ella_
+| _Diseño limpio_ | _Código lo más limpio posible para facilitar su expansión y modificación_
+| _Interoperabilidad_ | _Los datos creados van a poder usarse en otras aplicaciones_ 
+|===
 
 [role="arc42help"]
 ****
@@ -70,6 +94,8 @@ Table with role names, person names, and their expectations with respect to the 
 [options="header",cols="1,2,2"]
 |===
 |Role/Name|Contact|Expectations
-| _<Role-1>_ | _<Contact-1>_ | _<Expectation-1>_
-| _<Role-2>_ | _<Contact-2>_ | _<Expectation-2>_
+| _Usuarios_ | _Posibles usuarios_ | _Una aplicación rápida, funcional y fácil de entender_
+| _Profesores_ | _Profesores_ | _Un proyecto evaluable que sigua los criterios requeridos_
+| _Contratador_ | _Ayuntamiento de Bruselas_ | _Una aplicación funcional que cumpla los requisitos solicitados en el contrato_
+| _Equipo de desarrollo_ | _Equipo de desarrollo_ | _Saber desarrollar una aplicación con los requisitos dados y conocer mejor el funcionamiento de los principios SOLID_
 |===

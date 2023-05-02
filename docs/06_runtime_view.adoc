@@ -1,6 +1,7 @@
 [[section-runtime-view]]
 == Runtime View
 
+Estos son algunos casos de uso que se producen dentro de la aplicación y de como se desarrollan dentro de la aplicación.
 
 [role="arc42help"]
 ****
@@ -30,28 +31,182 @@ There are many notations for describing scenarios, e.g.
 
 ****
 
-=== <Runtime Scenario 1>
+=== Casos de uso Nivel 1
 
-
-* _<insert runtime diagram or textual description of the scenario>_
-* _<insert description of the notable aspects of the interactions between the
-building block instances depicted in this diagram.>_
-
-It is possible to use a sequence diagram:
-
-[plantuml,"Sequence diagram",png]
+==== Añadir un punto al mapa
+*_En este caso de uso observamos como un usuario ya registrado añade un punto nuevo en su mapa._
+[plantuml,"Añadir punto",png]
 ----
-actor Alice
-actor Bob
-database Pod as "Bob's Pod"
-Alice -> Bob: Authentication Request
-Bob --> Alice: Authentication Response
-Alice  --> Pod: Store route
-Alice -> Bob: Another authentication Request
-Alice <-- Bob: another authentication Response
+actor "User" as user
+participant "LoMap" as LoMap
+database "Solid Pod" as pod
+
+user->LoMap: AñadirPunto()
+LoMap->pod: GuardarPuntoEnPOD()
+LoMap<-user: CargarPuntoEnMapa()
 ----
-=== <Runtime Scenario 2>
 
-=== ...
+==== Iniciar sesión
+*_En este caso de uso observamos como un usuario introduce su perfil y su contraseña para entrar en la aplicación._
+[plantuml, "Iniciar sesón", png]
+----
+actor "User" as user
+participant "LoMap" as LoMap
+database "Solid Pod" as pod
 
-=== <Runtime Scenario n>
+user->LoMap: Entra en la pagina y escoge "Log in"
+LoMap->user: Muestra la pantalla de inicio de sesion
+user->LoMap: Introduce datos y slecciona iniciar sesión
+LoMap->pod: Se envian los datos a al pod
+alt Credenciales válidas
+    LoMap<-user: Muestra el mapa
+else Credenciales invalidas
+    LoMap<-user: No permite inicio
+end
+----
+
+==== Cargar mapa
+*_El usuario iniciará sesión y automáticamente se cargará el mapa, para ello tiene que llamar a la clase principal y que este cargue los puntos._
+[plantuml,"Cargar mapa",png]
+----
+actor User as user
+participant "loMap" as loMap
+database "Solid POD" as pod
+
+user -> loMap :Login()
+user -> loMap : eligeMapa()
+loMap -> pod: llamaAMapa()
+user -> loMap : CargaMapa()
+----
+
+==== Añadir un amigo
+*_En este caso de uso podemos observar el flujo seguido para añadir a un amigo nuestro pod de SOLID._
+[plantuml,Añadir amigo,png]
+----
+@startuml
+autonumber
+
+actor User as user
+participant "loMap" as loMap
+database "Solid POD" as pod
+
+user -> loMap : AñadirAmigo()
+user -> loMap: listaAmigos()
+user -> loMap : IntroducePodId()
+loMap -> pod: buscaPodId()
+loMap -> pod: AñadeAmigoId()
+user -> loMap : listaAmigos()
+loMap -> pod: comprobarAmigoYaAñadido()
+end
+@enduml
+----
+
+==== Eliminar un amigo
+*_En este caso de uso observamos como eliminar un amigo de nuestro pod._
+[plantuml,"Eliminar amigo",png]
+----
+actor User as user
+participant "loMap" as loMap
+database "Solid POD" as pod
+
+user -> loMap : EliminarAmigo()
+loMap -> pod: listaAmigos()
+loMap -> pod : EliminarAmigo()
+user -> loMap : IntroducePodId()
+loMap -> pod: buscaPodId()
+loMap -> pod: EliminaAmigoId()
+----
+
+=== Casos de uso Nivel 2
+
+==== Añadir un punto al mapa
+*_En este caso de uso observamos como un usuario ya registrado añade un punto nuevo en su mapa y como se comunica con el POD privado para actualizar la información._
+[plantuml,"Añadir punto lvl2",png]
+----
+actor "User" as user
+participant "LoMap" as LoMap
+Participant "POD Server" as server
+database "User POD" as pod
+
+user->LoMap: AñadirPunto()
+LoMap->server: ComprobarEstadoDeSesion()
+LoMap->server: GuargarPunto()
+Server->POD: GuardarPunto()
+LoMap<-user: CargarPuntoEnMapa()
+----
+
+==== Iniciar sesión
+*_En este caso de uso observamos como un usuario introduce su perfil y su contraseña para entrar en la aplicación._
+[plantuml, "Iniciar sesión lvl2", png]
+----
+actor "User" as user
+participant "LoMap" as LoMap
+database "Solid Pod" as pod
+
+user->LoMap: Entra en la pagina y escoge "Log in"
+LoMap->user: Muestra la pantalla de inicio de sesion
+user->LoMap: Introduce datos y slecciona iniciar sesión
+LoMap->pod: Se envian los datos a al pod
+alt Credenciales válidas
+    LoMap<-user: Muestra el mapa
+else Credenciales invalidas
+    LoMap<-user: No permite inicio
+end
+----
+
+==== Cargar mapa
+*_El usuario iniciará sesión y automáticamente se cargará el mapa, para ello tiene que llamar a la clase principal y que este cargue el mapa del usuario con sus puntos._
+[plantuml,"Cargar mapa lvl2",png]
+----
+actor User as user
+participant "loMap" as loMap
+participant "Solid POD" as pod
+database "User POD" as userp
+
+user -> loMap: Login()
+loMap -> pod: compruebaDatos()
+user -> loMap: cargaMapa()
+loMap -> pod: llamaAMapa()
+Pod -> userp: cargarPuntos()
+user -> loMap: VisualizarMapa()
+----
+
+==== Añadir un amigo
+*_En este caso de uso observamos como añadir un amigo a nuestro pod y como se actualiza la información en ambos pods._
+[plantuml,"Eliminar amigo lvl2",png]
+----
+actor User as user
+participant "loMap" as loMap
+participant "POD Server" as server
+database "User POD" as userp
+database "Friend POD" as friendp
+
+user -> loMap : AñadirAmigo()
+loMap -> server: listaAmigos()
+server -> userp: listaAmigos()
+loMap -> server: buscaPodId()
+server -> userp: buscaPodId()
+loMap -> server : AñadirAmigo(idUser, idAmigo)
+server -> userp : AñadirAmigo(idUser, idAmigo)
+server -> friendp : AñadirAmigo(idUser, idAmigo)
+----
+
+==== Eliminar un amigo
+*_En este caso de uso observamos como eliminar un amigo de nuestro pod y como se actualiza la información en ambos pods._
+[plantuml,"Eliminar amigo lvl2",png]
+----
+actor User as user
+participant "loMap" as loMap
+participant "POD Server" as server
+database "User POD" as userp
+database "Friend POD" as friendp
+
+user -> loMap : EliminarAmigo()
+loMap -> server: listaAmigos()
+server -> userp: listaAmigos()
+loMap -> server: buscaPodId()
+server -> userp: buscaPodId()
+loMap -> server : EliminarAmigo(idUser, idAmigo)
+server -> userp : EliminarAmigo(idAmigo)
+server -> friendp : EliminarAmigo(idUser)
+----

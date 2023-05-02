@@ -52,16 +52,27 @@ image:08-Crosscutting-Concepts-Structure-EN.png["Possible topics for crosscuttin
 
 === Domain model
 
-image:UmlDiagram.png["Example UML Diagram"]
+A continuación mostramos un modelo de dominio. La aplicación cuenta con 2 clases de especial importancia, Usuario y Localización.
+
+* Usuario: los usuarios de la aplicación serán usuarios que poseen un POD de SOLID, que se puede obtener en uno de los muchos proovedores de PODS como Inrupt o SolidProject. Los datos de inicio de sesión para estos proveedores serán los que se usarán en nuestra aplicación
+
+* Localización: las localizaciones serán los puntos que el usuario añade al mapa. Estos puntos serán guardados en el POD del usuario, y podrán ser compartidos con sus amigos. Los puntos tendrán un nombre, una clasificación y opcionalmente se les podrá asignar una foto y valoración.
+
+A continuación se muestra un diagrama de clases que representaría el modelo de dominio de la aplicación.
+
+image:08_domain_model.png["Diagrama de Modelo"]
 
 
 
-=== _<Concept 2>_
+=== Experiencia de usuario
 
-_<explanation>_
+La aplicación tendrá un aspecto sencillo, para que los usuarios puedan navegarla fácil y rápidamente. Se hará especial énfasis en el mapa, ya que este será donde el usuario pase la mayor parte de su tiempo.
 
 ...
 
-=== _<Concept n>_
+=== Conceptos de seguridad
 
-_<explanation>_
+Los datos de los usuarios serán guardados dentro de un POD de SOLID. Gracias a esto, los datos personales de los usuarios no serán guardados en una base de datos centralizada donde puedan no estar seguros, si no que cada usuario tendrá control sobre sus propias credenciales. Los puntos del mapa serán guardados de tal forma que los amigos del usuario puedan verlos, pero no necesariamente terceras personas.
+
+
+=== 

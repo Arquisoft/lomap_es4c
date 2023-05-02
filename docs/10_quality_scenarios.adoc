@@ -35,8 +35,28 @@ The quality tree is a high-level overview of the quality goals and requirements:
 
 In any case the tree should include links to the scenarios of the following section.
 ****
+En la siguiente imagen podemos observar los requisitos de calidad que tendra nuestra aplicación LoMap.
+
+image::quality.svg["Árbol de requisitos de calidad"]
 
 === Quality Scenarios
+
+En la siguiente tabla podemos ver la aplicabilidad de los requisitos de calidad previmaente definidos,estos han sido analizados minuciosamente para proporcionar calidad a nuestro desarollo
+
+Escenarios:
+[options="header",cols=".^1,.^1,.^1,.^1"]
+|===
+|Requisito de calidad |Aplicabilidad | Necesidades tenidas en cuenta | Priorización
+|Mantenibilidad| Con el fin de desarollar una aplicación flexible a los cambios|Añadir una nueva funcionalidad| 3
+|Usabilidad|Creación de una aplicación inclusiva , haciendo su uso asequible a usuarios sin pericia informática o con cualquier tipo de discapacidad  |Cumplir unos mínimos requisitos para facilitar el uso de cualquier usario| 5
+|Interoperabilidad | Creación de un modelo de datos común para toda las asignatura, por lo que la aplicación tendra la posibilidad de comunicarse entre diferentes sistemas | Abierta a futuros desarollos | 4
+|Privacidad| Garantizar la privacidad de nuestros usuarios, para ello usaremos el pod de SOLID| No almacenaremos datos de terceros, y en el caso de ser indispinsable se  notificará al usuario y se guardará solamente la información imprescindible|5
+|Descentralización| Estrachamente ligado con la privacidad, el suaurio decidirá que infomración compartira |Proporcionar al usuario la capacidad de decidir sobre sus datos en todo momento| 5
+|Diseño limpio| Ligado con la mantenibilidad, un código limpio nos proporciona flexibilidad, reutilización de código |Código abierto al cambio| 4|
+
+
+
+|===
 
 [role="arc42help"]
 ****
