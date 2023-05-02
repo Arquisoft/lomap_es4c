@@ -1,7 +1,5 @@
 version: '3.5'
 volumes:
-    prometheus_data: {}
-    grafana_data: {}
 services:
   webapp:
     build: ./webapp
