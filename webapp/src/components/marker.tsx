@@ -1,15 +1,9 @@
-import { Session, fetch } from '@inrupt/solid-client-authn-browser';
-import { MapMarker, MapMarkerReview, Comment, Maps, Location, Picture, ReviewScore, review } from '../shared/shareddtypes';
-import { getFile, getDecimal, getProfileAll, addIri, getStringNoLocale, saveFileInContainer, overwriteFile, getUrlAll, buildThing, getSolidDataset, createSolidDataset, createThing, Thing, removeThing, setThing, getThing, getThingAll, addUrl, addStringNoLocale, getSolidDatasetWithAcl, getUrl, saveSolidDatasetAt } from '@inrupt/solid-client';
-import { FOAF } from "@inrupt/lit-generated-vocab-common";
-import { Marker } from 'mapbox-gl';
+import { Session } from '@inrupt/solid-client-authn-browser';
+import { getFile, overwriteFile, getUrlAll, getSolidDataset, Thing, getThing } from '@inrupt/solid-client';
 import { v4 as uuidv4 } from 'uuid';
-import {
-	universalAccess
-} from "@inrupt/solid-client";
+import {universalAccess} from "@inrupt/solid-client";
 import { Graph, WithContext, Person, Map, Place, Review, ImageObject } from 'schema-dts';
-import { getPropertyForThing } from '@inrupt/solid-ui-react/dist/src/helpers';
-import { permisosAccesoPod } from './permisos';
+
 /**
  * Devulev eun objeto Plaes para añadir al mapa
  */

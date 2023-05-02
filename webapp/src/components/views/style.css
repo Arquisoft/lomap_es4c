@@ -10,8 +10,7 @@ body {
 #titulo{
   display: flex;
   font-size: 36px;
-color: #000;
-font-family: 'Open Sans';
+  color: #000;
 }
 #portada{
   height: 20%;
@@ -111,12 +110,13 @@ img {
   }
 }
 
-
 #formReview{
   width: 46%;
   margin: 0 auto;
   padding-left: 120px;
   padding-right:120px;
+  padding-top: 1em;
+  padding-bottom: 1em;
   background-color: #fff;
   border-radius: 15px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);

@@ -66,7 +66,6 @@ image:diagrama_punto5.jpg["Diagrama de caja blanca"]
 [cols="1,2" options="header"]
 |===
 | **Name** | **Responsibility**
-| MongoDb | Almacenamiento de la mínima informacion posible en base de datos, solamente con el fin de agilizar el flujo.
 | Sistema de PODs| Almacenamiento de infromacion de fomra decentralizada tanto de nuestro pod, como de datos que haya decidido ser publicos de nuestros amigos.
  |LoMap4c| Interfaz gráfica y flujo de datos con los sitemas previamente definidos de almacenamiento.
 |===

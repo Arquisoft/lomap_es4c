@@ -141,7 +141,7 @@ function MapPage() {
     });
 
     //Filtros
-    loadFiltros(filtroTodo, filtroPlayas, filtroRestaurantes, filtroMonumentos, filtroOtros, playasMarks, restaurantesMarks, monumentosMarks, otrosMarks);
+    loadFiltros(filtroTodo, filtroPlayas, filtroRestaurantes, filtroMonumentos, filtroOtros);
   });
 
   return (
@@ -171,6 +171,7 @@ function MapPage() {
       </a>
       <div className="window-notice" id="window-notice" ref={winpopup}>
         <div className="content" id="content">
+          <div className="content-buttons"><a href="#" ref={close} id="close-button">x</a></div>
           <Review pName={markerName} pMarkId={markerId}/>
           <div className="content-buttons"><a href="#" ref={close} id="close-button">Aceptar</a></div>
         </div>
@@ -295,6 +296,10 @@ function loadFiltros(todo, playas, restaurantes, monumentos, otros) {
 }
 
 async function markerFuncs(marker, popup, nombre, descripcion, tipo, x, y, session, markId) {
+  popup.on("close", () => {
+    popup.setHTML(setPointHTML(nombre, descripcion, tipo));
+  });
+
   popup
     .getElement()
     .getElementsByClassName("del")[0]
@@ -313,8 +318,6 @@ async function markerFuncs(marker, popup, nombre, descripcion, tipo, x, y, sessi
 
       markerId = markId;
       markerName = nombre;
-      console.log(nombre);
-      var obj = { pNombre: nombre, pMarkId: markId.substring(markId.lastIndexOf("#") + 1), pSession: session, pSessionId: session.info.webId }
       //unmountComponentAtNode(document.getElementById('content'));
       getReview(session, markerId, markerName);
     })
@@ -383,6 +386,7 @@ function addMapMarker(e, map, session) {
 
 
   popup.on("open", () => {
+
     if (!guardado) {
       popup
         .getElement()
@@ -417,7 +421,12 @@ function addMapMarker(e, map, session) {
           return;
         }
 
-        markerFuncs(marker, popup, nombre, descripcion, tipo, x, y, session, markId);
+        if(editing || addroute){
+          marker.togglePopup();
+          return;
+        }
+
+        markerFuncs(marker,popup,nombre,descripcion,tipo,x,y,session, markId);
       });
     }
   });
@@ -462,7 +471,12 @@ async function loadMarker(point, map, session) {
   addCategoria(categoria, marker);
 
   popup.on("open", () => {
-    markerFuncs(marker, popup, nombre, descripcion, categoria, x, y, session, id);
+    if(editing || addroute){
+      marker.togglePopup();
+      return;
+    }
+
+    markerFuncs(marker,popup,nombre,descripcion,categoria,x,y,session, id);
   });
 
   names.push(nombre);
@@ -487,7 +501,10 @@ async function loadFriendMarker(point, map, session) {
   addCategoria(categoria, marker);
 
   popup.on("open", () => {
-    //markerFuncs(marker,popup,nombre,descripcion,categoria,x,y,session, id);
+    if(editing || addroute){
+      marker.togglePopup();
+      return;
+    }
   });
 
   names.push(nombre);
@@ -566,22 +583,22 @@ function AddPoint(e, points, map) {
 
 function setPointHTML(nombre, descripcion, categoria) {
   return '<p id="nombre">Nombre: ' +
-    nombre +
-    '<p id="descrip">Descripción: ' +
-    descripcion +
-    '</p><p id="tipo">Tipo: ' +
-    categoria +
-    '</p><a href="#" class="del"><img src="./images/bin.png" id="pencilpp" /></a> <a href="#" class="ed"><img src="./images/pencil.png" id="pencilpp" /></a> <a href="#" class="val"><img src="/src/star.png" id="pencilpp" /></a>';
+  nombre +
+  '<p id="descrip">Descripción: ' +
+  descripcion +
+  '</p><p id="tipo">Tipo: ' +
+  categoria +
+  '</p><a href="#" class="del"><img src="./images/bin.png" id="pencilpp" /></a> <a href="#" class="ed"><img src="./images/pencil.png" id="pencilpp" /></a> <a href="#" class="val"><img src="./images/star.png" id="pencilpp" /></a>';
 }
 
 function setFriendPointHTML(nombre, descripcion, categoria) {
   return '<p id="nombre">Nombre: ' +
-    nombre +
-    '<p id="descrip">Descripción: ' +
-    descripcion +
-    '</p><p id="tipo">Tipo: ' +
-    categoria +
-    '<a href="#" class="val"><img src="/src/star.png" id="pencilpp" /></a>';
+  nombre +
+  '<p id="descrip">Descripción: ' +
+  descripcion +
+  '</p><p id="tipo">Tipo: ' +
+  categoria +
+  '</p>';
 }
 
 function setEditHTML(nombre, descripcion, categoria) {
@@ -634,19 +651,6 @@ function removeCategoria(categoria, marker) {
   }
   let index = cat.indexOf(marker);
   cat.splice(index, 1);
-}
-
-function callReview(obj) {
-  console.log("entra en review");
-  console.log(obj);
-  console.log(obj.id);
-  console.log(obj.nombre);
-  console.log(obj.tipo);
-  console.log(obj.session);
-  console.log(obj.markId);
-  //review(obj.id, obj.nombre, obj.tipo, obj.session, obj.markId);
-
-
 }
 
 export default MapPage;

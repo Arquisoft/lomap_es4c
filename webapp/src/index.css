@@ -135,13 +135,15 @@ div .App {
 form {
   text-align: center;
   align-content: center;
-  width:100%;
-
 }
 label {
   display: block;
-  width: 10%;
+  width: 40%;
   
+}
+#rating
+{
+  margin-left: 10%;
 }
 input {
   -moz-box-sizing: border-box;

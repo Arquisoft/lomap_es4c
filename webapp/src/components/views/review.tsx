@@ -3,11 +3,8 @@ import {createPortal, render, unmountComponentAtNode} from 'react-dom';
 import { updateMarkerReviews, getMarkersReview } from "../marker";
 import "./review.css";
 import StarRating from "./stars";
-import { MapMarkerReview } from '../../shared/shareddtypes';
 import { useSession } from "@inrupt/solid-ui-react";
-import { useNavigate, Navigate } from 'react-router-dom';
-import { Rating } from '@mui/material';
-import StarRatings from 'react-star-ratings';
+import { useNavigate } from 'react-router-dom';
 
 
 import { Session } from '@inrupt/solid-client-authn-browser';
@@ -100,7 +97,7 @@ function Review(props: ReviewProps): JSX.Element {
       console.log("****IMAGEN****: " + imageDataUrl);
     }
     console.log("rating: " + rating);
-    var marker: MapMarkerReview = {
+    var marker = {
       webId: session.info.webId as string,
       id: props.pMarkId,
       comentario: (document.getElementById("comentario") as HTMLInputElement).value as string,
@@ -140,10 +137,10 @@ function Review(props: ReviewProps): JSX.Element {
         <h1>Añade una valoración</h1>
         <div>
           <form id="formReview" onSubmit={handleSubmit}>
-            <label>Comentario:</label>
+          <label id="lComentario">Comentario:</label>
             <textarea id="comentario" name="comentario" ></textarea>
 
-            <label>Agregar foto:</label>
+            <label id="lAgregar">Agregar foto:</label>
             <input type="file" name="foto" id="foto" ></input>
 
             <label>Puntuación:</label>

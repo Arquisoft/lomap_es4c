@@ -1,7 +1,7 @@
 [[section-solution-strategy]]
 == Solution Strategy
 
-Hemos tomado varias decisions para solucionar los distintos problemas respecto al diseño de la aplicación. Estas son:
+Hemos tomado varias decisiones para solucionar los distintos problemas respecto al diseño de la aplicación. Estas son:
 
 - SOLID. Utilizaremos SOLID como método de almacenar la información de los usuarios con una gran privacidad.
 
@@ -10,8 +10,6 @@ Hemos tomado varias decisions para solucionar los distintos problemas respecto a
 - Github. Como método de control y copia del proyecto.
 
 - MVC. Utilizaremos un diseño de modelo-vista-controlador para el desarrollo de la aplicación y comunicación entre sus capas.
-
-- MongoDB. Utilizaremos MongoDB como base de datos para almacenar determinada información.
 
 [role="arc42help"]
 ****

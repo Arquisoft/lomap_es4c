@@ -38,7 +38,7 @@ All kinds of diagrams that show the system as a black box and specify the domain
 
 Alternatively (or additionally) you can use a table.
 The title of the table is the name of your system, the three columns contain the name of the communication partner, the inputs, and the outputs.
-****
+**** 
 
 image:3-system-scope-and-context.png["Business Context"]
 
@@ -57,10 +57,6 @@ image:3-system-scope-and-context.png["Business Context"]
 |LoMap
 |Es la webApp, Recibirá los datos procesados
 |La información sobre la aplicación y el usuario actual
-
-|Database
-|Recibe querys para obtener información
-|Devuelve el resultado de procesar las querys
 
 |===
 
@@ -93,7 +89,10 @@ Aquí debajo se especifica de manera más detallada todo lo que hemos usado en l
 |Javascript| Lenguaje usado puntualmente para resolver distintos problemas que nos surgieron con código .tsx
 |MapBox| Api para los mapas
 |PODs| Para guardar datos
-|MongoDb| Como base de datos
 |Node.js y express| Todo lo relacionado con la ejecución de la aplicación
 |SonarCloud| Para cobertura de código
 |===
+
+Gráficamente sería así
+
+image:3.system-scope-context.png["Technical Context"]

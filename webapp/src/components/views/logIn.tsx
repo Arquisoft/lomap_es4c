@@ -18,7 +18,6 @@ function LogIn(): JSX.Element {
     setIdp(event.target.value as string);
   };
   const [currentUrl, setCurrentUrl] = useState(window.location.href.replace("login", "profile"));
-  console.log(currentUrl);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     // The default behavior of the button is to resubmit.
     // This prevents the page from reloading.
