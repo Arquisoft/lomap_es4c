@@ -5,7 +5,6 @@
  - Raúl Álvarez Álvarez
  - Iván Vega Prieto
  - Alba Guerrero García
- - Mario García Prieto
 
 
 [![Actions Status](https://github.com/arquisoft/lomap_es4c/workflows/CI%20for%20LOMAP_ES4C/badge.svg)](https://github.com/arquisoft/lomap_es4c/actions)
@@ -17,6 +16,9 @@
 <img src="https://miro.medium.com/max/1200/0*RbmfNyhuBb8G3LWh.png" height="100">
 <img src="https://miro.medium.com/max/365/1*Jr3NFSKTfQWRUyjblBSKeg.png" height="100">
 </p>
+
+## Deploy in Azure
+40.87.110.89:3000
 
 
 This project is a basic example of website using **React** with **Typescript** and an endpoint using **NodeJS** with **express**.
