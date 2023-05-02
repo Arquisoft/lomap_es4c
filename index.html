@@ -488,7 +488,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_conceptos_de_seguridad">8.3. Conceptos de seguridad</a></li>
 </ul>
 </li>
-<li><a href="#section-design-decisions">9. Design Decisions</a></li>
+<li><a href="#section-design-decisions">9. Design Decisions</a>
+<ul class="sectlevel2">
+<li><a href="#_decisiones_generales">9.1. Decisiones generales</a></li>
+<li><a href="#_consecuencias">9.2. Consecuencias</a></li>
+<li><a href="#_decisiones_concretas">9.3. Decisiones concretas</a></li>
+</ul>
+</li>
 <li><a href="#section-quality-scenarios">10. Quality Requirements</a>
 <ul class="sectlevel2">
 <li><a href="#_quality_tree">10.1. Quality Tree</a></li>
@@ -974,11 +980,6 @@ The title of the table is the name of your system, the three columns contain the
 <td class="tableblock halign-left valign-top"><p class="tableblock">Es la webApp, Recibirá los datos procesados</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">La información sobre la aplicación y el usuario actual</p></td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Database</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Recibe querys para obtener información</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Devuelve el resultado de procesar las querys</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -1042,10 +1043,6 @@ Aquí debajo se especifica de manera más detallada todo lo que hemos usado en l
 <td class="tableblock halign-left valign-top"><p class="tableblock">Para guardar datos</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">MongoDb</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Como base de datos</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Node.js y express</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Todo lo relacionado con la ejecución de la aplicación</p></td>
 </tr>
@@ -1055,6 +1052,12 @@ Aquí debajo se especifica de manera más detallada todo lo que hemos usado en l
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>Gráficamente sería así</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="./images/3.system-scope-context.png" alt="Technical Context"></span></p>
+</div>
 <div style="page-break-after: always;"></div>
 </div>
 </div>
@@ -1063,7 +1066,7 @@ Aquí debajo se especifica de manera más detallada todo lo que hemos usado en l
 <h2 id="section-solution-strategy">4. Solution Strategy</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Hemos tomado varias decisions para solucionar los distintos problemas respecto al diseño de la aplicación. Estas son:</p>
+<p>Hemos tomado varias decisiones para solucionar los distintos problemas respecto al diseño de la aplicación. Estas son:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1078,9 +1081,6 @@ Aquí debajo se especifica de manera más detallada todo lo que hemos usado en l
 </li>
 <li>
 <p>MVC. Utilizaremos un diseño de modelo-vista-controlador para el desarrollo de la aplicación y comunicación entre sus capas.</p>
-</li>
-<li>
-<p>MongoDB. Utilizaremos MongoDB como base de datos para almacenar determinada información.</p>
 </li>
 </ul>
 </div>
@@ -1227,10 +1227,6 @@ In the best case you will get away with examples or simple signatures.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">MongoDb</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"> Almacenamiento de la mínima informacion posible en base de datos, solamente con el fin de agilizar el flujo.</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Sistema de PODs</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"> Almacenamiento de infromacion de fomra decentralizada tanto de nuestro pod, como de datos que haya decidido ser publicos de nuestros amigos.</p></td>
 </tr>
@@ -1344,11 +1340,11 @@ You will mainly capture scenarios in your documentation to communicate your arch
 <div class="sect3">
 <h4 id="_cargar_mapa">6.1.3. Cargar mapa</h4>
 <div class="paragraph">
-<p>*<em>El usuario iniciará sesión y automáticamente se cargará el mapa, para ello tiene que llamar a la clase principal y que esta escoja el mapa deseado.</em></p>
+<p>*<em>El usuario iniciará sesión y automáticamente se cargará el mapa, para ello tiene que llamar a la clase principal y que este cargue los puntos.</em></p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="./images/Cargar%20mapa.png" alt="Cargar mapa" width="442" height="365">
+<img src="./images/Cargar%20mapa.png" alt="Cargar mapa" width="260" height="305">
 </div>
 </div>
 </div>
@@ -1359,7 +1355,7 @@ You will mainly capture scenarios in your documentation to communicate your arch
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="./images/Añadir%20amigo.png" alt="Añadir amigo" width="359" height="535">
+<img src="./images/Añadir%20amigo.png" alt="Añadir amigo" width="369" height="396">
 </div>
 </div>
 </div>
@@ -1384,12 +1380,34 @@ You will mainly capture scenarios in your documentation to communicate your arch
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="./images/Añadir%20punto%20lvl2.png" alt="Añadir punto lvl2" width="667" height="365">
+<img src="./images/Añadir%20punto%20lvl2.png" alt="Añadir punto lvl2" width="667" height="335">
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_añadir_un_amigo_2">6.2.2. Añadir un amigo</h4>
+<h4 id="_iniciar_sesión_2">6.2.2. Iniciar sesión</h4>
+<div class="paragraph">
+<p>*<em>En este caso de uso observamos como un usuario introduce su perfil y su contraseña para entrar en la aplicación.</em></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/Iniciar%20sesión%20lvl2.png" alt="Iniciar sesión lvl2" width="521" height="414">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_cargar_mapa_2">6.2.3. Cargar mapa</h4>
+<div class="paragraph">
+<p>*<em>El usuario iniciará sesión y automáticamente se cargará el mapa, para ello tiene que llamar a la clase principal y que este cargue el mapa del usuario con sus puntos.</em></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/Cargar%20mapa%20lvl2.png" alt="Cargar mapa lvl2" width="491" height="365">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_añadir_un_amigo_2">6.2.4. Añadir un amigo</h4>
 <div class="paragraph">
 <p>*<em>En este caso de uso observamos como añadir un amigo a nuestro pod y como se actualiza la información en ambos pods.</em></p>
 </div>
@@ -1400,7 +1418,7 @@ You will mainly capture scenarios in your documentation to communicate your arch
 </div>
 </div>
 <div class="sect3">
-<h4 id="_eliminar_un_amigo_2">6.2.3. Eliminar un amigo</h4>
+<h4 id="_eliminar_un_amigo_2">6.2.5. Eliminar un amigo</h4>
 <div class="paragraph">
 <p>*<em>En este caso de uso observamos como eliminar un amigo de nuestro pod y como se actualiza la información en ambos pods.</em></p>
 </div>
@@ -1592,22 +1610,50 @@ on this list.</p>
 <div class="sect1">
 <h2 id="section-design-decisions">9. Design Decisions</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_decisiones_generales">9.1. Decisiones generales</h3>
 <div class="paragraph">
-<p>Hemos tomado varias decisiones arquitectónicas respecto al diseño de la aplicación. Estas son:</p>
+<p>Durante las diferentes semanas de trabajo hemos tenido que tomar diferentes decisiones importantes para encaminar el proyecto,
+Aunque la mayoría están reflejadas en nuestra wiki, vamos a hacer un análisis global de todas ellas, decidimos no incluir gitHub u otras herramientas como SonarCloud ya que
+no fue una decisión del equipo como tal:
+* Utilizaremos SOLID, un proyecto de descentralización de datos
+* Utilizaremos react para la interfaz
+* Utilizaremos Typescript, un lenguaje muy similar a javascript
+* Seguiremos el MVC(Modelo Vista Controlador) un patrón de arquitectura muy común
+* Node.js será nuestro programa para ejecutar la aplicación junto a express
+* Nos decantamos por mongoDb para nuestra base de datos
+* Utilizamos MapBox para las APIs de los mapas
+=== Problemas
+* Necesitamos aprender a usar estas nuevas herramientas de trabajo. SOLID y sus PODs, react, MapBox y TypeScript son tecnologías completamente
+nuevas para la mayoría de los participantes del grupo
+* Un problema que tiene node.js es su dificultad para entender su código, y su tecnología moderna puede ser un problema a la hora de buscar
+información
+* Hemos tenido problemas a la hora de mezclar la tecnología typescript y react con mapBox</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_consecuencias">9.2. Consecuencias</h3>
 <div class="ulist">
 <ul>
 <li>
-<p>SOLID. Utilizaremos SOLID como método de almacenar la información de los usuarios con una gran privacidad.</p>
+<p>Hemos tenido que indagar mucho para aprender a usar las nuevas tecnologías, tanto para las que no sabíamos cómo utilizar como para
+las que sí podemos aprender a utilizar más fácilmente, pero su información en internet es escasa, perdiendo tiempo</p>
 </li>
 <li>
-<p>React y TypeScript. Como lenguaje para el diseño de la aplicación.</p>
+<p>Para utilizar los mapas, hemos usado javascript para evitar los errores que teníamos con Mapbox y con código .tsx</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_decisiones_concretas">9.3. Decisiones concretas</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Utilizamos javascript de manera puntual</p>
 </li>
 <li>
-<p>MVC. Utilizaremos un diseño de modelo-vista-controlador para el desarrollo de la aplicación y comunicación entre sus capas.</p>
-</li>
-<li>
-<p>MongoDB. Utilizaremos MongoDB como base de datos para almacenar determinada información.</p>
+<p>Reestructuración de proyecto: Como un compañero de equipo dejó la asignatura, tuvimos que volver a repartir el trabajo para cada miembro</p>
 </li>
 </ul>
 </div>
@@ -1650,6 +1696,7 @@ here in this central section or whether you better document it locally
 </div>
 </div>
 <div style="page-break-after: always;"></div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1856,21 +1903,32 @@ Y también hay que tener en cuenta el tiempo que tenemos y el resto de asignatur
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>GitHub</strong></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>Problemas con el manejo de gitHub e incluso pérdidas de archivos</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Tener muy claro lo que hace cada función de git, y si hay dudas hablar con profesores</em></p>
-<p class="tableblock">Existen una variedad de riesgos a la hora de desarrollar el proyecto LoMap con los que tendremos que lidiar:</p>
-<p class="tableblock">- Utilizar el principio SOLID. Utilizar información descentralizada hace más complicado el desarrollo del proyecto respecto a lo que sería utilizar una base de datos propia.</p>
-<p class="tableblock">- Mantener la interoperabilidad de los datos. Utilizar un estándar común que puede dificultar el desarrollo para poder compartir y utilizar los datos con otras aplicaciones.</p>
-<p class="tableblock">- Una base de datos en MongoDB. Utilizar una base de datos propia para guardar algunos datos, pero que puede producir complicaciones a la hora de identificar correctamente que datos se deben guardar en el pod y cuales en la base de datos.</p>
-<p class="tableblock">También hay otros riesgos que son la utilización de tecnologías con las que no estamos acostumbrados y que aprenderemos a usar correctamente a lo largo del desarrollo del proyecto.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Tener muy claro lo que hace cada función de git, y si hay dudas hablar con profesores</em></p></td>
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>Existen una variedad de riesgos a la hora de desarrollar el proyecto LoMap con los que tendremos que lidiar:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Utilizar el principio SOLID. Utilizar información descentralizada hace más complicado el desarrollo del proyecto respecto a lo que sería utilizar una base de datos propia.</p>
+</li>
+<li>
+<p>Mantener la interoperabilidad de los datos. Utilizar un estándar común que puede dificultar el desarrollo para poder compartir y utilizar los datos con otras aplicaciones.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>También hay otros riesgos que son la utilización de tecnologías con las que no estamos acostumbrados y que aprenderemos a usar correctamente a lo largo del desarrollo del proyecto.</p>
+</div>
 <div class="sect2">
 <h3 id="_technical_debts">11.1. Technical Debts</h3>
 <div class="paragraph">
 <p>Al ser un proyecto que hemos empezado de 0, nos ha sido fácil tener una arquitectura escalable sin deuda técnica.
-Quizá a la hora de hacer la interoperabilidad de la aplicación no se ha escogido la mejor opción y sí la más facil de aprender y de
-que todo el mundo la pueda utilizar para ahorrar problemas y no perder mucho el tiempo en ello, lo cuál haya generado un poco de deuda técnica.</p>
+Quizá a la hora de hacer la interoperabilidad de la aplicación no se ha escogido la mejor opción y sí la más fácil de aprender y de
+que todo el mundo la pueda utilizar para ahorrar problemas y no perder mucho el tiempo en ello, lo cuál haya generado un poco de deuda técnica. También al centrarse en la interoperabilidad y la información descentralizada conlleva una perdida de rendimiento al centrarse en obtener la máxima compatibilidad posible sobre utilizar la forma más eficiente.</p>
 </div>
 <div style="page-break-after: always;"></div>
 </div>
