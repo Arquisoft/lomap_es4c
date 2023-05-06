@@ -34,7 +34,7 @@ jobs:
         with:
           node-version: 18
       - run: npm --prefix webapp install
-      - run: npm CI=false && PUBLIC_URL=https://Raul-Alv.github.io/lomap_es4c/ --prefix webapp run build
+      - run: CI=false && PUBLIC_URL=https://Raul-Alv.github.io/lomap_es4c/ npm --prefix webapp run build
       - name: Deploy
         uses: cpina/github-action-push-to-another-repository@create-branch-if-needed-arg
         env:
