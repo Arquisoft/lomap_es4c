@@ -43,7 +43,7 @@ function LogIn(): JSX.Element {
   };
   const callRegister = () => {
    
-    window.location.replace('http://inrupt.net/register'); 
+    window.location.replace('https://inrupt.net/register'); 
    
   };
   
