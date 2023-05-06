@@ -25,8 +25,8 @@ defineFeature(feature, test => {
       await expect(page).toClick('button', { text: 'Log in' })
       await expect(page).toClick('button', {text: 'Login'})
       await page.waitForNavigation();
-      await page.type('#username', "pelayodc");
-      await page.type('#password', "wexbem-6bezHi");
+      await page.type('#username', "Raul-Alv");
+      await page.type('#password', "Lwvvid17__");
       await expect(page).toClick('button', { text: 'Log In' });
       await page.waitForNavigation(); 
       await page.waitForTimeout(7000);
