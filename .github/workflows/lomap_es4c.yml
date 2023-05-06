@@ -42,20 +42,28 @@ jobs:
           registry: ghcr.io
           workdir: webapp
           buildargs: API_URI
+          
   deploy:
-    name: Deploy over SSH
-    runs-on: ubuntu-latest
-    needs: [docker-push-webapp]
-    steps:
-    - name: Deploy over SSH
-      uses: fifsky/ssh-action@master
-      with:
-        host: ${{ secrets.DEPLOY_HOST }}
-        user: ${{ secrets.DEPLOY_USER }}
-        key: ${{ secrets.DEPLOY_KEY }}
-        command: |
-          wget https://raw.githubusercontent.com/arquisoft/lomap_es4c/master/docker-compose-deploy.yml -O docker-compose.yml
-          docker-compose stop
-          docker-compose rm -f
-          docker-compose pull   
-          docker-compose up -d
+      needs: [unit-e2e-tests]
+      name: gh-pages deploy
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm --prefix webapp install
+      - run: PUBLIC_URL=https://Raul-Alv.github.io/lomap_es4c/ npm --prefix webapp run build
+      - name: Deploy
+        uses: cpina/github-action-push-to-another-repository@create-branch-if-needed-arg
+        env:
+            API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+            source-directory: 'webapp/build'
+            destination-github-username: 'Raul-Alv'
+            destination-repository-name: 'lomap_es4c'
+            user-email: UO265210@uniovi.es
+            commit-message: See ORIGIN_COMMIT from $GITHUB_REF
+            target-branch: gh-pages
+      - name: Test get variable exported by push-to-another-repository
+        run: echo $DESTINATION_CLONED_DIRECTORY
