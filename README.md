@@ -18,7 +18,7 @@
 </p>
 
 ## Deploy in Vercel
-[Lomap](https://lomap-es4c-eeyat2o8a-lomap4c.vercel.app/map)
+[Lomap](https://lomap-es4c-eeyat2o8a-lomap4c.vercel.app)
 
 
 This project is a basic example of website using **React** with **Typescript** and an endpoint using **NodeJS** with **express**.
