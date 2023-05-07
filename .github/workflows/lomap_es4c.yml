@@ -11,10 +11,10 @@ jobs:
   unit-e2e-tests:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v2
       with:
         node-version: 18
     - run: npm --prefix webapp ci
@@ -31,12 +31,12 @@ jobs:
       name: gh-pages deploy
       runs-on: ubuntu-latest
       steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
         with:
           node-version: 18
       - run: npm --prefix webapp install
-      - run: CI=false && PUBLIC_URL=https://Raul-Alv.github.io/lomap_es4c/ npm --prefix webapp run build
+      - run: CI=false && PUBLIC_URL=https://raul-alv.github.io/lomap_es4c/ npm --prefix webapp run build
       - name: Deploy
         uses: cpina/github-action-push-to-another-repository@create-branch-if-needed-arg
         env:
@@ -47,6 +47,6 @@ jobs:
             destination-repository-name: 'lomap_es4c'
             user-email: UO265210@uniovi.es
             commit-message: See ORIGIN_COMMIT from $GITHUB_REF
-            target-branch: main
+            target-branch: gh-pages
       - name: Test get variable exported by push-to-another-repository
         run: echo $DESTINATION_CLONED_DIRECTORY
