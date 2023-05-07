@@ -1,6 +1,8 @@
 name: CI for LOMAP_ES4C
 
 on:
+  release:
+    types: [published]
   pull_request:
     branches: [ master ]
   push:
