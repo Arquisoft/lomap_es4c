@@ -1,6 +1,6 @@
 # LoMap ES4C
 
-[![Actions Status](https://github.com/arquisoft/lomap_0/workflows/CI%20for%20LOMAP_ES4C/badge.svg)](https://github.com/arquisoft/lomap_es4c/actions)
+[![Actions Status](https://github.com/arquisoft/lomap_es4c/workflows/CI%20for%20LOMAP_ES4C/badge.svg)](https://github.com/arquisoft/lomap_es4c/actions)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Arquisoft_lomap_es4c&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Arquisoft_lomap_es4c)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Arquisoft_lomap_es4c&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Arquisoft_lomap_es4c)
 
@@ -11,6 +11,8 @@
 </p>
 
 Este proyecto es un ejemplo básico de un sitio web utilizando **React** con **Typescript** y un endpoint usando **NodeJS** con **express**
+## Desplegado en Vercel
+[Lomap](https://lomap-es4c-eeyat2o8a-lomap4c.vercel.app)
 
 ## Guía de inicio rápido
 
@@ -24,19 +26,8 @@ docker-compose up --build
 Este comando creará dos imágenes de docker si no existen en tu equipo (la webapp y la restapi) y lanzará un contenedor de mongoDB. Además lanzará contenedores de Prometheus y Grafana para monitorizar el servicio web. Deberías ser capaz de acceder a todo desde aquí:
 
  - [Webapp - http://localhost:3000](http://localhost:3000)
- - [Ejemplo llamada a RestApi - http://localhost:5000/api/users/list](http://localhost:5000/api/users/list)
- - [Métricas RestApi - http://localhost:5000/metrics](http://localhost:5000/metrics)
- - [Servidor Prometheus - http://localhost:9090](http://localhost:9090)
- - [Servidor Grafana http://localhost:9091](http://localhost:9091)
  
-Si quieres ejecutar el proyecto sin Docker primero compila y ejecuta la restapi:
-
-```shell
-cd restapi
-npm install
-npm start
-```
-a continuación la webapp:
+Si quieres ejecutar el proyecto sin Docker compila y ejecuta webapp:
 ```shell
 cd webapp
 npm install
@@ -49,4 +40,3 @@ Deberías ser capaz de acceder a la aplicación en [http://localhost:3000](http:
 Encontrarás más información sobre el repositorio en los otros archivos README:
 - Documentación: https://github.com/arquisoft/lomap_es4c/tree/master/docs
 - Webapp: https://github.com/arquisoft/lomap_es4c/tree/master/webapp
-- Restapi: https://github.com/arquisoft/lomap_es4c/tree/master/restapi
