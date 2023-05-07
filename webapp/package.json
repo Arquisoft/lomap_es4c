@@ -1,6 +1,6 @@
 {
   "name": "webapp",
-  "homepage": ".",
+  "homepage": "https://raul-alv.github.io/lomap_es4c/",
   "version": "0.1.0",
   "dependencies": {
     "@emotion/react": "^11.7.1",
