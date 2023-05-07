@@ -10,7 +10,8 @@ body {
 #titulo{
   display: flex;
   font-size: 36px;
-  color: #000;
+color: #000;
+font-family: 'Open Sans';
 }
 #portada{
   height: 20%;
@@ -20,7 +21,41 @@ img {
   height: 32px;
   width: 32px;
 }
+#imagen-perfil {
+    width:10em;
+    height:auto;
+}
+#profile{
+  margin: auto;
+  text-align: center;
+  top: 8px;
+  left: 16px;
+  font-size: 18px;
 
+}
+#bienvenida{
+text-align: center;
+
+}
+#info{
+    text-align: left;
+  font-size: 1em;
+  margin-left: 1.1em;
+  color: rgba(14, 13, 13, 0.596);
+ 
+}
+#pinfo{
+  font-size: 1em;
+  margin-left: 1.1em;
+  color: rgb(0, 0, 0);
+ 
+}
+#nombre{
+  font-size: 1.1em;
+  margin-left: 1.1em;
+  color: #003366;
+ 
+}
 .btn-flotante {
   font-size: 16px; /* Cambiar el tamaño de la tipografia */
   text-transform: uppercase; /* Texto en mayusculas */
@@ -110,13 +145,12 @@ img {
   }
 }
 
+
 #formReview{
   width: 46%;
   margin: 0 auto;
   padding-left: 120px;
   padding-right:120px;
-  padding-top: 1em;
-  padding-bottom: 1em;
   background-color: #fff;
   border-radius: 15px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -142,9 +176,9 @@ textarea {
   
 }
 span {
-  font-size: 2rem;
+  font-size: 1.2em;
   color: gray;
-  cursor: pointer;
+  
 }
 
 .selected {
@@ -242,10 +276,9 @@ table th {
 #filtros a:hover {
   color: white;
   background-color: #8e8a3e;
-  border: 1px solid #666;
+  border: 1px solid #666;
 }
 
-#content {
-  overflow-y: auto;
-  max-height: 90%;
+span:not(span.info){
+    content: "";
 }

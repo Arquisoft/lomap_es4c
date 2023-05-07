@@ -76,7 +76,7 @@ function Review(props: ReviewProps): JSX.Element {
 
 
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  let handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     navigate('/map');
     console.log("submit");

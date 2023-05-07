@@ -55,7 +55,7 @@ export function createPlaceObject(webid: string, nombre: string, lat: number, lo
 export async function addMarker(webid: string, nombre: string, lat: number, lon: number, tipo: string, idp: String, session: Session, descripc: string) {
 
 	let marker = createPlaceObject(webid, nombre, lat, lon, tipo, descripc);
-	addSolidMarker(session, idp, marker);
+	addSolidMarker(session, idp, marker).catch(e => console.log(e));
 }
 
 export async function addSolidMarker(session: Session, idp: String, newMarker: Place) {
@@ -84,7 +84,7 @@ export async function addSolidMarker(session: Session, idp: String, newMarker: P
 
 export async function removeMarker(webid: string, id: string, session: Session) {
 
-	removeSolidMarker(webid, session, id);
+	removeSolidMarker(webid, session, id).catch(e => console.log(e));
 
 }
 

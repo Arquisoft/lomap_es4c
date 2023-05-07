@@ -40,7 +40,7 @@ function MapPage() {
     navigate('/profile');
   };
   const logOut = () => {
-    session.logout();
+    session.logout().catch(e => console.log(e));
     navigate('/login');
   };
 
@@ -73,7 +73,7 @@ function MapPage() {
 
     createMap("MapPrueba2", session, session.info.webId);
 
-    loadMarkers(map, session);
+    loadMarkers(map, session).catch(e => console.log(e));
 
     map.current.addControl(new mapboxgl.FullscreenControl());
 
@@ -173,7 +173,7 @@ function MapPage() {
         <div className="content" id="content">
           <div className="content-buttons"><a href="#" ref={close} id="close-button">x</a></div>
           <Review pName={markerName} pMarkId={markerId}/>
-          <div className="content-buttons"><a href="#" ref={close} id="close-button">Aceptar</a></div>
+
         </div>
         
         
@@ -411,7 +411,7 @@ function addMapMarker(e, map, session) {
 
           popup.setHTML(setPointHTML(nombre, descripcion, tipo));
 
-          markerFuncs(marker, popup, nombre, descripcion, tipo, x, y, session, markId);
+          markerFuncs(marker, popup, nombre, descripcion, tipo, x, y, session, markId).catch(e => console.log(e));
         });
     } else {
       popup.on("open", () => {
@@ -426,7 +426,7 @@ function addMapMarker(e, map, session) {
           return;
         }
 
-        markerFuncs(marker,popup,nombre,descripcion,tipo,x,y,session, markId);
+        markerFuncs(marker,popup,nombre,descripcion,tipo,x,y,session, markId).catch(e => console.log(e));
       });
     }
   });
@@ -438,7 +438,7 @@ async function loadMarkers(map, session) {
   let friendsPoint =  await getFriendsSolid(session.info.webId, session);
 
   for (let i = 0; i < points.length; i++) {
-      loadMarker(points[i], map, session);
+      loadMarker(points[i], map, session).catch(e => console.log(e));
   }
 
   for (let i = 0; i < friendsPoint.length; i++) {
@@ -447,7 +447,7 @@ async function loadMarkers(map, session) {
     if (array !== undefined) {
       for (let j = 0; j < array.length; j++) {
         console.log("Nombre del punto" + array[j].nombre);
-         loadFriendMarker(array[j], map, session);
+         loadFriendMarker(array[j], map, session).catch(e => console.log(e));
       }
     }
   }
@@ -476,7 +476,7 @@ async function loadMarker(point, map, session) {
       return;
     }
 
-    markerFuncs(marker,popup,nombre,descripcion,categoria,x,y,session, id);
+    markerFuncs(marker,popup,nombre,descripcion,categoria,x,y,session, id).catch(e => console.log(e));
   });
 
   names.push(nombre);
